@@ -1,0 +1,9 @@
+# Build on Linux without installing cross-compilers on the host.
+FROM rust:1.99-slim-trixie
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends gcc-mingw-w64-x86-64 musl-tools python3 \
+ && rm -rf /var/lib/apt/lists/* \
+ && rustup target add x86_64-unknown-linux-musl x86_64-pc-windows-gnu
+ENV CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=musl-gcc
+ENV CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER=x86_64-w64-mingw32-gcc
+WORKDIR /src

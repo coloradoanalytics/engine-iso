@@ -1,0 +1,374 @@
+{
+  "sources": [
+    {
+      "id": "T14/sources/1",
+      "kind": "point",
+      "spectrum": [
+        93,
+        93,
+        93,
+        93,
+        93,
+        93,
+        93,
+        93
+      ],
+      "power_basis": "total_power",
+      "ground_ref": {
+        "position": [
+          10.0,
+          10.0,
+          0.0
+        ]
+      },
+      "height_m": 1.0
+    }
+  ],
+  "receivers": [
+    {
+      "id": "T14/receivers/1",
+      "ground_ref": {
+        "position": [
+          200.0,
+          50.0,
+          10.0
+        ]
+      },
+      "height_m": 18.5
+    }
+  ],
+  "area_receivers": [],
+  "reflectors": [],
+  "atmosphere": {
+    "temperature_c": 20,
+    "relative_humidity_percent": 70,
+    "pressure_kpa": 101.325
+  },
+  "ground": {
+    "factor": 0,
+    "elevation_m": 0.0,
+    "region_policy": "nonoverlapping_schema11",
+    "regions": [
+      {
+        "id": "T14/ground/1",
+        "boundary": [
+          [
+            0.0,
+            60.0
+          ],
+          [
+            50.0,
+            60.0
+          ],
+          [
+            50.0,
+            -10.0
+          ],
+          [
+            0.0,
+            -10.0
+          ]
+        ],
+        "factor": 0.5
+      },
+      {
+        "id": "T14/ground/2",
+        "boundary": [
+          [
+            50.0,
+            60.0
+          ],
+          [
+            150.0,
+            60.0
+          ],
+          [
+            150.0,
+            -10.0
+          ],
+          [
+            50.0,
+            -10.0
+          ]
+        ],
+        "factor": 0.9
+      },
+      {
+        "id": "T14/ground/3",
+        "boundary": [
+          [
+            150.0,
+            60.0
+          ],
+          [
+            210.0,
+            60.0
+          ],
+          [
+            210.0,
+            -10.0
+          ],
+          [
+            150.0,
+            -10.0
+          ]
+        ],
+        "factor": 0.2
+      }
+    ]
+  },
+  "terrain": {
+    "construction_profile": "acalc_schema11",
+    "samples": [],
+    "breakline_definitions": [
+      {
+        "id": "T14/contour/1",
+        "vertices": [
+          {
+            "position": [
+              120.0,
+              -10.0,
+              0.0
+            ]
+          },
+          {
+            "position": [
+              210.0,
+              -10.0,
+              0.0
+            ]
+          },
+          {
+            "position": [
+              210.0,
+              60.0,
+              0.0
+            ]
+          },
+          {
+            "position": [
+              120.0,
+              60.0,
+              0.0
+            ]
+          },
+          {
+            "position": [
+              120.0,
+              -10.0,
+              0.0
+            ]
+          }
+        ]
+      },
+      {
+        "id": "T14/contour/2",
+        "vertices": [
+          {
+            "position": [
+              0.0,
+              -10.0,
+              0.0
+            ]
+          },
+          {
+            "position": [
+              120.0,
+              -10.0,
+              0.0
+            ]
+          },
+          {
+            "position": [
+              120.0,
+              60.0,
+              0.0
+            ]
+          },
+          {
+            "position": [
+              0.0,
+              60.0,
+              0.0
+            ]
+          },
+          {
+            "position": [
+              0.0,
+              -10.0,
+              0.0
+            ]
+          }
+        ]
+      },
+      {
+        "id": "T14/contour/3",
+        "vertices": [
+          {
+            "position": [
+              185.0,
+              -5.0,
+              10.0
+            ]
+          },
+          {
+            "position": [
+              205.0,
+              -5.0,
+              10.0
+            ]
+          },
+          {
+            "position": [
+              205.0,
+              55.0,
+              10.0
+            ]
+          },
+          {
+            "position": [
+              185.0,
+              55.0,
+              10.0
+            ]
+          },
+          {
+            "position": [
+              185.0,
+              -5.0,
+              10.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "buildings": [
+    {
+      "id": "T14/buildings/1",
+      "ground_vertices": [
+        {
+          "position": [
+            169.39,
+            41.0,
+            7.598461538461536
+          ]
+        },
+        {
+          "position": [
+            172.5,
+            33.5,
+            8.076923076923077
+          ]
+        },
+        {
+          "position": [
+            180.0,
+            30.39,
+            9.23076923076923
+          ]
+        },
+        {
+          "position": [
+            187.5,
+            33.5,
+            10.0
+          ]
+        },
+        {
+          "position": [
+            190.61,
+            41.0,
+            10.0
+          ]
+        },
+        {
+          "position": [
+            187.5,
+            48.5,
+            10.0
+          ]
+        },
+        {
+          "position": [
+            180.0,
+            51.61,
+            9.23076923076923
+          ]
+        },
+        {
+          "position": [
+            172.5,
+            48.5,
+            8.076923076923077
+          ]
+        }
+      ],
+      "roof": {
+        "mode": "absolute",
+        "elevation_m": 30.0
+      },
+      "roof_triangles": [
+        [
+          7,
+          0,
+          1
+        ],
+        [
+          7,
+          1,
+          2
+        ],
+        [
+          7,
+          2,
+          3
+        ],
+        [
+          7,
+          3,
+          4
+        ],
+        [
+          7,
+          4,
+          5
+        ],
+        [
+          5,
+          6,
+          7
+        ]
+      ],
+      "absorption": [
+        0.09999999999999998,
+        0.09999999999999998,
+        0.09999999999999998,
+        0.09999999999999998,
+        0.09999999999999998,
+        0.09999999999999998,
+        0.09999999999999998,
+        0.09999999999999998
+      ]
+    }
+  ],
+  "barriers": [],
+  "misc_regions": [],
+  "settings": {
+    "minimum_contribution_db": null,
+    "receiver_margin_db": null,
+    "area_raster_factor": 0.5,
+    "area_max_extent_m": null,
+    "area_relative_tolerance": 0.001,
+    "area_absolute_tolerance": 1e-12,
+    "area_max_depth": 16,
+    "max_reflect_order": 0,
+    "ground_method": "general",
+    "meteorological_mode": "downwind",
+    "c0": 0
+  },
+  "output": {
+    "path_diagnostics": "full",
+    "prepared_geometry": true
+  }
+}

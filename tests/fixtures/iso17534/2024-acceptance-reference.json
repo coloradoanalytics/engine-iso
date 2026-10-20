@@ -1,0 +1,3221 @@
+{
+  "method": "ISO 9613-2:2024 / ISO 9613-1:1993",
+  "reference_kind": "Supplementary 2024 regression intervals adapted from reported references; not ISO-issued 2024 acceptance values",
+  "derivation": "Reported midpoint + independent full-2024 level minus independent level with pre-2024 ground/Dz/Kmet equations; original interval half-width retained",
+  "baseline_scope": "Published scene geometry with latest supported path selection and 2024 aperture held fixed; baseline is a diagnostic mixture, not a 1996 solver",
+  "equation_sources": {
+    "2024": {
+      "document": "BS ISO 9613-2:2024 (adoption of ISO 9613-2:2024)",
+      "sha256": "2475710442c7bbf0c3135dedb17694399300a533204744d10302dc535e0ef210",
+      "clauses": [
+        "7.3 (11)-(15)",
+        "7.4 (18)-(21)",
+        "7.5 (26)-(27)"
+      ]
+    },
+    "1996": {
+      "document": "ISO 9613-2:1996",
+      "sha256": "7bb56b7eabdd506754fc0319241739607b3c4ee60d8d18d7eb8059fc5502e051",
+      "clauses": [
+        "7.3 (9)-(11)",
+        "7.4 (14)-(18)"
+      ]
+    }
+  },
+  "limitations": [
+    "T09/T19 correction intervals are vendor-reported; the original working-group correction document has not been obtained",
+    "Latest T19 band selection is independently corroborated by Theers et al., DAGA 2026, p. 722",
+    "T14 elevation conventions and T18 terminal courtyard construction retain the documented scene interpretations",
+    "Equation effects are sequential and interact through clipping and energy summation; only their total is order-independent"
+  ],
+  "fixture_sha256": "a79f75307e7ec311adaeaf1d6ce7e22552c2947946a8230db6a2a284a68c72b7",
+  "correction_fixture_sha256": "468d44970399d44188af331a5108ec0449dda490bbac2387942c630e5ed262ac",
+  "calculator_sha256": "bb07af63737182e41371ef36cd1645432bd170da21b8656a98188133f8807be8",
+  "equation_diagnostic_sha256": "ef1d7d2c3e5e47627eb4720a6436b124b15d3fac02160ff9459a7d588c128a9e",
+  "acceptance_script_sha256": "328e49a2ada291b2bd47e20ba66e4bb354cba06ce590f3b71878843426637ddb",
+  "cases": [
+    {
+      "case_id": "T01",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 4",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 13.7,
+          "equation_adjustment_db": -0.0010531388089134452,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 13.698946861191086,
+          "lower_db": 13.648946861191085,
+          "upper_db": 13.748946861191087,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 13.699461626795728,
+          "independent_minus_reported_baseline_db": 0.0005147656046418092
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 23.76,
+          "equation_adjustment_db": -0.0010531388089134452,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 23.758946861191088,
+          "lower_db": 23.708946861191087,
+          "upper_db": 23.80894686119109,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 23.750957292613883,
+          "independent_minus_reported_baseline_db": -0.00798956857720512
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 31.1,
+          "equation_adjustment_db": -0.0010531388089134452,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 31.098946861191088,
+          "lower_db": 31.048946861191087,
+          "upper_db": 31.14894686119109,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 31.09698673569884,
+          "independent_minus_reported_baseline_db": -0.001960125492246334
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 36.17,
+          "equation_adjustment_db": -0.0010531388089134452,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 36.16894686119109,
+          "lower_db": 36.11894686119109,
+          "upper_db": 36.218946861191085,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 36.17355608627738,
+          "independent_minus_reported_baseline_db": 0.0046092250862912465
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 38.95,
+          "equation_adjustment_db": -0.0010531388089134452,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 38.94894686119109,
+          "lower_db": 38.89894686119109,
+          "upper_db": 38.99894686119109,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 38.950247396232925,
+          "independent_minus_reported_baseline_db": 0.00130053504183536
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 39.37,
+          "equation_adjustment_db": -0.0010531388089134452,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 39.368946861191084,
+          "lower_db": 39.31894686119109,
+          "upper_db": 39.41894686119108,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 39.365997953043376,
+          "independent_minus_reported_baseline_db": -0.002948908147708096
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 36.47,
+          "equation_adjustment_db": -0.0010531388089134452,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 36.468946861191085,
+          "lower_db": 36.41894686119109,
+          "upper_db": 36.51894686119108,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 36.4678038113101,
+          "independent_minus_reported_baseline_db": -0.0011430498809872347
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 23.94,
+          "equation_adjustment_db": -0.001053138808916998,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.001053138808916998,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 23.938946861191084,
+          "lower_db": 23.888946861191084,
+          "upper_db": 23.988946861191085,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 23.938083043754165,
+          "independent_minus_reported_baseline_db": -0.0008638174369188789
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 44.29,
+          "equation_adjustment_db": -0.0010531388089134452,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 44.288946861191086,
+          "lower_db": 44.23894686119109,
+          "upper_db": 44.33894686119108,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 44.29225083561071,
+          "independent_minus_reported_baseline_db": 0.003303974419623046
+        }
+      ]
+    },
+    {
+      "case_id": "T02",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 5",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 13.7,
+          "equation_adjustment_db": -0.0010531388089134452,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 13.698946861191086,
+          "lower_db": 13.648946861191085,
+          "upper_db": 13.748946861191087,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 13.699461626795728,
+          "independent_minus_reported_baseline_db": 0.0005147656046418092
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 20.07,
+          "equation_adjustment_db": 2.450622460514751e-06,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 2.450622460514751e-06,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 20.07000245062246,
+          "lower_db": 20.02000245062246,
+          "upper_db": 20.12000245062246,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 20.06385652432516,
+          "independent_minus_reported_baseline_db": -0.006145926297300264
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 24.42,
+          "equation_adjustment_db": 0.0018376022806734227,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.0018376022806734227,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 24.421837602280675,
+          "lower_db": 24.371837602280674,
+          "upper_db": 24.471837602280676,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 24.411851138580737,
+          "independent_minus_reported_baseline_db": -0.009986463699938497
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 30.0,
+          "equation_adjustment_db": 0.0014266785784826652,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.0014266785784826652,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 30.001426678578483,
+          "lower_db": 29.951426678578482,
+          "upper_db": 30.051426678578483,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 30.00245288638769,
+          "independent_minus_reported_baseline_db": 0.001026207809207591
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 36.11,
+          "equation_adjustment_db": -0.00032592525083430246,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.00032592525083430246,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 36.109674074749165,
+          "lower_db": 36.05967407474917,
+          "upper_db": 36.15967407474916,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 36.11427894702676,
+          "independent_minus_reported_baseline_db": 0.004604872277596428
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 37.53,
+          "equation_adjustment_db": -0.0006365160956534055,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0006365160956534055,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 37.52936348390435,
+          "lower_db": 37.47936348390435,
+          "upper_db": 37.579363483904345,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 37.52522353166199,
+          "independent_minus_reported_baseline_db": -0.004139952242354639
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 34.63,
+          "equation_adjustment_db": -0.0006365160956605109,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0006365160956605109,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 34.62936348390434,
+          "lower_db": 34.579363483904345,
+          "upper_db": 34.67936348390434,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 34.627029389928715,
+          "independent_minus_reported_baseline_db": -0.002334093975626672
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 22.1,
+          "equation_adjustment_db": -0.0006365160956569582,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0006365160956569582,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 22.099363483904344,
+          "lower_db": 22.049363483904344,
+          "upper_db": 22.149363483904345,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 22.097308622372786,
+          "independent_minus_reported_baseline_db": -0.0020548615315583163
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 41.53,
+          "equation_adjustment_db": -0.0003499700444322684,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0003499700444322684,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 41.52965002995557,
+          "lower_db": 41.47965002995557,
+          "upper_db": 41.579650029955566,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 41.525685904505885,
+          "independent_minus_reported_baseline_db": -0.003964125449684275
+        }
+      ]
+    },
+    {
+      "case_id": "T03",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 6",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 13.7,
+          "equation_adjustment_db": -0.0010531388089134452,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 13.698946861191086,
+          "lower_db": 13.648946861191085,
+          "upper_db": 13.748946861191087,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 13.699461626795728,
+          "independent_minus_reported_baseline_db": 0.0005147656046418092
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 16.38,
+          "equation_adjustment_db": 0.002469254058823367,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.002469254058823367,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 16.382469254058822,
+          "lower_db": 16.33246925405882,
+          "upper_db": 16.432469254058823,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 16.378166970041434,
+          "independent_minus_reported_baseline_db": -0.004302284017388303
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 17.73,
+          "equation_adjustment_db": 0.015296026251967021,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.015296026251967021,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 17.745296026251967,
+          "lower_db": 17.695296026251967,
+          "upper_db": 17.795296026251968,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 17.737283224344345,
+          "independent_minus_reported_baseline_db": -0.008012801907621991
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 23.83,
+          "equation_adjustment_db": 0.011686526516882623,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.011686526516882623,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 23.84168652651688,
+          "lower_db": 23.79168652651688,
+          "upper_db": 23.89168652651688,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 23.839129717049,
+          "independent_minus_reported_baseline_db": -0.002556809467879617
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 33.27,
+          "equation_adjustment_db": 0.0010711677496075822,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.0010711677496075822,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 33.27107116774961,
+          "lower_db": 33.22107116774961,
+          "upper_db": 33.32107116774961,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 33.27898037726296,
+          "independent_minus_reported_baseline_db": 0.00790920951335039
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 35.69,
+          "equation_adjustment_db": 0.0,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.0,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 35.69,
+          "lower_db": 35.64,
+          "upper_db": 35.739999999999995,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 35.68466900366301,
+          "independent_minus_reported_baseline_db": -0.005330996336986971
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 32.79,
+          "equation_adjustment_db": 0.0,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.0,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 32.79,
+          "lower_db": 32.74,
+          "upper_db": 32.839999999999996,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 32.78647486192973,
+          "independent_minus_reported_baseline_db": -0.0035251380702661095
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 20.26,
+          "equation_adjustment_db": 0.0,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.0,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 20.26,
+          "lower_db": 20.21,
+          "upper_db": 20.310000000000002,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 20.256754094373804,
+          "independent_minus_reported_baseline_db": -0.0032459056261977537
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 39.14,
+          "equation_adjustment_db": 0.0007427815250835579,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.0007427815250835579,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 39.140742781525084,
+          "lower_db": 39.09074278152509,
+          "upper_db": 39.19074278152508,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 39.14017388514569,
+          "independent_minus_reported_baseline_db": -0.0005688963793915036
+        }
+      ]
+    },
+    {
+      "case_id": "T04",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 9",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 13.7,
+          "equation_adjustment_db": -0.0010531388089134452,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 13.698946861191086,
+          "lower_db": 13.648946861191085,
+          "upper_db": 13.748946861191087,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 13.699461626795728,
+          "independent_minus_reported_baseline_db": 0.0005147656046418092
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 20.14,
+          "equation_adjustment_db": -2.4460446539364966e-05,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -2.4460446539364966e-05,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 20.13997553955346,
+          "lower_db": 20.08997553955346,
+          "upper_db": 20.189975539553462,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 20.12766323114223,
+          "independent_minus_reported_baseline_db": -0.012312308411232209
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 26.63,
+          "equation_adjustment_db": 0.0003680582646481412,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.0003680582646481412,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 26.630368058264647,
+          "lower_db": 26.580368058264646,
+          "upper_db": 26.680368058264648,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 26.624829938489434,
+          "independent_minus_reported_baseline_db": -0.005538119775213346
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 32.84,
+          "equation_adjustment_db": -0.0001422562373605274,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0001422562373605274,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 32.83985774376264,
+          "lower_db": 32.789857743762646,
+          "upper_db": 32.88985774376264,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 32.84115282746419,
+          "independent_minus_reported_baseline_db": 0.0012950837015495154
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 36.95,
+          "equation_adjustment_db": -0.0005932082502297931,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0005932082502297931,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 36.94940679174977,
+          "lower_db": 36.899406791749776,
+          "upper_db": 36.99940679174977,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 36.95624965780673,
+          "independent_minus_reported_baseline_db": 0.006842866056956609
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 37.77,
+          "equation_adjustment_db": -0.0007026315273748196,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0007026315273748196,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 37.76929736847263,
+          "lower_db": 37.71929736847263,
+          "upper_db": 37.819297368472625,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 37.77009392258811,
+          "independent_minus_reported_baseline_db": 0.0007965541154817402
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 34.87,
+          "equation_adjustment_db": -0.0007026315273748196,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0007026315273748196,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 34.86929736847262,
+          "lower_db": 34.819297368472625,
+          "upper_db": 34.91929736847262,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 34.87189978085483,
+          "independent_minus_reported_baseline_db": 0.0026024123822097067
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 22.35,
+          "equation_adjustment_db": -0.0007026315273712669,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0007026315273712669,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 22.34929736847263,
+          "lower_db": 22.29929736847263,
+          "upper_db": 22.39929736847263,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 22.342179013298907,
+          "independent_minus_reported_baseline_db": -0.007118355173723501
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 42.23,
+          "equation_adjustment_db": -0.0005723975008464777,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0005723975008464777,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 42.22942760249915,
+          "lower_db": 42.17942760249915,
+          "upper_db": 42.27942760249915,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 42.22650476701154,
+          "independent_minus_reported_baseline_db": -0.002922835487609632
+        }
+      ]
+    },
+    {
+      "case_id": "T05",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 10",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 8.7,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 8.699078933255148,
+          "lower_db": 8.649078933255147,
+          "upper_db": 8.749078933255149,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 8.705009897172506,
+          "independent_minus_reported_baseline_db": 0.005930963917357701
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 18.76,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 18.75907893325515,
+          "lower_db": 18.70907893325515,
+          "upper_db": 18.80907893325515,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 18.75650556299066,
+          "independent_minus_reported_baseline_db": -0.0025733702644892276
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 26.11,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 26.109078933255148,
+          "lower_db": 26.059078933255147,
+          "upper_db": 26.15907893325515,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 26.10253500607562,
+          "independent_minus_reported_baseline_db": -0.006543927179528453
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 31.18,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 31.17907893325515,
+          "lower_db": 31.129078933255148,
+          "upper_db": 31.22907893325515,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 31.17910435665416,
+          "independent_minus_reported_baseline_db": 2.5423399012680648e-05
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 33.95,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 33.94907893325515,
+          "lower_db": 33.899078933255154,
+          "upper_db": 33.99907893325515,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 33.9557956666097,
+          "independent_minus_reported_baseline_db": 0.006716733354551252
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 34.37,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 34.369078933255146,
+          "lower_db": 34.31907893325515,
+          "upper_db": 34.41907893325514,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 34.371546223420154,
+          "independent_minus_reported_baseline_db": 0.002467290165007796
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 31.48,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 31.47907893325515,
+          "lower_db": 31.42907893325515,
+          "upper_db": 31.52907893325515,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 31.473352081686876,
+          "independent_minus_reported_baseline_db": -0.005726851568272906
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 18.95,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 18.949078933255148,
+          "lower_db": 18.899078933255147,
+          "upper_db": 18.99907893325515,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 18.943631314130947,
+          "independent_minus_reported_baseline_db": -0.0054476191242009975
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 39.3,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 39.299078933255146,
+          "lower_db": 39.24907893325515,
+          "upper_db": 39.34907893325514,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 39.29779910598749,
+          "independent_minus_reported_baseline_db": -0.0012798272676590727
+        }
+      ]
+    },
+    {
+      "case_id": "T06",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 15",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 13.68,
+          "equation_adjustment_db": -0.0010531388089134452,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 13.678946861191086,
+          "lower_db": 13.628946861191086,
+          "upper_db": 13.728946861191087,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 13.68103650148107,
+          "independent_minus_reported_baseline_db": 0.0020896402899843736
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 19.55,
+          "equation_adjustment_db": 0.00023059243884659963,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.00023059243884659963,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 19.550230592438847,
+          "lower_db": 19.500230592438847,
+          "upper_db": 19.600230592438848,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 19.53905913077532,
+          "independent_minus_reported_baseline_db": -0.011171461663526117
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 21.1,
+          "equation_adjustment_db": 0.006021256429391997,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.006021256429391997,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 21.106021256429393,
+          "lower_db": 21.056021256429393,
+          "upper_db": 21.156021256429394,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 21.097279194365512,
+          "independent_minus_reported_baseline_db": -0.008742062063880951
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 26.04,
+          "equation_adjustment_db": 0.006246154136519522,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.006246154136519522,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 26.04624615413652,
+          "lower_db": 25.996246154136518,
+          "upper_db": 26.09624615413652,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 26.050810771676954,
+          "independent_minus_reported_baseline_db": 0.004564617540435023
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 34.82,
+          "equation_adjustment_db": 0.0001899834397462996,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.0001899834397462996,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 34.82018998343975,
+          "lower_db": 34.77018998343975,
+          "upper_db": 34.870189983439744,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 34.82234377196471,
+          "independent_minus_reported_baseline_db": 0.002153788524964284
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 37.03,
+          "equation_adjustment_db": -0.0004969825025042951,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004969825025042951,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 37.0295030174975,
+          "lower_db": 36.9795030174975,
+          "upper_db": 37.079503017497494,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 37.02765220445862,
+          "independent_minus_reported_baseline_db": -0.0018508130388781296
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 34.13,
+          "equation_adjustment_db": -0.0004969825025042951,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004969825025042951,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 34.1295030174975,
+          "lower_db": 34.0795030174975,
+          "upper_db": 34.179503017497495,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 34.123739877516485,
+          "independent_minus_reported_baseline_db": -0.00576313998101341
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 21.58,
+          "equation_adjustment_db": -0.0004969825025042951,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004969825025042951,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 21.579503017497494,
+          "lower_db": 21.529503017497493,
+          "upper_db": 21.629503017497495,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 21.571915780143385,
+          "independent_minus_reported_baseline_db": -0.007587237354108822
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 40.59,
+          "equation_adjustment_db": -1.0132291095032997e-07,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -1.0132291095032997e-07,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 40.58999989867709,
+          "lower_db": 40.539999898677095,
+          "upper_db": 40.63999989867709,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 40.58893417050555,
+          "independent_minus_reported_baseline_db": -0.0010657281715396039
+        }
+      ]
+    },
+    {
+      "case_id": "T07",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 18",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 9.16,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 9.159078933255149,
+          "lower_db": 9.109078933255148,
+          "upper_db": 9.20907893325515,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 9.160634438631885,
+          "independent_minus_reported_baseline_db": 0.0015555053767357663
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 19.22,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 19.219078933255147,
+          "lower_db": 19.169078933255147,
+          "upper_db": 19.269078933255148,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 19.212027310969766,
+          "independent_minus_reported_baseline_db": -0.007051622285381143
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 26.56,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 26.559078933255147,
+          "lower_db": 26.509078933255147,
+          "upper_db": 26.609078933255148,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 26.557730449824966,
+          "independent_minus_reported_baseline_db": -0.0013484834301813464
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 31.63,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 31.629078933255148,
+          "lower_db": 31.579078933255147,
+          "upper_db": 31.67907893325515,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 31.633614365531717,
+          "independent_minus_reported_baseline_db": 0.00453543227656894
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 34.4,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 34.39907893325515,
+          "lower_db": 34.34907893325515,
+          "upper_db": 34.449078933255144,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 34.40940857269811,
+          "independent_minus_reported_baseline_db": 0.010329639442964833
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 34.82,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 34.81907893325515,
+          "lower_db": 34.76907893325515,
+          "upper_db": 34.869078933255146,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 34.82349709804214,
+          "independent_minus_reported_baseline_db": 0.0044181647869905305
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 31.92,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 31.91907893325515,
+          "lower_db": 31.86907893325515,
+          "upper_db": 31.96907893325515,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 31.919584771100006,
+          "independent_minus_reported_baseline_db": 0.0005058378448552503
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 19.37,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 19.36907893325515,
+          "lower_db": 19.31907893325515,
+          "upper_db": 19.41907893325515,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 19.367760673726906,
+          "independent_minus_reported_baseline_db": -0.0013182595282437148
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 39.75,
+          "equation_adjustment_db": -0.0009210667448513732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0009210667448513732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 39.74907893325515,
+          "lower_db": 39.69907893325515,
+          "upper_db": 39.799078933255146,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 39.74962225136282,
+          "independent_minus_reported_baseline_db": 0.0005433181076739402
+        }
+      ]
+    },
+    {
+      "case_id": "T08",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 21",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 8.66,
+          "equation_adjustment_db": 0.7498420067400531,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 1.9380716838559167,
+            "2024_Kmet_equation_21_db": -1.1871765383069501
+          },
+          "reference_db": 9.409842006740053,
+          "lower_db": 9.359842006740053,
+          "upper_db": 9.459842006740054,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 9.386374908678487,
+          "independent_minus_reported_baseline_db": -0.023467098061566105
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 14.75,
+          "equation_adjustment_db": 0.8335018150671765,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -3.552713678800501e-15,
+            "2024_Dz_equation_18_db": 1.7932476235814505,
+            "2024_Kmet_equation_21_db": -0.9597458085142705
+          },
+          "reference_db": 15.583501815067176,
+          "lower_db": 15.533501815067176,
+          "upper_db": 15.633501815067177,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 15.56909599262282,
+          "independent_minus_reported_baseline_db": -0.014405822444356176
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 21.12,
+          "equation_adjustment_db": 0.006021256429391997,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.006021256429391997,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 21.126021256429393,
+          "lower_db": 21.076021256429392,
+          "upper_db": 21.176021256429394,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 21.116133417390202,
+          "independent_minus_reported_baseline_db": -0.009887839039190993
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 25.81,
+          "equation_adjustment_db": 0.2623549786556758,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -3.552713678800501e-15,
+            "2024_Dz_equation_18_db": 0.26235497865567936,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 26.072354978655675,
+          "lower_db": 26.022354978655674,
+          "upper_db": 26.122354978655675,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 26.070350429573434,
+          "independent_minus_reported_baseline_db": -0.002004549082240459
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 27.26,
+          "equation_adjustment_db": 0.550341748895633,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 7.105427357601002e-15,
+            "2024_Dz_equation_18_db": 0.876559013363881,
+            "2024_Kmet_equation_21_db": -0.32621726446825505
+          },
+          "reference_db": 27.810341748895635,
+          "lower_db": 27.760341748895634,
+          "upper_db": 27.860341748895635,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 27.8115400763513,
+          "independent_minus_reported_baseline_db": 0.0011983274556648382
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 27.21,
+          "equation_adjustment_db": 0.3613594172781056,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004969825025007424,
+            "2024_Dz_equation_18_db": 0.5542842926970764,
+            "2024_Kmet_equation_21_db": -0.19242789291647
+          },
+          "reference_db": 27.571359417278106,
+          "lower_db": 27.521359417278106,
+          "upper_db": 27.621359417278107,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 27.570116779600664,
+          "independent_minus_reported_baseline_db": -0.001242637677442815
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 22.04,
+          "equation_adjustment_db": 0.21289361778964278,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004969825025007424,
+            "2024_Dz_equation_18_db": 0.3195982245948663,
+            "2024_Kmet_equation_21_db": -0.10620762430272279
+          },
+          "reference_db": 22.252893617789642,
+          "lower_db": 22.20289361778964,
+          "upper_db": 22.302893617789643,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 22.247550455591867,
+          "independent_minus_reported_baseline_db": -0.0053431621977750865
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 6.92,
+          "equation_adjustment_db": 0.11650580814774081,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004969825025042951,
+            "2024_Dz_equation_18_db": 0.17309712902823016,
+            "2024_Kmet_equation_21_db": -0.056094338377985054
+          },
+          "reference_db": 7.036505808147741,
+          "lower_db": 6.986505808147741,
+          "upper_db": 7.086505808147741,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 7.030855026977038,
+          "independent_minus_reported_baseline_db": -0.005650781170702501
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 32.48,
+          "equation_adjustment_db": 0.3697077443078314,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.00024135334233932326,
+            "2024_Dz_equation_18_db": 0.5652930625458552,
+            "2024_Kmet_equation_21_db": -0.19582667158036315
+          },
+          "reference_db": 32.84970774430783,
+          "lower_db": 32.79970774430783,
+          "upper_db": 32.899707744307825,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 32.84912330408639,
+          "independent_minus_reported_baseline_db": -0.0005844402214378874
+        }
+      ]
+    },
+    {
+      "case_id": "T09",
+      "reported_reference_source": {
+        "title": "W\u00f6lfel IMMI 2025 declaration of conformity according to ISO/TR 17534-3:2015",
+        "url": "https://immi.woelfel.de/fileadmin/download/doc_immi/konformitaet/ISO_TR_17534-3_IMMI2025.pdf",
+        "sha256": "44c945c215d2a329005ad8eb6c7f87f9fb159df9e54e31a1ca3db2356edd8037",
+        "date": "2025-07-03",
+        "method": "ISO 9613-2:1996",
+        "correction_provenance": "PDF page 4 cites ISO TC43 SC1 WG 56 corrections from October 2020; the working-group correction document itself has not been obtained",
+        "transcription": "Midpoints and limits of the printed certified-result columns, visually checked on PDF pages 7 and 10; software-result and yes/no columns are not reference data",
+        "caveats": [
+          "The vendor software-result column gives 11.01 dB outside its own printed 13.63-13.73 dB interval for T06/T19 at 63 Hz. Those results and yes/no assertions are not adopted.",
+          "These reported corrections supplement the unchanged original fixture. They do not establish 2024 conformity or certify the current engine."
+        ]
+      },
+      "source_location": "PDF page 7",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 10.7,
+          "equation_adjustment_db": 0.4773990098370362,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 1.2924726133732207,
+            "2024_Kmet_equation_21_db": -0.8140204647272711
+          },
+          "reference_db": 11.177399009837035,
+          "lower_db": 11.127399009837035,
+          "upper_db": 11.227399009837036,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 11.175149978395421,
+          "independent_minus_reported_baseline_db": -0.0022490314416145907
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 16.21,
+          "equation_adjustment_db": 0.6045917166061088,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 6.639761787852194e-05,
+            "2024_Dz_equation_18_db": 1.3373012040991128,
+            "2024_Kmet_equation_21_db": -0.7327758851108825
+          },
+          "reference_db": 16.81459171660611,
+          "lower_db": 16.76459171660611,
+          "upper_db": 16.86459171660611,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 16.808484375231302,
+          "independent_minus_reported_baseline_db": -0.006107341374807618
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 21.12,
+          "equation_adjustment_db": 0.006021256429391997,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.006021256429391997,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 21.126021256429393,
+          "lower_db": 21.076021256429392,
+          "upper_db": 21.176021256429394,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 21.116133417390202,
+          "independent_minus_reported_baseline_db": -0.009887839039190993
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 26.0,
+          "equation_adjustment_db": 0.06720118921174034,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.0003008697166251295,
+            "2024_Dz_equation_18_db": 0.06690031949511521,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 26.06720118921174,
+          "lower_db": 26.01720118921174,
+          "upper_db": 26.11720118921174,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 26.070350429573434,
+          "independent_minus_reported_baseline_db": 0.003149240361693728
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 27.83,
+          "equation_adjustment_db": 0.476906504492149,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 2.4400412939939997e-05,
+            "2024_Dz_equation_18_db": 0.7637445671733403,
+            "2024_Kmet_equation_21_db": -0.2868624630941312
+          },
+          "reference_db": 28.306906504492147,
+          "lower_db": 28.256906504492147,
+          "upper_db": 28.356906504492148,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 28.306961192809425,
+          "independent_minus_reported_baseline_db": 5.468831727739598e-05
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 27.7,
+          "equation_adjustment_db": 0.31650169487897983,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004969825025042951,
+            "2024_Dz_equation_18_db": 0.4873777402265951,
+            "2024_Kmet_equation_21_db": -0.17037906284511095
+          },
+          "reference_db": 28.01650169487898,
+          "lower_db": 27.96650169487898,
+          "upper_db": 28.06650169487898,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 28.016045157581164,
+          "independent_minus_reported_baseline_db": -0.0004565372978149185
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 22.45,
+          "equation_adjustment_db": 0.18874073326260543,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004969825025042951,
+            "2024_Dz_equation_18_db": 0.2841807581897129,
+            "2024_Kmet_equation_21_db": -0.09494304242460316
+          },
+          "reference_db": 22.638740733262605,
+          "lower_db": 22.588740733262604,
+          "upper_db": 22.688740733262605,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 22.638789860130544,
+          "independent_minus_reported_baseline_db": 4.912686793900889e-05
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 7.29,
+          "equation_adjustment_db": 0.10390881246530981,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004969825025042951,
+            "2024_Dz_equation_18_db": 0.15479600076472977,
+            "2024_Kmet_equation_21_db": -0.050390205796915666
+          },
+          "reference_db": 7.39390881246531,
+          "lower_db": 7.34390881246531,
+          "upper_db": 7.44390881246531,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 7.393445315822513,
+          "independent_minus_reported_baseline_db": -0.00046349664279699
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 32.92,
+          "equation_adjustment_db": 0.2934737859249239,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.0002658662637600173,
+            "2024_Dz_equation_18_db": 0.47038426842572534,
+            "2024_Kmet_equation_21_db": -0.17717634876456145
+          },
+          "reference_db": 33.213473785924926,
+          "lower_db": 33.16347378592493,
+          "upper_db": 33.26347378592492,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 33.21085956032078,
+          "independent_minus_reported_baseline_db": -0.002614225604148146
+        }
+      ]
+    },
+    {
+      "case_id": "T10",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 27",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 10.14,
+          "equation_adjustment_db": 0.2507019669615431,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.5531251123853949,
+            "2024_Kmet_equation_21_db": -0.3013700066149383
+          },
+          "reference_db": 10.390701966961544,
+          "lower_db": 10.340701966961543,
+          "upper_db": 10.440701966961544,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 10.37888195154218,
+          "independent_minus_reported_baseline_db": -0.011820015419363727
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 15.12,
+          "equation_adjustment_db": 0.24314559851301354,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 8.50592969108277e-05,
+            "2024_Dz_equation_18_db": 0.47566011381223916,
+            "2024_Kmet_equation_21_db": -0.23259957459613645
+          },
+          "reference_db": 15.363145598513013,
+          "lower_db": 15.313145598513012,
+          "upper_db": 15.413145598513013,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 15.358227139397641,
+          "independent_minus_reported_baseline_db": -0.004918459115371476
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 19.58,
+          "equation_adjustment_db": 0.25302947085415894,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.0007117094583719563,
+            "2024_Dz_equation_18_db": 0.45492081414220564,
+            "2024_Kmet_equation_21_db": -0.20260305274641865
+          },
+          "reference_db": 19.833029470854157,
+          "lower_db": 19.783029470854157,
+          "upper_db": 19.883029470854158,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 19.823424790430586,
+          "independent_minus_reported_baseline_db": -0.00960468042357121
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 22.64,
+          "equation_adjustment_db": 0.16777618266225147,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.000651319388410343,
+            "2024_Dz_equation_18_db": 0.2883299623760962,
+            "2024_Kmet_equation_21_db": -0.12120509910225508
+          },
+          "reference_db": 22.807776182662252,
+          "lower_db": 22.75777618266225,
+          "upper_db": 22.857776182662253,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 22.804791263318602,
+          "independent_minus_reported_baseline_db": -0.00298491934364975
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 24.12,
+          "equation_adjustment_db": 0.0766864995861134,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 5.7061339841624203e-05,
+            "2024_Dz_equation_18_db": 0.1291720418762239,
+            "2024_Kmet_equation_21_db": -0.05254260362995211
+          },
+          "reference_db": 24.196686499586114,
+          "lower_db": 24.146686499586114,
+          "upper_db": 24.246686499586115,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 24.20516980300586,
+          "independent_minus_reported_baseline_db": 0.008483303419744459
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 23.34,
+          "equation_adjustment_db": 0.04060228492132012,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004969825025042951,
+            "2024_Dz_equation_18_db": 0.06830581438059369,
+            "2024_Kmet_equation_21_db": -0.027206546956769273
+          },
+          "reference_db": 23.38060228492132,
+          "lower_db": 23.33060228492132,
+          "upper_db": 23.43060228492132,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 23.375821681010596,
+          "independent_minus_reported_baseline_db": -0.004780603910724324
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 17.59,
+          "equation_adjustment_db": 0.02117434356532044,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004969825025042951,
+            "2024_Dz_equation_18_db": 0.035748830117025676,
+            "2024_Kmet_equation_21_db": -0.01407750404920094
+          },
+          "reference_db": 17.61117434356532,
+          "lower_db": 17.56117434356532,
+          "upper_db": 17.66117434356532,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 17.60468621215997,
+          "independent_minus_reported_baseline_db": -0.006488131405351538
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 2.86,
+          "equation_adjustment_db": -0.0004969825025034069,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004969825025034069,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 2.8595030174974965,
+          "lower_db": 2.8095030174974966,
+          "upper_db": 2.9095030174974963,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 2.852882242248421,
+          "independent_minus_reported_baseline_db": -0.00662077524907545
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 29.3,
+          "equation_adjustment_db": 0.11121493412520778,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 6.36613421391985e-05,
+            "2024_Dz_equation_18_db": 0.19699635487131673,
+            "2024_Kmet_equation_21_db": -0.08584508208824815
+          },
+          "reference_db": 29.41121493412521,
+          "lower_db": 29.361214934125208,
+          "upper_db": 29.46121493412521,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 29.40746568810761,
+          "independent_minus_reported_baseline_db": -0.0037492460175982956
+        }
+      ]
+    },
+    {
+      "case_id": "T11",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 31",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 23.89,
+          "equation_adjustment_db": -0.08033926610991671,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0823309196789026,
+            "2024_Dz_equation_18_db": 0.0002805575869260224,
+            "2024_Kmet_equation_21_db": 0.0017110959820598737
+          },
+          "reference_db": 23.809660733890084,
+          "lower_db": 23.759660733890083,
+          "upper_db": 23.859660733890085,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 23.77267852148211,
+          "independent_minus_reported_baseline_db": -0.03698221240797395
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 28.52,
+          "equation_adjustment_db": -0.03139255634082616,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.03331210349846714,
+            "2024_Dz_equation_18_db": 0.00012030288165476577,
+            "2024_Kmet_equation_21_db": 0.0017992442759862115
+          },
+          "reference_db": 28.488607443659173,
+          "lower_db": 28.438607443659173,
+          "upper_db": 28.538607443659174,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 28.489522481143844,
+          "independent_minus_reported_baseline_db": 0.0009150374846704779
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 30.6,
+          "equation_adjustment_db": 0.005866063722265835,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.003939744254907396,
+            "2024_Dz_equation_18_db": 4.4119780071127934e-05,
+            "2024_Kmet_equation_21_db": 0.0018821996872873115
+          },
+          "reference_db": 30.605866063722267,
+          "lower_db": 30.555866063722267,
+          "upper_db": 30.655866063722268,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 30.603351453837526,
+          "independent_minus_reported_baseline_db": -0.0025146098847415033
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 32.55,
+          "equation_adjustment_db": -0.0015619369141788297,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0015619369141788297,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 32.54843806308582,
+          "lower_db": 32.49843806308582,
+          "upper_db": 32.598438063085815,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 32.54871997549206,
+          "independent_minus_reported_baseline_db": 0.0002819124062440892
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 34.77,
+          "equation_adjustment_db": -0.038637396287107606,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.038637396287107606,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 34.731362603712896,
+          "lower_db": 34.6813626037129,
+          "upper_db": 34.78136260371289,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 34.732389126465016,
+          "independent_minus_reported_baseline_db": 0.0010265227521202291
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 34.99,
+          "equation_adjustment_db": -0.04801504983058891,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.04801504983058891,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 34.94198495016941,
+          "lower_db": 34.891984950169416,
+          "upper_db": 34.99198495016941,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 34.93975866895626,
+          "independent_minus_reported_baseline_db": -0.0022262812131543797
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 33.78,
+          "equation_adjustment_db": -0.04801504983058891,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.04801504983058891,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 33.73198495016941,
+          "lower_db": 33.681984950169415,
+          "upper_db": 33.78198495016941,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 33.729884171558815,
+          "independent_minus_reported_baseline_db": -0.002100778610596876
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 30.18,
+          "equation_adjustment_db": -0.04801504983058891,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.04801504983058891,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 30.13198495016941,
+          "lower_db": 30.08198495016941,
+          "upper_db": 30.18198495016941,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 30.13471055554869,
+          "independent_minus_reported_baseline_db": 0.002725605379279017
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 41.3,
+          "equation_adjustment_db": -0.03480278980637763,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.03510505563586008,
+            "2024_Dz_equation_18_db": 1.5136416067207392e-05,
+            "2024_Kmet_equation_21_db": 0.00028712941341524356
+          },
+          "reference_db": 41.26519721019362,
+          "lower_db": 41.21519721019362,
+          "upper_db": 41.31519721019362,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 41.26324206309421,
+          "independent_minus_reported_baseline_db": -0.001955147099408805
+        }
+      ]
+    },
+    {
+      "case_id": "T12",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 34",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 24.84,
+          "equation_adjustment_db": -0.19933953073115873,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.20280089582569616,
+            "2024_Dz_equation_18_db": 0.00738426815276938,
+            "2024_Kmet_equation_21_db": -0.003922903058231952
+          },
+          "reference_db": 24.64066046926884,
+          "lower_db": 24.59066046926884,
+          "upper_db": 24.690660469268842,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 24.61451679675604,
+          "independent_minus_reported_baseline_db": -0.02614367251280214
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 30.61,
+          "equation_adjustment_db": -0.11010535876095418,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.11252919224557445,
+            "2024_Dz_equation_18_db": 0.004996640842385602,
+            "2024_Kmet_equation_21_db": -0.0025728073577653277
+          },
+          "reference_db": 30.499894641239045,
+          "lower_db": 30.449894641239045,
+          "upper_db": 30.549894641239046,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 30.499654263774154,
+          "independent_minus_reported_baseline_db": -0.00024037746489113943
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 33.59,
+          "equation_adjustment_db": -0.01668443168632905,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.01829957644230973,
+            "2024_Dz_equation_18_db": 0.003267405000478618,
+            "2024_Kmet_equation_21_db": -0.0016522602444979384
+          },
+          "reference_db": 33.573315568313674,
+          "lower_db": 33.52331556831368,
+          "upper_db": 33.62331556831367,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 33.573959186338676,
+          "independent_minus_reported_baseline_db": 0.0006436180250020129
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 35.5,
+          "equation_adjustment_db": -0.002955539512143446,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.00392879605524854,
+            "2024_Dz_equation_18_db": 0.0019496304693333855,
+            "2024_Kmet_equation_21_db": -0.0009763739262282911
+          },
+          "reference_db": 35.49704446048786,
+          "lower_db": 35.44704446048786,
+          "upper_db": 35.547044460487854,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 35.49323777261654,
+          "independent_minus_reported_baseline_db": -0.003806687871318104
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 36.7,
+          "equation_adjustment_db": -0.09447328654872678,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.09447328654872678,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 36.605526713451276,
+          "lower_db": 36.55552671345128,
+          "upper_db": 36.65552671345127,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 36.60574966968459,
+          "independent_minus_reported_baseline_db": 0.00022295623331558545
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 37.46,
+          "equation_adjustment_db": -0.11758754230567092,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.11758754230567092,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 37.34241245769433,
+          "lower_db": 37.29241245769433,
+          "upper_db": 37.39241245769433,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 37.34347073501526,
+          "independent_minus_reported_baseline_db": 0.001058277320929335
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 36.57,
+          "equation_adjustment_db": -0.11758754230567092,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.11758754230567092,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 36.45241245769433,
+          "lower_db": 36.40241245769433,
+          "upper_db": 36.50241245769433,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 36.44920999120313,
+          "independent_minus_reported_baseline_db": -0.003202466491195821
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 32.97,
+          "equation_adjustment_db": -0.11758754230567092,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.11758754230567092,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 32.85241245769433,
+          "lower_db": 32.80241245769433,
+          "upper_db": 32.902412457694325,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 32.8524000804371,
+          "independent_minus_reported_baseline_db": -1.2377257228024519e-05
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 43.81,
+          "equation_adjustment_db": -0.08702846659895869,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.08748847798569415,
+            "2024_Dz_equation_18_db": 0.0009369792546749522,
+            "2024_Kmet_equation_21_db": -0.00047696786793949286
+          },
+          "reference_db": 43.722971533401044,
+          "lower_db": 43.672971533401046,
+          "upper_db": 43.77297153340104,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 43.724674534511664,
+          "independent_minus_reported_baseline_db": 0.0017030011106200504
+        }
+      ]
+    },
+    {
+      "case_id": "T13",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 39",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 24.97,
+          "equation_adjustment_db": -0.04726887805094293,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.04984798876544261,
+            "2024_Dz_equation_18_db": 0.0014602278458895057,
+            "2024_Kmet_equation_21_db": 0.0011188828686101715
+          },
+          "reference_db": 24.922731121949056,
+          "lower_db": 24.872731121949055,
+          "upper_db": 24.972731121949057,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 24.90287184578901,
+          "independent_minus_reported_baseline_db": -0.01985927616004446
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 30.56,
+          "equation_adjustment_db": -0.005185761993608651,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.007040645017987401,
+            "2024_Dz_equation_18_db": 0.0005823346030382481,
+            "2024_Kmet_equation_21_db": 0.0012725484213405025
+          },
+          "reference_db": 30.55481423800639,
+          "lower_db": 30.50481423800639,
+          "upper_db": 30.60481423800639,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 30.55335123838085,
+          "independent_minus_reported_baseline_db": -0.0014629996255415278
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 34.26,
+          "equation_adjustment_db": 0.027076849889326127,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.025476481680207996,
+            "2024_Dz_equation_18_db": 0.00021985839862992407,
+            "2024_Kmet_equation_21_db": 0.0013805098104882063
+          },
+          "reference_db": 34.287076849889324,
+          "lower_db": 34.23707684988933,
+          "upper_db": 34.33707684988932,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 34.289728324418114,
+          "independent_minus_reported_baseline_db": 0.0026514745287897767
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 36.08,
+          "equation_adjustment_db": 0.03225348560240349,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.030991904091145273,
+            "2024_Dz_equation_18_db": 6.399900086506705e-05,
+            "2024_Kmet_equation_21_db": 0.001197582510393147
+          },
+          "reference_db": 36.1122534856024,
+          "lower_db": 36.062253485602405,
+          "upper_db": 36.1622534856024,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 36.109617330891844,
+          "independent_minus_reported_baseline_db": -0.002636154710558003
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 37.0,
+          "equation_adjustment_db": -0.013404160999073156,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.013404160999073156,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 36.98659583900093,
+          "lower_db": 36.93659583900093,
+          "upper_db": 37.036595839000924,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 36.98733774004865,
+          "independent_minus_reported_baseline_db": 0.0007419010477249799
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 35.22,
+          "equation_adjustment_db": -0.02405469486938472,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.02405469486938472,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 35.195945305130614,
+          "lower_db": 35.14594530513062,
+          "upper_db": 35.24594530513061,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 35.19804298845003,
+          "independent_minus_reported_baseline_db": 0.0020976833194126243
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 32.22,
+          "equation_adjustment_db": -0.02405469486938472,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.02405469486938472,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 32.195945305130614,
+          "lower_db": 32.14594530513062,
+          "upper_db": 32.24594530513061,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 32.19563277537353,
+          "independent_minus_reported_baseline_db": -0.0003125297570818475
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 26.83,
+          "equation_adjustment_db": -0.02405469486938827,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.02405469486938827,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 26.80594530513061,
+          "lower_db": 26.75594530513061,
+          "upper_db": 26.85594530513061,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 26.807463969087177,
+          "independent_minus_reported_baseline_db": 0.001518663956566968
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 42.71,
+          "equation_adjustment_db": -0.00082505784646969,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0014870560299016233,
+            "2024_Dz_equation_18_db": 0.00010527841275376204,
+            "2024_Kmet_equation_21_db": 0.0005567197706781712
+          },
+          "reference_db": 42.70917494215353,
+          "lower_db": 42.659174942153534,
+          "upper_db": 42.75917494215353,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 42.708558766486895,
+          "independent_minus_reported_baseline_db": -0.0006161756666358542
+        }
+      ]
+    },
+    {
+      "case_id": "T14",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 45",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 8.73,
+          "equation_adjustment_db": 0.10843004957309432,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.004211767330339455,
+            "2024_Dz_equation_18_db": 0.19440837987605875,
+            "2024_Kmet_equation_21_db": -0.08176656297262497
+          },
+          "reference_db": 8.838430049573095,
+          "lower_db": 8.788430049573094,
+          "upper_db": 8.888430049573095,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 8.822189680882023,
+          "independent_minus_reported_baseline_db": -0.01624036869107215
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 14.32,
+          "equation_adjustment_db": 0.07433746710730915,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0014624708380495122,
+            "2024_Dz_equation_18_db": 0.10040478193104008,
+            "2024_Kmet_equation_21_db": -0.024604843985681413
+          },
+          "reference_db": 14.39433746710731,
+          "lower_db": 14.344337467107309,
+          "upper_db": 14.44433746710731,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 14.387496081175602,
+          "independent_minus_reported_baseline_db": -0.006841385931707578
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 16.58,
+          "equation_adjustment_db": 0.06299731574427625,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.003030903493723258,
+            "2024_Dz_equation_18_db": 0.05288709506338307,
+            "2024_Kmet_equation_21_db": 0.00707931718716992
+          },
+          "reference_db": 16.642997315744275,
+          "lower_db": 16.592997315744274,
+          "upper_db": 16.692997315744275,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 16.631999498829416,
+          "independent_minus_reported_baseline_db": -0.010997816914859015
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 18.35,
+          "equation_adjustment_db": 0.049211523025952886,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.003883707471118214,
+            "2024_Dz_equation_18_db": 0.02398468072787807,
+            "2024_Kmet_equation_21_db": 0.0213431348269566
+          },
+          "reference_db": 18.399211523025954,
+          "lower_db": 18.349211523025954,
+          "upper_db": 18.449211523025955,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 18.40132697813154,
+          "independent_minus_reported_baseline_db": 0.0021154551055850845
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 20.14,
+          "equation_adjustment_db": 0.025397039706639646,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0005762549800820693,
+            "2024_Dz_equation_18_db": 0.007790351135518847,
+            "2024_Kmet_equation_21_db": 0.018182943551202868
+          },
+          "reference_db": 20.16539703970664,
+          "lower_db": 20.11539703970664,
+          "upper_db": 20.21539703970664,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 20.169818714775623,
+          "independent_minus_reported_baseline_db": 0.004421675068982722
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 18.61,
+          "equation_adjustment_db": 0.021493308219763918,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0021875504671911017,
+            "2024_Dz_equation_18_db": 0.003848471876395365,
+            "2024_Kmet_equation_21_db": 0.019832386810559655
+          },
+          "reference_db": 18.631493308219763,
+          "lower_db": 18.581493308219763,
+          "upper_db": 18.681493308219764,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 18.625900573598752,
+          "independent_minus_reported_baseline_db": -0.005592734621011175
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 13.0,
+          "equation_adjustment_db": -0.0021875504671911017,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0021875504671911017,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 12.997812449532809,
+          "lower_db": 12.947812449532808,
+          "upper_db": 13.04781244953281,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 12.997196894507809,
+          "independent_minus_reported_baseline_db": -0.0006155550249999919
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": -1.18,
+          "equation_adjustment_db": -0.0021875504671946544,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0021875504671946544,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": -1.1821875504671946,
+          "lower_db": -1.2321875504671946,
+          "upper_db": -1.1321875504671945,
+          "tolerance_db": 0.05,
+          "independent_2024_db": -1.1893177538876913,
+          "independent_minus_reported_baseline_db": -0.00713020342049675
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 25.38,
+          "equation_adjustment_db": 0.038274859402633865,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.00020072042068264295,
+            "2024_Dz_equation_18_db": 0.027077257408141264,
+            "2024_Kmet_equation_21_db": 0.010996881573809958
+          },
+          "reference_db": 25.418274859402633,
+          "lower_db": 25.368274859402632,
+          "upper_db": 25.468274859402634,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 25.414589561522256,
+          "independent_minus_reported_baseline_db": -0.003685297880377192
+        }
+      ]
+    },
+    {
+      "case_id": "T15",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 49",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 27.29,
+          "equation_adjustment_db": -0.19522153780677343,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.2116018801809716,
+            "2024_Dz_equation_18_db": 0.0433871720881811,
+            "2024_Kmet_equation_21_db": -0.02700682971398294
+          },
+          "reference_db": 27.094778462193226,
+          "lower_db": 27.044778462193225,
+          "upper_db": 27.144778462193226,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 27.085106498244773,
+          "independent_minus_reported_baseline_db": -0.0096719639484526
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 35.61,
+          "equation_adjustment_db": -0.1625265130119189,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.17773273103233578,
+            "2024_Dz_equation_18_db": 0.03571804163195935,
+            "2024_Kmet_equation_21_db": -0.020511823611542468
+          },
+          "reference_db": 35.44747348698808,
+          "lower_db": 35.39747348698808,
+          "upper_db": 35.49747348698808,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 35.4476397346074,
+          "independent_minus_reported_baseline_db": 0.00016624761931893772
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 40.99,
+          "equation_adjustment_db": -0.13644116912112736,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.1484590817822209,
+            "2024_Dz_equation_18_db": 0.026048859279114822,
+            "2024_Kmet_equation_21_db": -0.01403094661802129
+          },
+          "reference_db": 40.853558830878875,
+          "lower_db": 40.80355883087888,
+          "upper_db": 40.90355883087887,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 40.851493302731264,
+          "independent_minus_reported_baseline_db": -0.002065528147610962
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 44.01,
+          "equation_adjustment_db": -0.1358748952977109,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.14435765865925987,
+            "2024_Dz_equation_18_db": 0.017516989064894517,
+            "2024_Kmet_equation_21_db": -0.009034225703345555
+          },
+          "reference_db": 43.87412510470229,
+          "lower_db": 43.82412510470229,
+          "upper_db": 43.924125104702284,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 43.87811766541445,
+          "independent_minus_reported_baseline_db": 0.00399256071216314
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 44.6,
+          "equation_adjustment_db": -0.16599906907942596,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.17175541509627834,
+            "2024_Dz_equation_18_db": 0.011568271715582057,
+            "2024_Kmet_equation_21_db": -0.005811925698729681
+          },
+          "reference_db": 44.434000930920575,
+          "lower_db": 44.38400093092058,
+          "upper_db": 44.48400093092057,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 44.43906177713978,
+          "independent_minus_reported_baseline_db": 0.0050608462192016646
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 42.53,
+          "equation_adjustment_db": -0.1757982885306859,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.17944245173960383,
+            "2024_Dz_equation_18_db": 0.007218344435834467,
+            "2024_Kmet_equation_21_db": -0.0035741812269165507
+          },
+          "reference_db": 42.354201711469315,
+          "lower_db": 42.30420171146932,
+          "upper_db": 42.40420171146931,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 42.357988702055636,
+          "independent_minus_reported_baseline_db": 0.0037869905863203712
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 38.76,
+          "equation_adjustment_db": -0.17737170834499238,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.17944245173960383,
+            "2024_Dz_equation_18_db": 0.00407127363420301,
+            "2024_Kmet_equation_21_db": -0.002000530239591569
+          },
+          "reference_db": 38.582628291655006,
+          "lower_db": 38.53262829165501,
+          "upper_db": 38.632628291655,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 38.57817320670895,
+          "independent_minus_reported_baseline_db": -0.0044550849460591735
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 32.95,
+          "equation_adjustment_db": -0.17944245173960383,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.17944245173960383,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 32.7705575482604,
+          "lower_db": 32.7205575482604,
+          "upper_db": 32.820557548260396,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 32.76554001216581,
+          "independent_minus_reported_baseline_db": -0.005017536094591435
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 49.92,
+          "equation_adjustment_db": -0.15741267708991558,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.16430298228992513,
+            "2024_Dz_equation_18_db": 0.014437269630327876,
+            "2024_Kmet_equation_21_db": -0.007546964430318326
+          },
+          "reference_db": 49.762587322910086,
+          "lower_db": 49.71258732291009,
+          "upper_db": 49.81258732291008,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 49.76380995631886,
+          "independent_minus_reported_baseline_db": 0.001222633408772822
+        }
+      ]
+    },
+    {
+      "case_id": "T16",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 54",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 14.83,
+          "equation_adjustment_db": -0.003867518327261621,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.016950774704511673,
+            "2024_Dz_equation_18_db": 0.0006097674201512859,
+            "2024_Kmet_equation_21_db": 0.012473488957098766
+          },
+          "reference_db": 14.826132481672738,
+          "lower_db": 14.776132481672738,
+          "upper_db": 14.87613248167274,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 14.781179993081313,
+          "independent_minus_reported_baseline_db": -0.04495248859142542
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 18.18,
+          "equation_adjustment_db": 0.010344717740757403,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0029081609302750167,
+            "2024_Dz_equation_18_db": 0.00023487620512696594,
+            "2024_Kmet_equation_21_db": 0.013018002465905454
+          },
+          "reference_db": 18.190344717740757,
+          "lower_db": 18.140344717740756,
+          "upper_db": 18.240344717740758,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 18.187905717485208,
+          "independent_minus_reported_baseline_db": -0.0024390002555492174
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 20.73,
+          "equation_adjustment_db": 0.024359652699196488,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.00784376569109213,
+            "2024_Dz_equation_18_db": 0.00012741269412686052,
+            "2024_Kmet_equation_21_db": 0.016388474313977497
+          },
+          "reference_db": 20.754359652699197,
+          "lower_db": 20.704359652699196,
+          "upper_db": 20.804359652699198,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 20.75261678215719,
+          "independent_minus_reported_baseline_db": -0.0017428705420066137
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 23.44,
+          "equation_adjustment_db": 0.00694160255855536,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.00694160255855536,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 23.446941602558557,
+          "lower_db": 23.396941602558556,
+          "upper_db": 23.496941602558557,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 23.44811135084881,
+          "independent_minus_reported_baseline_db": 0.0011697482902519596
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 26.45,
+          "equation_adjustment_db": -0.006069232294677818,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.006069232294677818,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 26.44393076770532,
+          "lower_db": 26.39393076770532,
+          "upper_db": 26.493930767705322,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 26.44131858220768,
+          "independent_minus_reported_baseline_db": -0.0026121854976430825
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 26.88,
+          "equation_adjustment_db": -0.009916626239188986,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.009916626239188986,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 26.87008337376081,
+          "lower_db": 26.82008337376081,
+          "upper_db": 26.92008337376081,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 26.866484262093742,
+          "independent_minus_reported_baseline_db": -0.0035991116670679446
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 25.22,
+          "equation_adjustment_db": -0.009916626239188986,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.009916626239188986,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 25.21008337376081,
+          "lower_db": 25.16008337376081,
+          "upper_db": 25.26008337376081,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 25.206604109444715,
+          "independent_minus_reported_baseline_db": -0.003479264316094799
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 19.97,
+          "equation_adjustment_db": -0.009916626239188986,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.009916626239188986,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 19.96008337376081,
+          "lower_db": 19.91008337376081,
+          "upper_db": 20.01008337376081,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 19.9630132063743,
+          "independent_minus_reported_baseline_db": 0.002929832613489225
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 32.54,
+          "equation_adjustment_db": -0.003784591164915696,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.005583055929001546,
+            "2024_Dz_equation_18_db": 2.7221740054983457e-05,
+            "2024_Kmet_equation_21_db": 0.0017712430240308663
+          },
+          "reference_db": 32.53621540883508,
+          "lower_db": 32.486215408835086,
+          "upper_db": 32.58621540883508,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 32.53720485706358,
+          "independent_minus_reported_baseline_db": 0.0009894482284948936
+        }
+      ]
+    },
+    {
+      "case_id": "T17",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 57",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 15.34,
+          "equation_adjustment_db": 0.011204944919498416,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.016824067888492777,
+            "2024_Dz_equation_18_db": 0.004785115998913625,
+            "2024_Kmet_equation_21_db": 0.02324389680907757
+          },
+          "reference_db": 15.351204944919498,
+          "lower_db": 15.301204944919498,
+          "upper_db": 15.401204944919499,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 15.310443463345909,
+          "independent_minus_reported_baseline_db": -0.04076148157358972
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 19.18,
+          "equation_adjustment_db": 0.02312829540479555,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.002868311123137346,
+            "2024_Dz_equation_18_db": 0.001722766570573242,
+            "2024_Kmet_equation_21_db": 0.024273839957359655
+          },
+          "reference_db": 19.203128295404795,
+          "lower_db": 19.153128295404795,
+          "upper_db": 19.253128295404796,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 19.201845731600585,
+          "independent_minus_reported_baseline_db": -0.0012825638042102128
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 21.95,
+          "equation_adjustment_db": 0.03491832420424146,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.005866365279949548,
+            "2024_Dz_equation_18_db": 0.0007888831371687388,
+            "2024_Kmet_equation_21_db": 0.02826307578712317
+          },
+          "reference_db": 21.98491832420424,
+          "lower_db": 21.93491832420424,
+          "upper_db": 22.03491832420424,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 21.983784190288667,
+          "independent_minus_reported_baseline_db": -0.0011341339155741537
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 23.98,
+          "equation_adjustment_db": 0.03492451892174131,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.006033841979700583,
+            "2024_Dz_equation_18_db": 0.0003646847759313232,
+            "2024_Kmet_equation_21_db": 0.028525992166109404
+          },
+          "reference_db": 24.01492451892174,
+          "lower_db": 23.96492451892174,
+          "upper_db": 24.064924518921742,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 24.019430469758536,
+          "independent_minus_reported_baseline_db": 0.00450595083679417
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 26.39,
+          "equation_adjustment_db": -0.006014869432029002,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.006014869432029002,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 26.38398513056797,
+          "lower_db": 26.33398513056797,
+          "upper_db": 26.433985130567972,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 26.389753749682093,
+          "independent_minus_reported_baseline_db": 0.00576861911412152
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 26.83,
+          "equation_adjustment_db": -0.00984255917781951,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.00984255917781951,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 26.82015744082218,
+          "lower_db": 26.770157440822178,
+          "upper_db": 26.87015744082218,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 26.81996196959143,
+          "independent_minus_reported_baseline_db": -0.00019547123075014383
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 25.17,
+          "equation_adjustment_db": -0.00984255917781951,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.00984255917781951,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 25.160157440822182,
+          "lower_db": 25.11015744082218,
+          "upper_db": 25.210157440822183,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 25.1622564185681,
+          "independent_minus_reported_baseline_db": 0.002098977745916386
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 19.92,
+          "equation_adjustment_db": -0.00984255917781951,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.00984255917781951,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 19.910157440822182,
+          "lower_db": 19.86015744082218,
+          "upper_db": 19.960157440822183,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 19.911707434079148,
+          "independent_minus_reported_baseline_db": 0.0015499932569653652
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 32.72,
+          "equation_adjustment_db": 0.002679060662046595,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0053193734175067675,
+            "2024_Dz_equation_18_db": 0.00027818448904071147,
+            "2024_Kmet_equation_21_db": 0.007720249590512651
+          },
+          "reference_db": 32.722679060662045,
+          "lower_db": 32.67267906066205,
+          "upper_db": 32.77267906066204,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 32.718339430449845,
+          "independent_minus_reported_baseline_db": -0.004339630212200518
+        }
+      ]
+    },
+    {
+      "case_id": "T18",
+      "reported_reference_source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+        ]
+      },
+      "source_location": "Table 63",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 15.01,
+          "equation_adjustment_db": -0.013973429993562547,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.04011854974917384,
+            "2024_Dz_equation_18_db": 0.011898263925779418,
+            "2024_Kmet_equation_21_db": 0.014246855829831873
+          },
+          "reference_db": 14.996026570006437,
+          "lower_db": 14.946026570006437,
+          "upper_db": 15.046026570006438,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 15.019837114052752,
+          "independent_minus_reported_baseline_db": 0.023810544046314774
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 21.79,
+          "equation_adjustment_db": -0.014967807031304403,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.04011854974916673,
+            "2024_Dz_equation_18_db": 0.005679677878440259,
+            "2024_Kmet_equation_21_db": 0.01947106483942207
+          },
+          "reference_db": 21.775032192968695,
+          "lower_db": 21.725032192968694,
+          "upper_db": 21.825032192968695,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 21.794510951119612,
+          "independent_minus_reported_baseline_db": 0.019478758150917486
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 25.07,
+          "equation_adjustment_db": -0.01589831430584354,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.04011854974916673,
+            "2024_Dz_equation_18_db": 0.0021286529482082983,
+            "2024_Kmet_equation_21_db": 0.022091582495114892
+          },
+          "reference_db": 25.054101685694157,
+          "lower_db": 25.004101685694156,
+          "upper_db": 25.104101685694157,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 25.044107220366733,
+          "independent_minus_reported_baseline_db": -0.00999446532742354
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 26.29,
+          "equation_adjustment_db": -0.016517588685758255,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.04011854974916673,
+            "2024_Dz_equation_18_db": 0.0008001562825228348,
+            "2024_Kmet_equation_21_db": 0.022800804780885642
+          },
+          "reference_db": 26.27348241131424,
+          "lower_db": 26.22348241131424,
+          "upper_db": 26.32348241131424,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 26.23817868169579,
+          "independent_minus_reported_baseline_db": -0.03530372961845174
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 27.74,
+          "equation_adjustment_db": -0.040118549749170285,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.040118549749170285,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 27.699881450250828,
+          "lower_db": 27.649881450250827,
+          "upper_db": 27.74988145025083,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 27.672374160590625,
+          "independent_minus_reported_baseline_db": -0.027507289660203327
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 28.65,
+          "equation_adjustment_db": -0.04011854974916673,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.04011854974916673,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 28.609881450250832,
+          "lower_db": 28.55988145025083,
+          "upper_db": 28.659881450250833,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 28.590303290537435,
+          "independent_minus_reported_baseline_db": -0.01957815971339727
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 27.81,
+          "equation_adjustment_db": -0.04011854974916673,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.04011854974916673,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 27.769881450250832,
+          "lower_db": 27.71988145025083,
+          "upper_db": 27.819881450250833,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 27.75850071741573,
+          "independent_minus_reported_baseline_db": -0.011380732835103657
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 23.46,
+          "equation_adjustment_db": -0.04011854974916318,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.04011854974916318,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 23.419881450250838,
+          "lower_db": 23.369881450250837,
+          "upper_db": 23.46988145025084,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 23.412107438361,
+          "independent_minus_reported_baseline_db": -0.007774011889836174
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 34.89,
+          "equation_adjustment_db": -0.03281585811567567,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.04011854974917384,
+            "2024_Dz_equation_18_db": 0.0007367971167724363,
+            "2024_Kmet_equation_21_db": 0.006565894516725734
+          },
+          "reference_db": 34.857184141884325,
+          "lower_db": 34.80718414188433,
+          "upper_db": 34.90718414188432,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 34.83884534543111,
+          "independent_minus_reported_baseline_db": -0.018338796453214457
+        }
+      ]
+    },
+    {
+      "case_id": "T19",
+      "reported_reference_source": {
+        "title": "W\u00f6lfel IMMI 2025 declaration of conformity according to ISO/TR 17534-3:2015",
+        "url": "https://immi.woelfel.de/fileadmin/download/doc_immi/konformitaet/ISO_TR_17534-3_IMMI2025.pdf",
+        "sha256": "44c945c215d2a329005ad8eb6c7f87f9fb159df9e54e31a1ca3db2356edd8037",
+        "date": "2025-07-03",
+        "method": "ISO 9613-2:1996",
+        "correction_provenance": "PDF page 4 cites ISO TC43 SC1 WG 56 corrections from October 2020; the working-group correction document itself has not been obtained",
+        "transcription": "Midpoints and limits of the printed certified-result columns, visually checked on PDF pages 7 and 10; software-result and yes/no columns are not reference data",
+        "caveats": [
+          "The vendor software-result column gives 11.01 dB outside its own printed 13.63-13.73 dB interval for T06/T19 at 63 Hz. Those results and yes/no assertions are not adopted.",
+          "These reported corrections supplement the unchanged original fixture. They do not establish 2024 conformity or certify the current engine."
+        ]
+      },
+      "source_location": "PDF page 10",
+      "values": [
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 63,
+          "reported_reference_db": 13.68,
+          "equation_adjustment_db": -0.0010531388089134452,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0010531388089134452,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 13.678946861191086,
+          "lower_db": 13.628946861191086,
+          "upper_db": 13.728946861191087,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 13.68103650148107,
+          "independent_minus_reported_baseline_db": 0.0020896402899843736
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 125,
+          "reported_reference_db": 19.55,
+          "equation_adjustment_db": 0.00023059243884659963,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.00023059243884659963,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 19.550230592438847,
+          "lower_db": 19.500230592438847,
+          "upper_db": 19.600230592438848,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 19.53905913077532,
+          "independent_minus_reported_baseline_db": -0.011171461663526117
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 250,
+          "reported_reference_db": 23.32,
+          "equation_adjustment_db": 0.005932561863794206,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.005932561863794206,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 23.325932561863794,
+          "lower_db": 23.275932561863794,
+          "upper_db": 23.375932561863795,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 23.327535429004627,
+          "independent_minus_reported_baseline_db": 0.0016028671408321316
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 500,
+          "reported_reference_db": 28.01,
+          "equation_adjustment_db": 0.006159397846904113,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.006159397846904113,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 28.016159397846906,
+          "lower_db": 27.966159397846905,
+          "upper_db": 28.066159397846906,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 28.02381790469884,
+          "independent_minus_reported_baseline_db": 0.007658506851935698
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 1000,
+          "reported_reference_db": 36.51,
+          "equation_adjustment_db": 0.00018656315922527256,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 0.00018656315922527256,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 36.51018656315922,
+          "lower_db": 36.460186563159226,
+          "upper_db": 36.56018656315922,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 36.52309094269984,
+          "independent_minus_reported_baseline_db": 0.012904379540614741
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 2000,
+          "reported_reference_db": 38.43,
+          "equation_adjustment_db": -0.0004924743272880505,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004924743272880505,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 38.42950752567271,
+          "lower_db": 38.379507525672715,
+          "upper_db": 38.47950752567271,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 38.43387412936232,
+          "independent_minus_reported_baseline_db": 0.004366603689611281
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 4000,
+          "reported_reference_db": 35.2,
+          "equation_adjustment_db": -0.0004933850007162732,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004933850007162732,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 35.19950661499929,
+          "lower_db": 35.14950661499929,
+          "upper_db": 35.249506614999284,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 35.20684022568365,
+          "independent_minus_reported_baseline_db": 0.007333610684362668
+        },
+        {
+          "quantity": "a_weighted_octave_level_db",
+          "frequency_hz": 8000,
+          "reported_reference_db": 23.18,
+          "equation_adjustment_db": -0.0004919241082959047,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": -0.0004919241082959047,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 23.179508075891704,
+          "lower_db": 23.129508075891703,
+          "upper_db": 23.229508075891705,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 23.185691853793948,
+          "independent_minus_reported_baseline_db": 0.006183777902244003
+        },
+        {
+          "quantity": "broadband_a_db",
+          "frequency_hz": null,
+          "reported_reference_db": 42.02,
+          "equation_adjustment_db": 5.276094238837459e-05,
+          "equation_effects": {
+            "2024_ground_equations_11_to_15_db": 5.276094238837459e-05,
+            "2024_Dz_equation_18_db": 0.0,
+            "2024_Kmet_equation_21_db": 0.0
+          },
+          "reference_db": 42.02005276094239,
+          "lower_db": 41.970052760942394,
+          "upper_db": 42.07005276094239,
+          "tolerance_db": 0.05,
+          "independent_2024_db": 42.02781320213671,
+          "independent_minus_reported_baseline_db": 0.007760441194321288
+        }
+      ]
+    }
+  ]
+}

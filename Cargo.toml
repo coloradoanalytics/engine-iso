@@ -1,0 +1,28 @@
+[package]
+name = "engine-iso"
+version = "0.1.0"
+edition = "2024"
+description = "ISO 9613-2:2024 calculation engine, controlled by acalc-engine"
+license = "GPL-3.0-only"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["float_roundtrip"] }
+rayon = "1.11"
+clap = { version = "4", features = ["derive"] }
+spade = "=2.15.1"
+robust = "=1.2.0"
+base64 = "0.22"
+sha2 = "0.10"
+smallvec = "1.16"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[lib]
+name = "iso_rust"
+
+[[bin]]
+name = "engine-iso"
+path = "src/main.rs"

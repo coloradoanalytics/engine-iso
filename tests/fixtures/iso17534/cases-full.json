@@ -1,0 +1,7018 @@
+{
+  "schema_version": 2,
+  "source": {
+    "document": "ISO/TR 17534-3:2015",
+    "url": "https://www.iso.org/standard/66128.html",
+    "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+    "clauses": [
+      "6.2.1-6.2.20; Tables 1-68; Figures 5-34"
+    ]
+  },
+  "reference_method": "ISO 9613-2:1996",
+  "calculation_method": "ISO 9613-2:2024",
+  "common": {
+    "source": {
+      "id": "S",
+      "x_m": 10,
+      "y_m": 10,
+      "ground_z_m": 0,
+      "height_m": 1
+    },
+    "receiver": {
+      "id": "R",
+      "x_m": 200,
+      "y_m": 50,
+      "ground_z_m": 0,
+      "height_m": 4
+    },
+    "frequencies_hz": [
+      63,
+      125,
+      250,
+      500,
+      1000,
+      2000,
+      4000,
+      8000
+    ],
+    "sound_power_db": [
+      93,
+      93,
+      93,
+      93,
+      93,
+      93,
+      93,
+      93
+    ],
+    "temperature_c": 20,
+    "relative_humidity_percent": 70,
+    "pressure_kpa": 101.325,
+    "meteorology": "downwind",
+    "c0_db": 0,
+    "ground_elevation_m": 0
+  },
+  "adapter_notes": [
+    "Original local Cartesian metre coordinates are preserved. EPSG:32631 is only a projected-metre storage carrier, not a real site location.",
+    "The calculation target is ISO 9613-2:2024 / ISO 9613-1:1993. Published 1996 results and original intervals are independent evidence; no 2024 acceptance or conformity pass is asserted.",
+    "Pressure 101.325 kPa is an adapter assumption, absent from the case inputs. Temperature 20 C, humidity 70%, downwind propagation and C0=0 are explicit.",
+    "Pruning is disabled. Reflections are disabled for T01-T18, whose published paths are direct/top/lateral screening only; T19 uses order one and its Table 65 spectral absorption.",
+    "Ground Z and acoustic height M are separate. Terrain is retained as the Table 12 rectangular contour breaklines, with explicitly resolved object ground elevations. Ground-region polygons carry XY only and add no terrain samples.",
+    "The outside-region fallback G=0 is an adapter convention. Source-receiver and T19 reflected ground paths remain within the published ground rectangles.",
+    "Inputs are taken from the report as published. No corrections from outside this edition were adopted. Published cross-reference errors and height interpretations are recorded per case."
+  ],
+  "cases": [
+    {
+      "case_id": "T01",
+      "title": "Reflecting ground",
+      "ground_factor": 0,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.2",
+          "Table 4; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [],
+      "published_spectral_rows": {
+        "4": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.02,
+              0.06,
+              0.21,
+              0.54,
+              0.97,
+              1.75,
+              4.45,
+              14.87
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              -0.68,
+              -0.68,
+              -0.68,
+              -0.68,
+              -0.68,
+              -0.68,
+              -0.68,
+              -0.68
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.68,
+              -3.68,
+              -3.68,
+              -3.68,
+              -3.68,
+              -3.68,
+              -3.68,
+              -3.68
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              39.9,
+              39.86,
+              39.7,
+              39.37,
+              38.95,
+              38.17,
+              35.47,
+              25.04,
+              47.46
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              13.7,
+              23.76,
+              31.1,
+              36.17,
+              38.95,
+              39.37,
+              36.47,
+              23.94,
+              44.29
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 4,
+        "a_weighted_octave_levels_db": [
+          13.7,
+          23.76,
+          31.1,
+          36.17,
+          38.95,
+          39.37,
+          36.47,
+          23.94
+        ],
+        "broadband_a_db": 44.29,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          39.9,
+          39.86,
+          39.7,
+          39.37,
+          38.95,
+          38.17,
+          35.47,
+          25.04
+        ],
+        "broadband_z_db": 47.46
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers"
+      ]
+    },
+    {
+      "case_id": "T02",
+      "title": "Mixed ground",
+      "ground_factor": 0.5,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.3",
+          "Table 5; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [],
+      "published_spectral_rows": {
+        "5": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.02,
+              0.06,
+              0.21,
+              0.54,
+              0.97,
+              1.75,
+              4.45,
+              14.87
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -0.27,
+              3.1,
+              3.58,
+              0.25,
+              -0.75,
+              -0.75,
+              -0.75
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.62,
+              0.25,
+              -0.75,
+              -0.75,
+              -0.75,
+              -0.75,
+              -0.75
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              -0.68,
+              -0.34,
+              -0.34,
+              -0.34,
+              -0.34,
+              -0.34,
+              -0.34,
+              -0.34
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.68,
+              0.01,
+              3.01,
+              2.49,
+              -0.85,
+              -1.84,
+              -1.84,
+              -1.84
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              39.9,
+              36.17,
+              33.02,
+              33.2,
+              36.11,
+              36.33,
+              33.63,
+              23.2,
+              44.61
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              13.7,
+              20.07,
+              24.42,
+              30.0,
+              36.11,
+              37.53,
+              34.63,
+              22.1,
+              41.53
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 5,
+        "a_weighted_octave_levels_db": [
+          13.7,
+          20.07,
+          24.42,
+          30.0,
+          36.11,
+          37.53,
+          34.63,
+          22.1
+        ],
+        "broadband_a_db": 41.53,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          39.9,
+          36.17,
+          33.02,
+          33.2,
+          36.11,
+          36.33,
+          33.63,
+          23.2
+        ],
+        "broadband_z_db": 44.61
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers"
+      ]
+    },
+    {
+      "case_id": "T03",
+      "title": "Porous ground",
+      "ground_factor": 1,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.4",
+          "Table 6; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [],
+      "published_spectral_rows": {
+        "6": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.02,
+              0.06,
+              0.21,
+              0.54,
+              0.97,
+              1.75,
+              4.45,
+              14.87
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.95,
+              7.7,
+              8.66,
+              1.99,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              2.74,
+              2.0,
+              0.01,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              -0.68,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.68,
+              3.69,
+              9.69,
+              8.66,
+              1.99,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              39.9,
+              32.48,
+              26.33,
+              27.03,
+              33.27,
+              34.49,
+              31.79,
+              21.36,
+              42.8
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              13.7,
+              16.38,
+              17.73,
+              23.83,
+              33.27,
+              35.69,
+              32.79,
+              20.26,
+              39.14
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 6,
+        "a_weighted_octave_levels_db": [
+          13.7,
+          16.38,
+          17.73,
+          23.83,
+          33.27,
+          35.69,
+          32.79,
+          20.26
+        ],
+        "broadband_a_db": 39.14,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          39.9,
+          32.48,
+          26.33,
+          27.03,
+          33.27,
+          34.49,
+          31.79,
+          21.36
+        ],
+        "broadband_z_db": 42.8
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers"
+      ]
+    },
+    {
+      "case_id": "T04",
+      "title": "Spatially varying ground",
+      "ground_factor": 0,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.5",
+          "Table 9; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [],
+      "published_spectral_rows": {
+        "9": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.02,
+              0.06,
+              0.21,
+              0.54,
+              0.97,
+              1.75,
+              4.45,
+              14.87
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -1.01,
+              0.34,
+              0.53,
+              -0.8,
+              -1.2,
+              -1.2,
+              -1.2
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              1.34,
+              0.84,
+              -0.49,
+              -0.49,
+              -0.49,
+              -0.49,
+              -0.49
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              -0.68,
+              -0.39,
+              -0.39,
+              -0.39,
+              -0.39,
+              -0.39,
+              -0.39,
+              -0.39
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.68,
+              -0.06,
+              0.79,
+              -0.35,
+              -1.69,
+              -2.09,
+              -2.09,
+              -2.09
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              39.9,
+              36.24,
+              35.23,
+              36.04,
+              36.95,
+              36.57,
+              33.87,
+              23.45,
+              45.25
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              13.7,
+              20.14,
+              26.63,
+              32.84,
+              36.95,
+              37.77,
+              34.87,
+              22.35,
+              42.23
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 9,
+        "a_weighted_octave_levels_db": [
+          13.7,
+          20.14,
+          26.63,
+          32.84,
+          36.95,
+          37.77,
+          34.87,
+          22.35
+        ],
+        "broadband_a_db": 42.23,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          39.9,
+          36.24,
+          35.23,
+          36.04,
+          36.95,
+          36.57,
+          33.87,
+          23.45
+        ],
+        "broadband_z_db": 45.25
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "mixed_ground"
+      ],
+      "ground_regions": [
+        {
+          "id": "A1",
+          "ground_factor": 0.2,
+          "vertices_xyzm_m": [
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A2",
+          "ground_factor": 0.5,
+          "vertices_xyzm_m": [
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A3",
+          "ground_factor": 0.9,
+          "vertices_xyzm_m": [
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "T05",
+      "title": "Spatially varying ground · alternative method",
+      "ground_factor": 0,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.6",
+          "Table 10; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "mean_path_height",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [
+        "The published case selects the 1996 alternative ground method. Acalc selects its 2024 mean_path_height method; changed mean-height/applicability rules remain an edition-review limitation, not a 1996 execution mode."
+      ],
+      "published_spectral_rows": {
+        "10": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.02,
+              0.06,
+              0.21,
+              0.54,
+              0.97,
+              1.75,
+              4.45,
+              14.87
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              4.32,
+              4.32,
+              4.32,
+              4.32,
+              4.32,
+              4.32,
+              4.32,
+              4.32
+            ]
+          },
+          {
+            "quantity": "DΩ",
+            "unit": "dB",
+            "values": [
+              3.01,
+              3.01,
+              3.01,
+              3.01,
+              3.01,
+              3.01,
+              3.01,
+              3.01
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              34.9,
+              34.86,
+              34.71,
+              34.38,
+              33.95,
+              33.17,
+              30.48,
+              20.05,
+              42.46
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              8.7,
+              18.76,
+              26.11,
+              31.18,
+              33.95,
+              34.37,
+              31.48,
+              18.95,
+              39.3
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 10,
+        "a_weighted_octave_levels_db": [
+          8.7,
+          18.76,
+          26.11,
+          31.18,
+          33.95,
+          34.37,
+          31.48,
+          18.95
+        ],
+        "broadband_a_db": 39.3,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          34.9,
+          34.86,
+          34.71,
+          34.38,
+          33.95,
+          33.17,
+          30.48,
+          20.05
+        ],
+        "broadband_z_db": 42.46
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "mixed_ground",
+        "mean_path_height"
+      ],
+      "ground_regions": [
+        {
+          "id": "A1",
+          "ground_factor": 0.2,
+          "vertices_xyzm_m": [
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A2",
+          "ground_factor": 0.5,
+          "vertices_xyzm_m": [
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A3",
+          "ground_factor": 0.9,
+          "vertices_xyzm_m": [
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "T06",
+      "title": "Terrain and spatially varying ground",
+      "ground_factor": 0,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.7",
+          "Table 15; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [
+        "Terrain comes from Table 12, not Table 13 (the latter lists ray points). Closed rectangular contours are retained as breaklines. Receiver R in T06/T07/T10/T19 has absolute elevation 14 m: ground Z=10, height M=4."
+      ],
+      "published_spectral_rows": {
+        "15": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.02,
+              0.06,
+              0.21,
+              0.54,
+              0.97,
+              1.75,
+              4.46,
+              14.91
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.71,
+              6.78,
+              7.64,
+              1.64,
+              -0.15,
+              -0.15,
+              -0.15
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.08,
+              -0.2,
+              -0.94,
+              -0.94,
+              -0.94,
+              -0.94,
+              -0.94
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              -0.68,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.68,
+              0.51,
+              6.31,
+              6.43,
+              0.43,
+              -1.37,
+              -1.37,
+              -1.37
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              39.88,
+              35.65,
+              29.7,
+              29.24,
+              34.82,
+              35.83,
+              33.13,
+              22.68,
+              43.85
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              13.68,
+              19.55,
+              21.1,
+              26.04,
+              34.82,
+              37.03,
+              34.13,
+              21.58,
+              40.59
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 15,
+        "a_weighted_octave_levels_db": [
+          13.68,
+          19.55,
+          21.1,
+          26.04,
+          34.82,
+          37.03,
+          34.13,
+          21.58
+        ],
+        "broadband_a_db": 40.59,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          39.88,
+          35.65,
+          29.7,
+          29.24,
+          34.82,
+          35.83,
+          33.13,
+          22.68
+        ],
+        "broadband_z_db": 43.85
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "mixed_ground",
+        "terrain_samples/acalc_schema11 breaklines"
+      ],
+      "ground_regions": [
+        {
+          "id": "A1",
+          "ground_factor": 0.9,
+          "vertices_xyzm_m": [
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A2",
+          "ground_factor": 0.5,
+          "vertices_xyzm_m": [
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A3",
+          "ground_factor": 0.2,
+          "vertices_xyzm_m": [
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "terrain_lines": [
+        {
+          "id": "C1 · z=0",
+          "vertices_xyzm_m": [
+            [
+              0,
+              -10,
+              0,
+              0
+            ],
+            [
+              120,
+              -10,
+              0,
+              0
+            ],
+            [
+              120,
+              60,
+              0,
+              0
+            ],
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C2 · z=0",
+          "vertices_xyzm_m": [
+            [
+              120,
+              -10,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              120,
+              60,
+              0,
+              0
+            ],
+            [
+              120,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C3 · z=10",
+          "vertices_xyzm_m": [
+            [
+              185,
+              -5,
+              10,
+              0
+            ],
+            [
+              205,
+              -5,
+              10,
+              0
+            ],
+            [
+              205,
+              55,
+              10,
+              0
+            ],
+            [
+              185,
+              55,
+              10,
+              0
+            ],
+            [
+              185,
+              -5,
+              10,
+              0
+            ]
+          ]
+        }
+      ],
+      "receiver_position": {
+        "id": "R",
+        "x_m": 200,
+        "y_m": 50,
+        "ground_z_m": 10,
+        "height_m": 4
+      }
+    },
+    {
+      "case_id": "T07",
+      "title": "Terrain · alternative method",
+      "ground_factor": 0,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.8",
+          "Table 18; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "mean_path_height",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [
+        "Terrain comes from Table 12, not Table 13 (the latter lists ray points). Closed rectangular contours are retained as breaklines. Receiver R in T06/T07/T10/T19 has absolute elevation 14 m: ground Z=10, height M=4.",
+        "The published case selects the 1996 alternative ground method. Acalc selects its 2024 mean_path_height method; changed mean-height/applicability rules remain an edition-review limitation, not a 1996 execution mode."
+      ],
+      "published_spectral_rows": {
+        "18": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.02,
+              0.06,
+              0.21,
+              0.54,
+              0.97,
+              1.75,
+              4.46,
+              14.91
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              3.85,
+              3.85,
+              3.85,
+              3.85,
+              3.85,
+              3.85,
+              3.85,
+              3.85
+            ]
+          },
+          {
+            "quantity": "DΩ",
+            "unit": "dB",
+            "values": [
+              3.01,
+              3.01,
+              3.01,
+              3.01,
+              3.01,
+              3.01,
+              3.01,
+              3.01
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              35.36,
+              35.32,
+              35.16,
+              34.83,
+              34.4,
+              33.62,
+              30.92,
+              20.47,
+              42.91
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              9.16,
+              19.22,
+              26.56,
+              31.63,
+              34.4,
+              34.82,
+              31.92,
+              19.37,
+              39.75
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 18,
+        "a_weighted_octave_levels_db": [
+          9.16,
+          19.22,
+          26.56,
+          31.63,
+          34.4,
+          34.82,
+          31.92,
+          19.37
+        ],
+        "broadband_a_db": 39.75,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          35.36,
+          35.32,
+          35.16,
+          34.83,
+          34.4,
+          33.62,
+          30.92,
+          20.47
+        ],
+        "broadband_z_db": 42.91
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "mixed_ground",
+        "terrain_samples/acalc_schema11 breaklines",
+        "mean_path_height"
+      ],
+      "ground_regions": [
+        {
+          "id": "A1",
+          "ground_factor": 0.9,
+          "vertices_xyzm_m": [
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A2",
+          "ground_factor": 0.5,
+          "vertices_xyzm_m": [
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A3",
+          "ground_factor": 0.2,
+          "vertices_xyzm_m": [
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "terrain_lines": [
+        {
+          "id": "C1 · z=0",
+          "vertices_xyzm_m": [
+            [
+              0,
+              -10,
+              0,
+              0
+            ],
+            [
+              120,
+              -10,
+              0,
+              0
+            ],
+            [
+              120,
+              60,
+              0,
+              0
+            ],
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C2 · z=0",
+          "vertices_xyzm_m": [
+            [
+              120,
+              -10,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              120,
+              60,
+              0,
+              0
+            ],
+            [
+              120,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C3 · z=10",
+          "vertices_xyzm_m": [
+            [
+              185,
+              -5,
+              10,
+              0
+            ],
+            [
+              205,
+              -5,
+              10,
+              0
+            ],
+            [
+              205,
+              55,
+              10,
+              0
+            ],
+            [
+              185,
+              55,
+              10,
+              0
+            ],
+            [
+              185,
+              -5,
+              10,
+              0
+            ]
+          ]
+        }
+      ],
+      "receiver_position": {
+        "id": "R",
+        "x_m": 200,
+        "y_m": 50,
+        "ground_z_m": 10,
+        "height_m": 4
+      }
+    },
+    {
+      "case_id": "T08",
+      "title": "Long barrier and spatially varying ground",
+      "ground_factor": 0,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.9",
+          "Table 21; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [],
+      "published_spectral_rows": {
+        "21": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.02,
+              0.06,
+              0.21,
+              0.54,
+              0.97,
+              1.75,
+              4.45,
+              14.87
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.71,
+              6.78,
+              7.64,
+              1.64,
+              -0.15,
+              -0.15,
+              -0.15
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.08,
+              -0.2,
+              -0.94,
+              -0.94,
+              -0.94,
+              -0.94,
+              -0.94
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              -0.68,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.68,
+              0.51,
+              6.31,
+              6.43,
+              0.43,
+              -1.37,
+              -1.37,
+              -1.37
+            ]
+          },
+          {
+            "quantity": "Dz (top edge)",
+            "unit": "dB",
+            "values": [
+              5.06,
+              5.33,
+              5.83,
+              6.68,
+              8.01,
+              9.84,
+              12.12,
+              14.71
+            ]
+          },
+          {
+            "quantity": "Dz (edge1)",
+            "unit": "dB",
+            "values": [
+              29.94,
+              32.94,
+              35.95,
+              38.96,
+              41.97,
+              44.98,
+              47.99,
+              51.0
+            ]
+          },
+          {
+            "quantity": "Dz (edge2)",
+            "unit": "dB",
+            "values": [
+              31.26,
+              34.27,
+              37.27,
+              40.28,
+              43.29,
+              46.3,
+              49.31,
+              52.32
+            ]
+          },
+          {
+            "quantity": "Abar (top edge)",
+            "unit": "dB",
+            "values": [
+              5.06,
+              4.82,
+              0.0,
+              0.26,
+              7.58,
+              9.84,
+              12.12,
+              14.71
+            ]
+          },
+          {
+            "quantity": "Abar (edge1)",
+            "unit": "dB",
+            "values": [
+              29.94,
+              32.94,
+              35.95,
+              38.96,
+              41.97,
+              44.98,
+              47.99,
+              51.0
+            ]
+          },
+          {
+            "quantity": "Abar (edge2)",
+            "unit": "dB",
+            "values": [
+              31.26,
+              34.27,
+              37.27,
+              40.28,
+              43.29,
+              46.3,
+              49.31,
+              52.32
+            ]
+          },
+          {
+            "quantity": "Abar",
+            "unit": "dB",
+            "values": [
+              5.04,
+              4.81,
+              0.0,
+              0.26,
+              7.58,
+              9.84,
+              12.12,
+              14.71
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              34.86,
+              30.85,
+              29.72,
+              29.01,
+              27.26,
+              26.01,
+              21.04,
+              8.02,
+              38.5
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              8.66,
+              14.75,
+              21.12,
+              25.81,
+              27.26,
+              27.21,
+              22.04,
+              6.92,
+              32.48
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 21,
+        "a_weighted_octave_levels_db": [
+          8.66,
+          14.75,
+          21.12,
+          25.81,
+          27.26,
+          27.21,
+          22.04,
+          6.92
+        ],
+        "broadband_a_db": 32.48,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          34.86,
+          30.85,
+          29.72,
+          29.01,
+          27.26,
+          26.01,
+          21.04,
+          8.02
+        ],
+        "broadband_z_db": 38.5
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "mixed_ground",
+        "polyline_barriers"
+      ],
+      "ground_regions": [
+        {
+          "id": "A1",
+          "ground_factor": 0.9,
+          "vertices_xyzm_m": [
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A2",
+          "ground_factor": 0.5,
+          "vertices_xyzm_m": [
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A3",
+          "ground_factor": 0.2,
+          "vertices_xyzm_m": [
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "barriers": [
+        {
+          "id": "B",
+          "vertices_xyzm_m": [
+            [
+              100,
+              240,
+              0,
+              6
+            ],
+            [
+              265,
+              -180,
+              0,
+              6
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "T09",
+      "title": "Short barrier and spatially varying ground",
+      "ground_factor": 0,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.10",
+          "Table 23; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [],
+      "published_spectral_rows": {
+        "23": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.02,
+              0.06,
+              0.21,
+              0.54,
+              0.97,
+              1.75,
+              4.45,
+              14.87
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.71,
+              6.78,
+              7.64,
+              1.64,
+              -0.15,
+              -0.15,
+              -0.15
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.08,
+              -0.2,
+              -0.94,
+              -0.94,
+              -0.94,
+              -0.94,
+              -0.94
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              -0.68,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.68,
+              0.51,
+              6.31,
+              6.43,
+              0.43,
+              -1.37,
+              -1.37,
+              -1.37
+            ]
+          },
+          {
+            "quantity": "Dz (top edge)",
+            "unit": "dB",
+            "values": [
+              5.07,
+              5.34,
+              5.84,
+              6.7,
+              8.04,
+              9.88,
+              12.16,
+              14.76
+            ]
+          },
+          {
+            "quantity": "Dz (edge1)",
+            "unit": "dB",
+            "values": [
+              7.21,
+              8.76,
+              10.8,
+              13.24,
+              15.93,
+              18.77,
+              21.69,
+              24.66
+            ]
+          },
+          {
+            "quantity": "Dz (edge2)",
+            "unit": "dB",
+            "values": [
+              20.11,
+              23.05,
+              26.03,
+              29.03,
+              32.03,
+              35.03,
+              38.04,
+              41.05
+            ]
+          },
+          {
+            "quantity": "Abar (top edge)",
+            "unit": "dB",
+            "values": [
+              5.07,
+              4.83,
+              0.0,
+              0.28,
+              7.61,
+              9.88,
+              12.16,
+              14.76
+            ]
+          },
+          {
+            "quantity": "Abar (edge1)",
+            "unit": "dB",
+            "values": [
+              7.21,
+              8.76,
+              10.8,
+              13.24,
+              15.93,
+              18.77,
+              21.69,
+              24.66
+            ]
+          },
+          {
+            "quantity": "Abar (edge2)",
+            "unit": "dB",
+            "values": [
+              20.11,
+              23.05,
+              26.03,
+              29.03,
+              32.03,
+              35.03,
+              38.04,
+              41.05
+            ]
+          },
+          {
+            "quantity": "Abar",
+            "unit": "dB",
+            "values": [
+              2.91,
+              3.31,
+              0.0,
+              0.06,
+              7.0,
+              9.34,
+              11.69,
+              14.32
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76,
+              56.76
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              36.99,
+              32.36,
+              29.72,
+              29.21,
+              27.84,
+              26.51,
+              21.46,
+              8.4,
+              39.86
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              10.79,
+              16.26,
+              21.12,
+              26.01,
+              27.84,
+              27.71,
+              22.46,
+              7.3,
+              32.93
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 23,
+        "a_weighted_octave_levels_db": [
+          10.79,
+          16.26,
+          21.12,
+          26.01,
+          27.84,
+          27.71,
+          22.46,
+          7.3
+        ],
+        "broadband_a_db": 32.93,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          36.99,
+          32.36,
+          29.72,
+          29.21,
+          27.84,
+          26.51,
+          21.46,
+          8.4
+        ],
+        "broadband_z_db": 39.86
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "mixed_ground",
+        "polyline_barriers"
+      ],
+      "ground_regions": [
+        {
+          "id": "A1",
+          "ground_factor": 0.9,
+          "vertices_xyzm_m": [
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A2",
+          "ground_factor": 0.5,
+          "vertices_xyzm_m": [
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A3",
+          "ground_factor": 0.2,
+          "vertices_xyzm_m": [
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "barriers": [
+        {
+          "id": "B",
+          "vertices_xyzm_m": [
+            [
+              175,
+              50,
+              0,
+              6
+            ],
+            [
+              190,
+              10,
+              0,
+              6
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "T10",
+      "title": "Terrain and short barrier",
+      "ground_factor": 0,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.11",
+          "Table 27; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [
+        "Terrain comes from Table 12, not Table 13 (the latter lists ray points). Closed rectangular contours are retained as breaklines. Receiver R in T06/T07/T10/T19 has absolute elevation 14 m: ground Z=10, height M=4.",
+        "T10 references ground areas as Table 12 and contours as Table 13; use the actual ground areas in Table 11 and contours in Table 12, consistent with Figures 15-16. Table 25 barrier Z values are absolute top elevations 17/14 m; ground Z and M are stored separately. Table 27 unweighted L values are coarsely printed; retain them literally and use the published A-weighted rows as primary references."
+      ],
+      "published_spectral_rows": {
+        "27": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.02,
+              0.06,
+              0.21,
+              0.54,
+              0.97,
+              1.75,
+              4.46,
+              14.91
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.71,
+              6.78,
+              7.64,
+              1.64,
+              -0.15,
+              -0.15,
+              -0.15
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.08,
+              -0.2,
+              -0.94,
+              -0.94,
+              -0.94,
+              -0.94,
+              -0.94
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              -0.68,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.68,
+              0.51,
+              6.31,
+              6.43,
+              0.43,
+              -1.37,
+              -1.37,
+              -1.37
+            ]
+          },
+          {
+            "quantity": "Dz (top edge)",
+            "unit": "dB",
+            "values": [
+              5.99,
+              6.93,
+              8.37,
+              10.31,
+              12.67,
+              15.31,
+              18.13,
+              20.0
+            ]
+          },
+          {
+            "quantity": "Dz (edge1)",
+            "unit": "dB",
+            "values": [
+              7.2,
+              8.76,
+              10.8,
+              13.23,
+              15.92,
+              18.76,
+              21.68,
+              24.65
+            ]
+          },
+          {
+            "quantity": "Dz (edge2)",
+            "unit": "dB",
+            "values": [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ]
+          },
+          {
+            "quantity": "Abar (top edge)",
+            "unit": "dB",
+            "values": [
+              5.99,
+              6.42,
+              2.07,
+              3.89,
+              12.24,
+              15.31,
+              18.13,
+              20.0
+            ]
+          },
+          {
+            "quantity": "Abar (edge1)",
+            "unit": "dB",
+            "values": [
+              7.2,
+              8.76,
+              10.8,
+              13.23,
+              15.92,
+              18.76,
+              21.68,
+              24.65
+            ]
+          },
+          {
+            "quantity": "Abar (edge2)",
+            "unit": "dB",
+            "values": [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ]
+          },
+          {
+            "quantity": "Abar",
+            "unit": "dB",
+            "values": [
+              3.54,
+              4.42,
+              1.52,
+              3.41,
+              10.69,
+              13.69,
+              16.54,
+              18.72
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              36.3,
+              31.2,
+              28.2,
+              25.8,
+              24.1,
+              22.1,
+              16.6,
+              4.0,
+              38.5
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              10.14,
+              15.12,
+              19.58,
+              22.64,
+              24.12,
+              23.34,
+              17.59,
+              2.86,
+              29.3
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 27,
+        "a_weighted_octave_levels_db": [
+          10.14,
+          15.12,
+          19.58,
+          22.64,
+          24.12,
+          23.34,
+          17.59,
+          2.86
+        ],
+        "broadband_a_db": 29.3,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          36.3,
+          31.2,
+          28.2,
+          25.8,
+          24.1,
+          22.1,
+          16.6,
+          4.0
+        ],
+        "broadband_z_db": 38.5
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "mixed_ground",
+        "terrain_samples/acalc_schema11 breaklines",
+        "polyline_barriers"
+      ],
+      "ground_regions": [
+        {
+          "id": "A1",
+          "ground_factor": 0.9,
+          "vertices_xyzm_m": [
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A2",
+          "ground_factor": 0.5,
+          "vertices_xyzm_m": [
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A3",
+          "ground_factor": 0.2,
+          "vertices_xyzm_m": [
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "terrain_lines": [
+        {
+          "id": "C1 · z=0",
+          "vertices_xyzm_m": [
+            [
+              0,
+              -10,
+              0,
+              0
+            ],
+            [
+              120,
+              -10,
+              0,
+              0
+            ],
+            [
+              120,
+              60,
+              0,
+              0
+            ],
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C2 · z=0",
+          "vertices_xyzm_m": [
+            [
+              120,
+              -10,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              120,
+              60,
+              0,
+              0
+            ],
+            [
+              120,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C3 · z=10",
+          "vertices_xyzm_m": [
+            [
+              185,
+              -5,
+              10,
+              0
+            ],
+            [
+              205,
+              -5,
+              10,
+              0
+            ],
+            [
+              205,
+              55,
+              10,
+              0
+            ],
+            [
+              185,
+              55,
+              10,
+              0
+            ],
+            [
+              185,
+              -5,
+              10,
+              0
+            ]
+          ]
+        }
+      ],
+      "receiver_position": {
+        "id": "R",
+        "x_m": 200,
+        "y_m": 50,
+        "ground_z_m": 10,
+        "height_m": 4
+      },
+      "barriers": [
+        {
+          "id": "B",
+          "vertices_xyzm_m": [
+            [
+              175,
+              50,
+              8.461538461538462,
+              8.538461538461538
+            ],
+            [
+              190,
+              10,
+              10,
+              4
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "T11",
+      "title": "Cubic building · low receiver",
+      "ground_factor": 0.5,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.12",
+          "Table 31; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [],
+      "published_spectral_rows": {
+        "31": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.0,
+              0.01,
+              0.02,
+              0.06,
+              0.1,
+              0.18,
+              0.46,
+              1.55
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -0.67,
+              0.55,
+              0.71,
+              -0.41,
+              -0.75,
+              -0.75,
+              -0.75
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -0.31,
+              -0.41,
+              -0.75,
+              -0.75,
+              -0.75,
+              -0.75,
+              -0.75
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              15.36,
+              18.94,
+              23.32,
+              25.0,
+              25.0,
+              25.0,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.0,
+              -0.99,
+              0.13,
+              -0.04,
+              -1.16,
+              -1.5,
+              -1.5,
+              -1.5
+            ]
+          },
+          {
+            "quantity": "Dz – top",
+            "unit": "dB",
+            "values": [
+              15.36,
+              18.94,
+              23.32,
+              25.0,
+              25.0,
+              25.0,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Abar – top",
+            "unit": "dB",
+            "values": [
+              15.36,
+              18.94,
+              23.19,
+              25.0,
+              25.0,
+              25.0,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Dz – left",
+            "unit": "dB",
+            "values": [
+              12.89,
+              16.3,
+              20.6,
+              24.83,
+              28.39,
+              31.56,
+              34.61,
+              37.63
+            ]
+          },
+          {
+            "quantity": "Abar – left",
+            "unit": "dB",
+            "values": [
+              12.89,
+              16.3,
+              20.6,
+              24.83,
+              28.39,
+              31.56,
+              34.61,
+              37.63
+            ]
+          },
+          {
+            "quantity": "Dz – right",
+            "unit": "dB",
+            "values": [
+              12.89,
+              16.3,
+              20.6,
+              24.83,
+              28.39,
+              31.56,
+              34.61,
+              37.63
+            ]
+          },
+          {
+            "quantity": "Abar – right",
+            "unit": "dB",
+            "values": [
+              12.89,
+              16.3,
+              20.6,
+              24.83,
+              28.39,
+              31.56,
+              34.61,
+              37.63
+            ]
+          },
+          {
+            "quantity": "Abar",
+            "unit": "dB",
+            "values": [
+              8.79,
+              12.24,
+              16.53,
+              20.12,
+              22.18,
+              23.41,
+              24.14,
+              24.55
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              37.12,
+              37.12,
+              37.12,
+              37.12,
+              37.12,
+              37.12,
+              37.12,
+              37.12
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              50.09,
+              44.62,
+              39.2,
+              35.75,
+              34.77,
+              33.79,
+              32.78,
+              31.28,
+              51.81
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              23.89,
+              28.52,
+              30.6,
+              32.55,
+              34.77,
+              34.99,
+              33.78,
+              30.18,
+              41.3
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 31,
+        "a_weighted_octave_levels_db": [
+          23.89,
+          28.52,
+          30.6,
+          32.55,
+          34.77,
+          34.99,
+          33.78,
+          30.18
+        ],
+        "broadband_a_db": 41.3,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          50.09,
+          44.62,
+          39.2,
+          35.75,
+          34.77,
+          33.79,
+          32.78,
+          31.28
+        ],
+        "broadband_z_db": 51.81
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "building_solids/building_roof_mesh"
+      ],
+      "source_position": {
+        "id": "S",
+        "x_m": 50,
+        "y_m": 10,
+        "ground_z_m": 0,
+        "height_m": 1
+      },
+      "receiver_position": {
+        "id": "R",
+        "x_m": 70,
+        "y_m": 10,
+        "ground_z_m": 0,
+        "height_m": 4
+      },
+      "buildings": [
+        {
+          "id": "H",
+          "vertices_xy_m": [
+            [
+              55,
+              5
+            ],
+            [
+              65,
+              5
+            ],
+            [
+              65,
+              15
+            ],
+            [
+              55,
+              15
+            ]
+          ],
+          "ground_z_m": 0,
+          "height_m": 10
+        }
+      ]
+    },
+    {
+      "case_id": "T12",
+      "title": "Cubic building · high receiver",
+      "ground_factor": 0.5,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.13",
+          "Table 34; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [],
+      "published_spectral_rows": {
+        "34": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.0,
+              0.01,
+              0.03,
+              0.07,
+              0.12,
+              0.22,
+              0.56,
+              1.87
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -0.67,
+              0.55,
+              0.71,
+              -0.41,
+              -0.75,
+              -0.75,
+              -0.75
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -0.75,
+              -0.75,
+              -0.75,
+              -0.75,
+              -0.75,
+              -0.75,
+              -0.75
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              9.6,
+              11.83,
+              14.39,
+              17.16,
+              20.0,
+              20.0,
+              20.0,
+              20.0
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.0,
+              -1.42,
+              -0.2,
+              -0.04,
+              -1.16,
+              -1.5,
+              -1.5,
+              -1.5
+            ]
+          },
+          {
+            "quantity": "Dz – top",
+            "unit": "dB",
+            "values": [
+              9.6,
+              11.83,
+              14.39,
+              17.16,
+              20.0,
+              20.0,
+              20.0,
+              20.0
+            ]
+          },
+          {
+            "quantity": "Abar – top",
+            "unit": "dB",
+            "values": [
+              9.6,
+              11.83,
+              14.39,
+              17.16,
+              20.0,
+              20.0,
+              20.0,
+              20.0
+            ]
+          },
+          {
+            "quantity": "Dz - left",
+            "unit": "dB",
+            "values": [
+              11.87,
+              15.11,
+              19.32,
+              23.58,
+              27.17,
+              30.36,
+              33.42,
+              36.44
+            ]
+          },
+          {
+            "quantity": "Dz - right",
+            "unit": "dB",
+            "values": [
+              11.87,
+              15.11,
+              19.32,
+              23.58,
+              27.17,
+              30.36,
+              33.42,
+              36.44
+            ]
+          },
+          {
+            "quantity": "Abar – right",
+            "unit": "dB",
+            "values": [
+              11.87,
+              15.11,
+              19.32,
+              23.58,
+              27.17,
+              30.36,
+              33.42,
+              36.44
+            ]
+          },
+          {
+            "quantity": "Abar",
+            "unit": "dB",
+            "values": [
+              6.2,
+              8.95,
+              12.23,
+              15.53,
+              18.59,
+              19.27,
+              19.62,
+              19.81
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              38.75,
+              38.75,
+              38.75,
+              38.75,
+              38.75,
+              38.75,
+              38.75,
+              38.75
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              51.04,
+              46.71,
+              42.19,
+              38.7,
+              36.7,
+              36.26,
+              35.57,
+              34.07,
+              53.28
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a in",
+            "unit": "dB",
+            "values": [
+              24.84,
+              30.61,
+              33.59,
+              35.5,
+              36.7,
+              37.46,
+              36.57,
+              32.97,
+              43.81
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 34,
+        "a_weighted_octave_levels_db": [
+          24.84,
+          30.61,
+          33.59,
+          35.5,
+          36.7,
+          37.46,
+          36.57,
+          32.97
+        ],
+        "broadband_a_db": 43.81,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          51.04,
+          46.71,
+          42.19,
+          38.7,
+          36.7,
+          36.26,
+          35.57,
+          34.07
+        ],
+        "broadband_z_db": 53.28
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "building_solids/building_roof_mesh"
+      ],
+      "source_position": {
+        "id": "S",
+        "x_m": 50,
+        "y_m": 10,
+        "ground_z_m": 0,
+        "height_m": 1
+      },
+      "receiver_position": {
+        "id": "R",
+        "x_m": 70,
+        "y_m": 10,
+        "ground_z_m": 0,
+        "height_m": 15
+      },
+      "buildings": [
+        {
+          "id": "H",
+          "vertices_xy_m": [
+            [
+              55,
+              5
+            ],
+            [
+              65,
+              5
+            ],
+            [
+              65,
+              15
+            ],
+            [
+              55,
+              15
+            ]
+          ],
+          "ground_z_m": 0,
+          "height_m": 10
+        }
+      ]
+    },
+    {
+      "case_id": "T13",
+      "title": "Polygonal building · low receiver",
+      "ground_factor": 0.6,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.14",
+          "Table 39; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [],
+      "published_spectral_rows": {
+        "39": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.0,
+              0.01,
+              0.04,
+              0.09,
+              0.16,
+              0.29,
+              0.73,
+              2.45
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -0.47,
+              1.61,
+              1.89,
+              -0.03,
+              -0.6,
+              -0.6,
+              -0.6
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.15,
+              -0.51,
+              -0.6,
+              -0.6,
+              -0.6,
+              -0.6,
+              -0.6
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              11.73,
+              14.65,
+              18.48,
+              22.92,
+              25.0,
+              25.0,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.0,
+              -0.32,
+              1.11,
+              1.29,
+              -0.63,
+              -1.2,
+              -1.2,
+              -1.2
+            ]
+          },
+          {
+            "quantity": "Dz – top",
+            "unit": "dB",
+            "values": [
+              11.73,
+              14.65,
+              18.48,
+              22.92,
+              25.0,
+              25.0,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Abar – top",
+            "unit": "dB",
+            "values": [
+              11.73,
+              14.65,
+              17.37,
+              21.64,
+              25.0,
+              25.0,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Dz – left",
+            "unit": "dB",
+            "values": [
+              8.32,
+              10.31,
+              12.93,
+              16.42,
+              20.76,
+              24.92,
+              28.41,
+              31.56
+            ]
+          },
+          {
+            "quantity": "Abar – left",
+            "unit": "dB",
+            "values": [
+              8.32,
+              10.31,
+              12.93,
+              16.42,
+              20.76,
+              24.92,
+              28.41,
+              31.56
+            ]
+          },
+          {
+            "quantity": "Dz – right",
+            "unit": "dB",
+            "values": [
+              6.78,
+              8.19,
+              10.3,
+              13.42,
+              17.56,
+              21.64,
+              25.1,
+              28.24
+            ]
+          },
+          {
+            "quantity": "Abar – right",
+            "unit": "dB",
+            "values": [
+              6.78,
+              8.19,
+              10.3,
+              13.42,
+              17.56,
+              21.64,
+              25.1,
+              28.24
+            ]
+          },
+          {
+            "quantity": "Abar",
+            "unit": "dB",
+            "values": [
+              3.72,
+              5.54,
+              7.89,
+              11.24,
+              15.36,
+              18.78,
+              21.14,
+              22.71
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              41.11,
+              41.11,
+              41.11,
+              41.11,
+              41.11,
+              41.11,
+              41.11,
+              41.11
+            ]
+          },
+          {
+            "quantity": "L in",
+            "unit": "dB",
+            "values": [
+              51.17,
+              46.66,
+              42.86,
+              39.28,
+              37.0,
+              34.02,
+              31.22,
+              27.93,
+              53.31
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              24.97,
+              30.56,
+              34.26,
+              36.08,
+              37.0,
+              35.22,
+              32.22,
+              26.83,
+              42.71
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 39,
+        "a_weighted_octave_levels_db": [
+          24.97,
+          30.56,
+          34.26,
+          36.08,
+          37.0,
+          35.22,
+          32.22,
+          26.83
+        ],
+        "broadband_a_db": 42.71,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          51.17,
+          46.66,
+          42.86,
+          39.28,
+          37.0,
+          34.02,
+          31.22,
+          27.93
+        ],
+        "broadband_z_db": 53.31
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "building_solids/building_roof_mesh"
+      ],
+      "source_position": {
+        "id": "S",
+        "x_m": 0,
+        "y_m": 10,
+        "ground_z_m": 0,
+        "height_m": 1
+      },
+      "receiver_position": {
+        "id": "R",
+        "x_m": 30,
+        "y_m": 20,
+        "ground_z_m": 0,
+        "height_m": 6
+      },
+      "buildings": [
+        {
+          "id": "H",
+          "vertices_xy_m": [
+            [
+              10.96,
+              15.5
+            ],
+            [
+              12,
+              13
+            ],
+            [
+              14.5,
+              11.96
+            ],
+            [
+              17,
+              13
+            ],
+            [
+              18.04,
+              15.5
+            ],
+            [
+              17,
+              18
+            ],
+            [
+              14.5,
+              19.04
+            ],
+            [
+              12,
+              18
+            ]
+          ],
+          "ground_z_m": 0,
+          "height_m": 10
+        }
+      ]
+    },
+    {
+      "case_id": "T14",
+      "title": "Terrain and polygonal building",
+      "ground_factor": 0,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.15",
+          "Table 45; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [
+        "Terrain comes from Table 12, not Table 13 (the latter lists ray points). Closed rectangular contours are retained as breaklines. Receiver R in T06/T07/T10/T19 has absolute elevation 14 m: ground Z=10, height M=4.",
+        "T14 Table 40 z=28.5 is interpreted as absolute receiver elevation (Z=10,M=18.5), consistent with Table 43 d3=196.10 m. Table 42 height 30 is interpreted as absolute horizontal roof Z=30, consistent with Figure 24 and Table 44 top path length 196.80 m, not 30 m added to sloping ground. Object ground elevations are sampled analytically from the central Table 12 ramp z=10*(x-120)/65 and plateau z=10. These reconciled height interpretations are explicit, not an ISO corrigendum."
+      ],
+      "published_spectral_rows": {
+        "45": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.02,
+              0.06,
+              0.22,
+              0.55,
+              0.98,
+              1.76,
+              4.49,
+              15.02
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -0.27,
+              3.1,
+              3.58,
+              0.25,
+              -0.75,
+              -0.75,
+              -0.75
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -0.55,
+              -0.55,
+              -0.55,
+              -0.55,
+              -0.55,
+              -0.55,
+              -0.55
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              4.85,
+              7.38,
+              10.85,
+              14.19,
+              17.27,
+              20.27,
+              22.49,
+              22.49
+            ]
+          },
+          {
+            "quantity": "Agr in",
+            "unit": "dB",
+            "values": [
+              -3.0,
+              -0.83,
+              2.55,
+              3.03,
+              -0.31,
+              -1.3,
+              -1.3,
+              -1.3
+            ]
+          },
+          {
+            "quantity": "Dz – top",
+            "unit": "dB",
+            "values": [
+              7.36,
+              9.89,
+              13.36,
+              16.7,
+              19.78,
+              22.78,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Abar – top",
+            "unit": "dB",
+            "values": [
+              7.36,
+              9.89,
+              10.81,
+              13.68,
+              19.78,
+              22.78,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Dz – left",
+            "unit": "dB",
+            "values": [
+              8.02,
+              9.86,
+              12.14,
+              14.73,
+              17.52,
+              20.41,
+              23.36,
+              26.34
+            ]
+          },
+          {
+            "quantity": "Abar – left",
+            "unit": "dB",
+            "values": [
+              8.02,
+              9.86,
+              12.14,
+              14.73,
+              17.52,
+              20.41,
+              23.36,
+              26.34
+            ]
+          },
+          {
+            "quantity": "Dz – right",
+            "unit": "dB",
+            "values": [
+              14.1,
+              17.41,
+              21.6,
+              26.03,
+              29.79,
+              33.05,
+              36.12,
+              39.15
+            ]
+          },
+          {
+            "quantity": "Abar – right",
+            "unit": "dB",
+            "values": [
+              14.1,
+              17.41,
+              21.6,
+              26.03,
+              29.79,
+              33.05,
+              36.12,
+              39.15
+            ]
+          },
+          {
+            "quantity": "Abar",
+            "unit": "dB",
+            "values": [
+              4.2,
+              6.5,
+              8.21,
+              11.02,
+              15.34,
+              18.28,
+              20.96,
+              22.51
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              56.85,
+              56.85,
+              56.85,
+              56.85,
+              56.85,
+              56.85,
+              56.85,
+              56.85
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              34.93,
+              30.42,
+              25.18,
+              21.55,
+              20.14,
+              17.41,
+              12.0,
+              -0.08,
+              36.87
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              8.73,
+              14.32,
+              16.58,
+              18.35,
+              20.14,
+              18.61,
+              13.0,
+              -1.18,
+              25.38
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 45,
+        "a_weighted_octave_levels_db": [
+          8.73,
+          14.32,
+          16.58,
+          18.35,
+          20.14,
+          18.61,
+          13.0,
+          -1.18
+        ],
+        "broadband_a_db": 25.38,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          34.93,
+          30.42,
+          25.18,
+          21.55,
+          20.14,
+          17.41,
+          12.0,
+          -0.08
+        ],
+        "broadband_z_db": 36.87
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "mixed_ground",
+        "terrain_samples/acalc_schema11 breaklines",
+        "building_solids/building_roof_mesh"
+      ],
+      "terrain_lines": [
+        {
+          "id": "C1 · z=0",
+          "vertices_xyzm_m": [
+            [
+              0,
+              -10,
+              0,
+              0
+            ],
+            [
+              120,
+              -10,
+              0,
+              0
+            ],
+            [
+              120,
+              60,
+              0,
+              0
+            ],
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C2 · z=0",
+          "vertices_xyzm_m": [
+            [
+              120,
+              -10,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              120,
+              60,
+              0,
+              0
+            ],
+            [
+              120,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C3 · z=10",
+          "vertices_xyzm_m": [
+            [
+              185,
+              -5,
+              10,
+              0
+            ],
+            [
+              205,
+              -5,
+              10,
+              0
+            ],
+            [
+              205,
+              55,
+              10,
+              0
+            ],
+            [
+              185,
+              55,
+              10,
+              0
+            ],
+            [
+              185,
+              -5,
+              10,
+              0
+            ]
+          ]
+        }
+      ],
+      "receiver_position": {
+        "id": "R",
+        "x_m": 200,
+        "y_m": 50,
+        "ground_z_m": 10,
+        "height_m": 18.5
+      },
+      "buildings": [
+        {
+          "id": "H",
+          "vertices_xy_m": [
+            [
+              169.39,
+              41
+            ],
+            [
+              172.5,
+              33.5
+            ],
+            [
+              180,
+              30.39
+            ],
+            [
+              187.5,
+              33.5
+            ],
+            [
+              190.61,
+              41
+            ],
+            [
+              187.5,
+              48.5
+            ],
+            [
+              180,
+              51.61
+            ],
+            [
+              172.5,
+              48.5
+            ]
+          ],
+          "ground_z_m": 0,
+          "height_m": 30,
+          "ground_elevations_m": [
+            7.598461538461536,
+            8.076923076923077,
+            9.23076923076923,
+            10,
+            10,
+            10,
+            9.23076923076923,
+            8.076923076923077
+          ],
+          "roof_elevation_m": 30
+        }
+      ],
+      "ground_regions": [
+        {
+          "id": "A1",
+          "ground_factor": 0.5,
+          "vertices_xyzm_m": [
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A2",
+          "ground_factor": 0.9,
+          "vertices_xyzm_m": [
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A3",
+          "ground_factor": 0.2,
+          "vertices_xyzm_m": [
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "T15",
+      "title": "Polygonal building · high receiver",
+      "ground_factor": 0.2,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.16",
+          "Table 49; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [],
+      "published_spectral_rows": {
+        "49": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.0,
+              0.01,
+              0.03,
+              0.08,
+              0.15,
+              0.27,
+              0.68,
+              2.26
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -1.17,
+              -0.69,
+              -0.62,
+              -1.07,
+              -1.2,
+              -1.2,
+              -1.2
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -1.2,
+              -1.2,
+              -1.2,
+              -1.2,
+              -1.2,
+              -1.2,
+              -1.2
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              6.05,
+              7.04,
+              8.53,
+              10.51,
+              12.9,
+              15.56,
+              18.39,
+              20.0
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.0,
+              -2.37,
+              -1.89,
+              -1.82,
+              -2.27,
+              -2.4,
+              -2.4,
+              -2.4
+            ]
+          },
+          {
+            "quantity": "Dz – top",
+            "unit": "dB",
+            "values": [
+              6.05,
+              7.04,
+              8.53,
+              10.51,
+              12.9,
+              15.56,
+              18.39,
+              20.0
+            ]
+          },
+          {
+            "quantity": "Abar – top",
+            "unit": "dB",
+            "values": [
+              6.05,
+              7.04,
+              8.53,
+              10.51,
+              12.9,
+              15.56,
+              18.39,
+              20.0
+            ]
+          },
+          {
+            "quantity": "Dz – left",
+            "unit": "dB",
+            "values": [
+              9.59,
+              11.82,
+              14.41,
+              17.3,
+              20.62,
+              24.7,
+              29.23,
+              33.21
+            ]
+          },
+          {
+            "quantity": "Abar – left",
+            "unit": "dB",
+            "values": [
+              9.59,
+              11.82,
+              14.41,
+              17.3,
+              20.62,
+              24.7,
+              29.23,
+              33.21
+            ]
+          },
+          {
+            "quantity": "Dz – right",
+            "unit": "dB",
+            "values": [
+              5.86,
+              6.76,
+              8.23,
+              10.62,
+              14.24,
+              18.35,
+              21.94,
+              25.13
+            ]
+          },
+          {
+            "quantity": "Abar – right",
+            "unit": "dB",
+            "values": [
+              5.86,
+              6.76,
+              8.23,
+              10.62,
+              14.24,
+              18.35,
+              21.94,
+              25.13
+            ]
+          },
+          {
+            "quantity": "Abar",
+            "unit": "dB",
+            "values": [
+              2.1,
+              3.24,
+              4.86,
+              7.12,
+              10.11,
+              13.39,
+              16.56,
+              18.68
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              40.41,
+              40.41,
+              40.41,
+              40.41,
+              40.41,
+              40.41,
+              40.41,
+              40.41
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              53.49,
+              51.71,
+              49.59,
+              47.21,
+              44.6,
+              41.33,
+              37.76,
+              34.05,
+              57.53
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              27.29,
+              35.61,
+              40.99,
+              44.01,
+              44.6,
+              42.53,
+              38.76,
+              32.95,
+              49.92
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 49,
+        "a_weighted_octave_levels_db": [
+          27.29,
+          35.61,
+          40.99,
+          44.01,
+          44.6,
+          42.53,
+          38.76,
+          32.95
+        ],
+        "broadband_a_db": 49.92,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          53.49,
+          51.71,
+          49.59,
+          47.21,
+          44.6,
+          41.33,
+          37.76,
+          34.05
+        ],
+        "broadband_z_db": 57.53
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "building_solids/building_roof_mesh"
+      ],
+      "source_position": {
+        "id": "S",
+        "x_m": 8,
+        "y_m": 10,
+        "ground_z_m": 0,
+        "height_m": 1
+      },
+      "receiver_position": {
+        "id": "R",
+        "x_m": 25,
+        "y_m": 20,
+        "ground_z_m": 0,
+        "height_m": 23
+      },
+      "buildings": [
+        {
+          "id": "H",
+          "vertices_xy_m": [
+            [
+              10.96,
+              15.5
+            ],
+            [
+              12,
+              13
+            ],
+            [
+              14.5,
+              11.96
+            ],
+            [
+              17,
+              13
+            ],
+            [
+              18.04,
+              15.5
+            ],
+            [
+              17,
+              18
+            ],
+            [
+              14.5,
+              19.04
+            ],
+            [
+              12,
+              18
+            ]
+          ],
+          "ground_z_m": 0,
+          "height_m": 10
+        }
+      ]
+    },
+    {
+      "case_id": "T16",
+      "title": "Three buildings",
+      "ground_factor": 0.5,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.17",
+          "Table 54; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [
+        "T16 source spectrum refers to Table 2 (Test case T16), but Table 2 belongs to T01. Use its eight 93 dB bands, also printed in Tables 54/57."
+      ],
+      "published_spectral_rows": {
+        "54": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.01,
+              0.02,
+              0.06,
+              0.14,
+              0.25,
+              0.45,
+              1.15,
+              3.86
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -0.59,
+              1.74,
+              2.05,
+              -0.11,
+              -0.75,
+              -0.75,
+              -0.75
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.2,
+              -0.46,
+              -0.75,
+              -0.75,
+              -0.75,
+              -0.75,
+              -0.75
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.0,
+              -0.39,
+              1.28,
+              1.3,
+              -0.86,
+              -1.5,
+              -1.5,
+              -1.5
+            ]
+          },
+          {
+            "quantity": "Dz – top",
+            "unit": "dB",
+            "values": [
+              15.71,
+              19.88,
+              23.46,
+              25.0,
+              25.0,
+              25.0,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Abar – top",
+            "unit": "dB",
+            "values": [
+              15.71,
+              19.88,
+              22.18,
+              23.7,
+              25.0,
+              25.0,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Dz – left",
+            "unit": "dB",
+            "values": [
+              13.84,
+              17.9,
+              21.48,
+              24.65,
+              27.7,
+              30.71,
+              33.72,
+              36.73
+            ]
+          },
+          {
+            "quantity": "Abar – left",
+            "unit": "dB",
+            "values": [
+              13.84,
+              17.9,
+              21.48,
+              24.65,
+              27.7,
+              30.71,
+              33.72,
+              36.73
+            ]
+          },
+          {
+            "quantity": "Dz – right",
+            "unit": "dB",
+            "values": [
+              14.7,
+              18.89,
+              22.59,
+              25.82,
+              28.88,
+              31.9,
+              34.91,
+              37.92
+            ]
+          },
+          {
+            "quantity": "Abar – right",
+            "unit": "dB",
+            "values": [
+              14.7,
+              18.89,
+              22.59,
+              25.82,
+              28.88,
+              31.9,
+              34.91,
+              37.92
+            ]
+          },
+          {
+            "quantity": "Abar",
+            "unit": "dB",
+            "values": [
+              9.91,
+              14.04,
+              17.29,
+              19.87,
+              22.11,
+              23.32,
+              24.08,
+              24.51
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              45.05,
+              45.05,
+              45.05,
+              45.05,
+              45.05,
+              45.05,
+              45.05,
+              45.05
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              41.03,
+              34.28,
+              29.33,
+              26.64,
+              26.45,
+              25.68,
+              24.22,
+              21.07,
+              42.52
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              14.83,
+              18.18,
+              20.73,
+              23.44,
+              26.45,
+              26.88,
+              25.22,
+              19.97,
+              32.54
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 54,
+        "a_weighted_octave_levels_db": [
+          14.83,
+          18.18,
+          20.73,
+          23.44,
+          26.45,
+          26.88,
+          25.22,
+          19.97
+        ],
+        "broadband_a_db": 32.54,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          41.03,
+          34.28,
+          29.33,
+          26.64,
+          26.45,
+          25.68,
+          24.22,
+          21.07
+        ],
+        "broadband_z_db": 42.52
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "building_solids/building_roof_mesh"
+      ],
+      "source_position": {
+        "id": "S",
+        "x_m": 50,
+        "y_m": 10,
+        "ground_z_m": 0,
+        "height_m": 1
+      },
+      "receiver_position": {
+        "id": "R",
+        "x_m": 100,
+        "y_m": 15,
+        "ground_z_m": 0,
+        "height_m": 5
+      },
+      "buildings": [
+        {
+          "id": "H1",
+          "vertices_xy_m": [
+            [
+              55,
+              5
+            ],
+            [
+              65,
+              5
+            ],
+            [
+              65,
+              15
+            ],
+            [
+              55,
+              15
+            ]
+          ],
+          "ground_z_m": 0,
+          "height_m": 8
+        },
+        {
+          "id": "H2",
+          "vertices_xy_m": [
+            [
+              70,
+              14.5
+            ],
+            [
+              80,
+              10.17
+            ],
+            [
+              80,
+              20.17
+            ]
+          ],
+          "ground_z_m": 0,
+          "height_m": 12
+        },
+        {
+          "id": "H3",
+          "vertices_xy_m": [
+            [
+              90.11,
+              19.48
+            ],
+            [
+              93.27,
+              17.78
+            ],
+            [
+              87.27,
+              6.61
+            ],
+            [
+              84.11,
+              8.31
+            ]
+          ],
+          "ground_z_m": 0,
+          "height_m": 10
+        }
+      ]
+    },
+    {
+      "case_id": "T17",
+      "title": "Three buildings · alternative positions",
+      "ground_factor": 0.5,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.18",
+          "Table 57; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [
+        "T16 source spectrum refers to Table 2 (Test case T16), but Table 2 belongs to T01. Use its eight 93 dB bands, also printed in Tables 54/57."
+      ],
+      "published_spectral_rows": {
+        "57": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.01,
+              0.02,
+              0.06,
+              0.14,
+              0.25,
+              0.46,
+              1.16,
+              3.88
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -0.59,
+              1.75,
+              2.06,
+              -0.1,
+              -0.75,
+              -0.75,
+              -0.75
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.21,
+              -0.46,
+              -0.75,
+              -0.75,
+              -0.75,
+              -0.75,
+              -0.75
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              10.39,
+              14.44,
+              18.29,
+              21.6,
+              22.91,
+              22.91,
+              22.91,
+              22.91
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.0,
+              -0.39,
+              1.28,
+              1.31,
+              -0.85,
+              -1.5,
+              -1.5,
+              -1.5
+            ]
+          },
+          {
+            "quantity": "Dz - top",
+            "unit": "dB",
+            "values": [
+              12.48,
+              16.53,
+              20.38,
+              23.69,
+              25.0,
+              25.0,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Abar - top",
+            "unit": "dB",
+            "values": [
+              12.48,
+              16.53,
+              19.09,
+              22.39,
+              25.0,
+              25.0,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Dz - left",
+            "unit": "dB",
+            "values": [
+              15.85,
+              19.8,
+              24.26,
+              28.21,
+              31.55,
+              34.65,
+              37.69,
+              40.7
+            ]
+          },
+          {
+            "quantity": "Abar - left",
+            "unit": "dB",
+            "values": [
+              15.85,
+              19.8,
+              24.26,
+              28.21,
+              31.55,
+              34.65,
+              37.69,
+              40.7
+            ]
+          },
+          {
+            "quantity": "Dz - right",
+            "unit": "dB",
+            "values": [
+              14.82,
+              17.61,
+              20.51,
+              23.46,
+              26.44,
+              29.43,
+              32.44,
+              35.44
+            ]
+          },
+          {
+            "quantity": "Abar - right",
+            "unit": "dB",
+            "values": [
+              14.82,
+              17.61,
+              20.51,
+              23.46,
+              26.44,
+              29.43,
+              32.44,
+              35.44
+            ]
+          },
+          {
+            "quantity": "Abar",
+            "unit": "dB",
+            "values": [
+              9.37,
+              13.01,
+              16.03,
+              19.28,
+              22.12,
+              23.33,
+              24.09,
+              24.52
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              45.08,
+              45.08,
+              45.08,
+              45.08,
+              45.08,
+              45.08,
+              45.08,
+              45.08
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              41.54,
+              35.28,
+              30.55,
+              27.18,
+              26.39,
+              25.63,
+              24.17,
+              21.02,
+              43.11
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              15.34,
+              19.18,
+              21.95,
+              23.98,
+              26.39,
+              26.83,
+              25.17,
+              19.92,
+              32.72
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 57,
+        "a_weighted_octave_levels_db": [
+          15.34,
+          19.18,
+          21.95,
+          23.98,
+          26.39,
+          26.83,
+          25.17,
+          19.92
+        ],
+        "broadband_a_db": 32.72,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          41.54,
+          35.28,
+          30.55,
+          27.18,
+          26.39,
+          25.63,
+          24.17,
+          21.02
+        ],
+        "broadband_z_db": 43.11
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "building_solids/building_roof_mesh"
+      ],
+      "source_position": {
+        "id": "S",
+        "x_m": 50,
+        "y_m": 19,
+        "ground_z_m": 0,
+        "height_m": 1
+      },
+      "receiver_position": {
+        "id": "R",
+        "x_m": 98,
+        "y_m": 3.5,
+        "ground_z_m": 0,
+        "height_m": 5
+      },
+      "buildings": [
+        {
+          "id": "H1",
+          "vertices_xy_m": [
+            [
+              55,
+              5
+            ],
+            [
+              65,
+              5
+            ],
+            [
+              65,
+              15
+            ],
+            [
+              55,
+              15
+            ]
+          ],
+          "ground_z_m": 0,
+          "height_m": 8
+        },
+        {
+          "id": "H2",
+          "vertices_xy_m": [
+            [
+              70,
+              14.5
+            ],
+            [
+              80,
+              10.17
+            ],
+            [
+              80,
+              20.17
+            ]
+          ],
+          "ground_z_m": 0,
+          "height_m": 12
+        },
+        {
+          "id": "H3",
+          "vertices_xy_m": [
+            [
+              90.11,
+              19.48
+            ],
+            [
+              93.27,
+              17.78
+            ],
+            [
+              87.27,
+              6.61
+            ],
+            [
+              84.11,
+              8.31
+            ]
+          ],
+          "ground_z_m": 0,
+          "height_m": 10
+        }
+      ]
+    },
+    {
+      "case_id": "T18",
+      "title": "Complex building with backyard",
+      "ground_factor": 0,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.19",
+          "Table 63; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 0,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [
+        "Table 59 is one concave ten-vertex footprint with an open backyard; it is not a polygon hole and is retained as one building."
+      ],
+      "published_spectral_rows": {
+        "63": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.0,
+              0.01,
+              0.05,
+              0.12,
+              0.21,
+              0.37,
+              0.95,
+              3.16
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5,
+              -1.5
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              10.44,
+              13.73,
+              17.97,
+              22.16,
+              23.72,
+              23.72,
+              23.72,
+              23.72
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.0,
+              -3.0,
+              -3.0,
+              -3.0,
+              -3.0,
+              -3.0,
+              -3.0,
+              -3.0
+            ]
+          },
+          {
+            "quantity": "Dz - top",
+            "unit": "dB",
+            "values": [
+              11.72,
+              15.01,
+              19.25,
+              23.44,
+              25.0,
+              25.0,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Abar - top",
+            "unit": "dB",
+            "values": [
+              11.72,
+              15.01,
+              19.25,
+              23.44,
+              25.0,
+              25.0,
+              25.0,
+              25.0
+            ]
+          },
+          {
+            "quantity": "Dz - left",
+            "unit": "dB",
+            "values": [
+              24.77,
+              28.6,
+              31.89,
+              34.97,
+              38.0,
+              41.02,
+              44.03,
+              47.04
+            ]
+          },
+          {
+            "quantity": "Abar - left",
+            "unit": "dB",
+            "values": [
+              24.77,
+              28.6,
+              31.89,
+              34.97,
+              38.0,
+              41.02,
+              44.03,
+              47.04
+            ]
+          },
+          {
+            "quantity": "Dz - right",
+            "unit": "dB",
+            "values": [
+              31.61,
+              35.19,
+              38.37,
+              41.42,
+              44.44,
+              47.46,
+              50.47,
+              53.48
+            ]
+          },
+          {
+            "quantity": "Abar - right",
+            "unit": "dB",
+            "values": [
+              31.61,
+              35.19,
+              38.37,
+              41.42,
+              44.44,
+              47.46,
+              50.47,
+              53.48
+            ]
+          },
+          {
+            "quantity": "Abar",
+            "unit": "dB",
+            "values": [
+              11.47,
+              14.79,
+              18.97,
+              23.08,
+              24.74,
+              24.87,
+              24.93,
+              24.97
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              43.31,
+              43.31,
+              43.31,
+              43.31,
+              43.31,
+              43.31,
+              43.31,
+              43.31
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              41.21,
+              37.89,
+              33.67,
+              29.49,
+              27.74,
+              27.45,
+              26.81,
+              24.56,
+              43.89
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              15.01,
+              21.79,
+              25.07,
+              26.29,
+              27.74,
+              28.65,
+              27.81,
+              23.46,
+              34.89
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 63,
+        "a_weighted_octave_levels_db": [
+          15.01,
+          21.79,
+          25.07,
+          26.29,
+          27.74,
+          28.65,
+          27.81,
+          23.46
+        ],
+        "broadband_a_db": 34.89,
+        "tolerance_db": 0.05,
+        "octave_levels_db": [
+          41.21,
+          37.89,
+          33.67,
+          29.49,
+          27.74,
+          27.45,
+          26.81,
+          24.56
+        ],
+        "broadband_z_db": 43.89
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "building_solids/building_roof_mesh"
+      ],
+      "source_position": {
+        "id": "S",
+        "x_m": 15,
+        "y_m": 35,
+        "ground_z_m": 0,
+        "height_m": 2
+      },
+      "receiver_position": {
+        "id": "R",
+        "x_m": 44.64,
+        "y_m": 63.66,
+        "ground_z_m": 0,
+        "height_m": 4
+      },
+      "buildings": [
+        {
+          "id": "H",
+          "vertices_xy_m": [
+            [
+              36.83,
+              7.19
+            ],
+            [
+              54.15,
+              17.19
+            ],
+            [
+              29.15,
+              60.49
+            ],
+            [
+              -5.49,
+              40.49
+            ],
+            [
+              9.51,
+              14.51
+            ],
+            [
+              18.17,
+              19.51
+            ],
+            [
+              8.17,
+              36.83
+            ],
+            [
+              25.49,
+              46.83
+            ],
+            [
+              40.49,
+              20.85
+            ],
+            [
+              31.83,
+              15.85
+            ]
+          ],
+          "ground_z_m": 0,
+          "height_m": 10
+        }
+      ]
+    },
+    {
+      "case_id": "T19",
+      "title": "Terrain and reflecting barrier",
+      "ground_factor": 0,
+      "input_status": "published_inputs_verified",
+      "source": {
+        "document": "ISO/TR 17534-3:2015",
+        "url": "https://www.iso.org/standard/66128.html",
+        "sha256": "30cb8cd512fad8ccdb6769db4c50c9f45a4efc28d88e4b410c62530d8b984f26",
+        "clauses": [
+          "6.2.20",
+          "Table 68; inherited inputs identified in adapter notes"
+        ]
+      },
+      "calculation_settings": {
+        "reflection_order": 1,
+        "ground_method": "general",
+        "minimum_contribution_db": null,
+        "receiver_margin_db": null
+      },
+      "adapter_notes": [
+        "Terrain comes from Table 12, not Table 13 (the latter lists ray points). Closed rectangular contours are retained as breaklines. Receiver R in T06/T07/T10/T19 has absolute elevation 14 m: ground Z=10, height M=4.",
+        "Table 64 specifies absolute upper edge Z=15. The barrier is vertical with ground endpoints Z=0 on the Table 12 terrain. Reflected paths use Table 65 absorption; Table 68 contains only A-weighted final levels, so no unweighted final result is invented."
+      ],
+      "published_spectral_rows": {
+        "68": [
+          {
+            "quantity": "LA direct",
+            "unit": "dB",
+            "values": [
+              13.68,
+              19.55,
+              21.1,
+              26.04,
+              34.82,
+              37.03,
+              34.13,
+              21.58,
+              40.59
+            ]
+          },
+          {
+            "quantity": "LA refl.",
+            "unit": "dB",
+            "values": [
+              null,
+              null,
+              null,
+              23.61,
+              31.59,
+              32.83,
+              28.62,
+              18.08,
+              36.42
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              13.68,
+              19.55,
+              21.1,
+              28.01,
+              36.51,
+              38.43,
+              35.2,
+              23.18,
+              42.0
+            ]
+          }
+        ],
+        "15": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0,
+              93.0
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              0.02,
+              0.06,
+              0.21,
+              0.54,
+              0.97,
+              1.75,
+              4.46,
+              14.91
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.71,
+              6.78,
+              7.64,
+              1.64,
+              -0.15,
+              -0.15,
+              -0.15
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              -1.5,
+              0.08,
+              -0.2,
+              -0.94,
+              -0.94,
+              -0.94,
+              -0.94,
+              -0.94
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              -0.68,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27,
+              -0.27
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              -3.68,
+              0.51,
+              6.31,
+              6.43,
+              0.43,
+              -1.37,
+              -1.37,
+              -1.37
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78,
+              56.78
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              39.88,
+              35.65,
+              29.7,
+              29.24,
+              34.82,
+              35.83,
+              33.13,
+              22.68,
+              43.85
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              -26.2,
+              -16.1,
+              -8.6,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA a",
+            "unit": "dB",
+            "values": [
+              13.68,
+              19.55,
+              21.1,
+              26.04,
+              34.82,
+              37.03,
+              34.13,
+              21.58,
+              40.59
+            ]
+          }
+        ],
+        "67": [
+          {
+            "quantity": "LW",
+            "unit": "dB",
+            "values": [
+              null,
+              null,
+              null,
+              90.78,
+              89.99,
+              89.02,
+              87.77,
+              89.99
+            ]
+          },
+          {
+            "quantity": "Aatm",
+            "unit": "dB",
+            "values": [
+              null,
+              null,
+              null,
+              0.56,
+              0.99,
+              1.79,
+              4.54,
+              15.2
+            ]
+          },
+          {
+            "quantity": "Agr_s",
+            "unit": "dB",
+            "values": [
+              null,
+              null,
+              null,
+              7.65,
+              1.64,
+              -0.15,
+              -0.15,
+              -0.15
+            ]
+          },
+          {
+            "quantity": "Agr_r",
+            "unit": "dB",
+            "values": [
+              null,
+              null,
+              null,
+              -0.93,
+              -0.94,
+              -0.94,
+              -0.94,
+              -0.94
+            ]
+          },
+          {
+            "quantity": "Agr_m",
+            "unit": "dB",
+            "values": [
+              null,
+              null,
+              null,
+              -0.26,
+              -0.26,
+              -0.26,
+              -0.26,
+              -0.26
+            ]
+          },
+          {
+            "quantity": "Agr",
+            "unit": "dB",
+            "values": [
+              null,
+              null,
+              null,
+              6.46,
+              0.45,
+              -1.34,
+              -1.34,
+              -1.34
+            ]
+          },
+          {
+            "quantity": "Adiv",
+            "unit": "dB",
+            "values": [
+              null,
+              null,
+              null,
+              56.95,
+              56.95,
+              56.95,
+              56.95,
+              56.95
+            ]
+          },
+          {
+            "quantity": "L",
+            "unit": "dB",
+            "values": [
+              null,
+              null,
+              null,
+              26.81,
+              31.59,
+              31.63,
+              27.62,
+              19.18,
+              36.06
+            ]
+          },
+          {
+            "quantity": "A-weighting",
+            "unit": "dB",
+            "values": [
+              null,
+              null,
+              null,
+              -3.2,
+              0.0,
+              1.2,
+              1.0,
+              -1.1
+            ]
+          },
+          {
+            "quantity": "LA",
+            "unit": "dB",
+            "values": [
+              null,
+              null,
+              null,
+              23.61,
+              31.59,
+              32.83,
+              28.62,
+              18.08,
+              36.42
+            ]
+          }
+        ]
+      },
+      "reference": {
+        "table": 68,
+        "a_weighted_octave_levels_db": [
+          13.68,
+          19.55,
+          21.1,
+          28.01,
+          36.51,
+          38.43,
+          35.2,
+          23.18
+        ],
+        "broadband_a_db": 42.0,
+        "tolerance_db": 0.05
+      },
+      "required_capabilities": [
+        "point sources",
+        "point receivers",
+        "mixed_ground",
+        "terrain_samples/acalc_schema11 breaklines",
+        "polyline_barriers",
+        "reflecting_barriers",
+        "spectral absorption"
+      ],
+      "ground_regions": [
+        {
+          "id": "A1",
+          "ground_factor": 0.9,
+          "vertices_xyzm_m": [
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A2",
+          "ground_factor": 0.5,
+          "vertices_xyzm_m": [
+            [
+              50,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ],
+            [
+              50,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "A3",
+          "ground_factor": 0.2,
+          "vertices_xyzm_m": [
+            [
+              150,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              150,
+              -10,
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "terrain_lines": [
+        {
+          "id": "C1 · z=0",
+          "vertices_xyzm_m": [
+            [
+              0,
+              -10,
+              0,
+              0
+            ],
+            [
+              120,
+              -10,
+              0,
+              0
+            ],
+            [
+              120,
+              60,
+              0,
+              0
+            ],
+            [
+              0,
+              60,
+              0,
+              0
+            ],
+            [
+              0,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C2 · z=0",
+          "vertices_xyzm_m": [
+            [
+              120,
+              -10,
+              0,
+              0
+            ],
+            [
+              210,
+              -10,
+              0,
+              0
+            ],
+            [
+              210,
+              60,
+              0,
+              0
+            ],
+            [
+              120,
+              60,
+              0,
+              0
+            ],
+            [
+              120,
+              -10,
+              0,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "C3 · z=10",
+          "vertices_xyzm_m": [
+            [
+              185,
+              -5,
+              10,
+              0
+            ],
+            [
+              205,
+              -5,
+              10,
+              0
+            ],
+            [
+              205,
+              55,
+              10,
+              0
+            ],
+            [
+              185,
+              55,
+              10,
+              0
+            ],
+            [
+              185,
+              -5,
+              10,
+              0
+            ]
+          ]
+        }
+      ],
+      "receiver_position": {
+        "id": "R",
+        "x_m": 200,
+        "y_m": 50,
+        "ground_z_m": 10,
+        "height_m": 4
+      },
+      "barriers": [
+        {
+          "id": "B",
+          "vertices_xyzm_m": [
+            [
+              114,
+              52,
+              0,
+              15
+            ],
+            [
+              170,
+              60,
+              0,
+              15
+            ]
+          ],
+          "absorption": [
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.5
+          ],
+          "provenance": "ISO/TR 17534-3:2015 Table 65"
+        }
+      ]
+    }
+  ]
+}

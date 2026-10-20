@@ -1,0 +1,53 @@
+{
+  "reference_kind": "Corrected legacy intervals reported by a vendor; not ISO-issued 2024 acceptance values",
+  "source": {
+    "title": "Wölfel IMMI 2025 declaration of conformity according to ISO/TR 17534-3:2015",
+    "url": "https://immi.woelfel.de/fileadmin/download/doc_immi/konformitaet/ISO_TR_17534-3_IMMI2025.pdf",
+    "sha256": "44c945c215d2a329005ad8eb6c7f87f9fb159df9e54e31a1ca3db2356edd8037",
+    "date": "2025-07-03",
+    "method": "ISO 9613-2:1996",
+    "correction_provenance": "PDF page 4 cites ISO TC43 SC1 WG 56 corrections from October 2020; the working-group correction document itself has not been obtained",
+    "transcription": "Midpoints and limits of the printed certified-result columns, visually checked on PDF pages 7 and 10; software-result and yes/no columns are not reference data",
+    "caveats": [
+      "The vendor software-result column gives 11.01 dB outside its own printed 13.63-13.73 dB interval for T06/T19 at 63 Hz. Those results and yes/no assertions are not adopted.",
+      "These reported corrections supplement the unchanged original fixture. They do not establish 2024 conformity or certify the current engine."
+    ]
+  },
+  "corroborating_sources": [
+    {
+      "title": "Theers et al., Closing Specification Gaps in ISO 9613-2 and ISO 17534-3 for High-Fidelity Wind Farm Planning and Acoustic Analysis",
+      "url": "https://pub.dega-akustik.de/DAGA_2026/files/upload/paper/659.pdf",
+      "doi": "10.71568/daga2026.659",
+      "sha256": "8eb9320e68b2f0ecf9b45183c7b7599b8c6982ec08048b4ee0b9b0c29b802e91",
+      "page": "PDF page 3, printed page 722, Inconsistency in T19",
+      "t19_excluded_frequencies_2024_hz": [63, 125],
+      "t19_excluded_frequencies_1996_hz": [63, 125, 250, 500, 1000, 2000],
+      "t19_original_report_excluded_frequencies_hz": [63, 125, 250],
+      "scope": "Independent published band-selection evidence, not published 2024 final-level intervals"
+    },
+    {
+      "title": "Hartog van Banda, Quality Assured Implementation of ISO 9613 in iNoise",
+      "url": "https://noisenewsinternational.net/quality-assured-implementation-of-iso-9613-in-inoise/",
+      "date": "2018-12-19",
+      "scope": "Original T19 height-criterion contradiction and automatic barrier-node insertion reported to and acknowledged by the working group"
+    }
+  ],
+  "frequencies_hz": [63, 125, 250, 500, 1000, 2000, 4000, 8000],
+  "overrides": {
+    "T09": {
+      "source_pdf_page": 7,
+      "a_weighted_octave_levels_db": [10.70, 16.21, 21.12, 26.00, 27.83, 27.70, 22.45, 7.29],
+      "broadband_a_db": 32.92,
+      "tolerance_db": 0.05
+    },
+    "T19": {
+      "source_pdf_page": 10,
+      "a_weighted_octave_levels_db": [13.68, 19.55, 23.32, 28.01, 36.51, 38.43, 35.20, 23.18],
+      "band_overrides": {
+        "250": {"lower_db": 23.27, "upper_db": 23.37, "midpoint_db": 23.32}
+      },
+      "broadband_a_db": 42.02,
+      "tolerance_db": 0.05
+    }
+  }
+}
