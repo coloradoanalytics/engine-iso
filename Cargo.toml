@@ -1,6 +1,6 @@
 [package]
 name = "engine-iso"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "ISO 9613-2:2024 calculation engine, controlled by acalc-engine"
 license = "GPL-3.0-only"
