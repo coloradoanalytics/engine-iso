@@ -394,11 +394,12 @@ fn integrate_zone(
     let virtual_receiver = unfold(scene, receiver.point, family);
     let planes = transition_planes(scene, virtual_receiver, family, work)?;
     let mut cells = zone.cells.clone();
+    let mut next = Vec::with_capacity(cells.len() * 2);
     for plane in &planes {
         work.tick()?;
-        let mut next = Vec::new();
-        for cell in cells {
-            next.extend(split_plane(cell, *plane)?);
+        next.clear();
+        for cell in cells.drain(..) {
+            split_plane(cell, *plane, &mut next)?;
             if next.len() > MAX_PARTITION_CELLS {
                 return Err(Diagnostic::new(
                     "calculation_failed",
@@ -406,7 +407,7 @@ fn integrate_zone(
                 ));
             }
         }
-        cells = next;
+        std::mem::swap(&mut cells, &mut next);
     }
     let partition_measure: f64 = cells.iter().map(Cell::measure).sum();
     if (partition_measure - zone.measure).abs() > 1e-10 * zone.measure.max(1.) {
@@ -1025,14 +1026,29 @@ fn transition_planes(
     Ok(result)
 }
 
-fn split_plane(cell: Cell, plane: Plane) -> Result<Vec<Cell>, Diagnostic> {
-    let points = cell.vertices();
-    let signed: Vec<_> = points.iter().map(|p| plane.signed(*p)).collect();
+/// The cell's vertices without allocating.
+fn cell_points(cell: &Cell) -> &[Point] {
+    match cell {
+        Cell::Point(p) => std::slice::from_ref(p),
+        Cell::Line(p) => p,
+        Cell::Triangle(p) => p,
+    }
+}
+
+/// Splits `cell` by `plane`, appending the parts (or the whole cell) to `out`.
+fn split_plane(cell: Cell, plane: Plane, out: &mut Vec<Cell>) -> Result<(), Diagnostic> {
+    let points = cell_points(&cell);
+    let mut signed = [0.; 3];
+    for (s, p) in signed.iter_mut().zip(points) {
+        *s = plane.signed(*p);
+    }
+    let signed = &signed[..points.len()];
     if !signed.iter().any(|d| *d > GEOM_EPS) || !signed.iter().any(|d| *d < -GEOM_EPS) {
-        return Ok(vec![cell]);
+        out.push(cell);
+        return Ok(());
     }
     match cell {
-        Cell::Point(_) => Ok(vec![cell]),
+        Cell::Point(_) => out.push(cell),
         Cell::Line([a, b]) => {
             let t = signed[0] / (signed[0] - signed[1]);
             let mid = lerp(a, b, t);
@@ -1041,12 +1057,13 @@ fn split_plane(cell: Cell, plane: Plane) -> Result<Vec<Cell>, Diagnostic> {
                     "Geometric line partition exhausted coordinate precision",
                 ));
             }
-            Ok(vec![Cell::Line([a, mid]), Cell::Line([mid, b])])
+            out.push(Cell::Line([a, mid]));
+            out.push(Cell::Line([mid, b]));
         }
         Cell::Triangle(t) => {
-            let mut out = Vec::new();
+            let start = out.len();
             for sign in [1., -1.] {
-                let mut polygon = Vec::new();
+                let mut polygon: smallvec::SmallVec<[Point; 6]> = smallvec::SmallVec::new();
                 for i in 0..3 {
                     let a = t[i];
                     let b = t[(i + 1) % 3];
@@ -1070,7 +1087,7 @@ fn split_plane(cell: Cell, plane: Plane) -> Result<Vec<Cell>, Diagnostic> {
                     }
                 }
             }
-            let measure: f64 = out.iter().map(Cell::measure).sum();
+            let measure: f64 = out[start..].iter().map(Cell::measure).sum();
             if (measure - cell.measure()).abs() > 1e-10 * cell.measure().max(1.) {
                 return Err(Diagnostic::numerical(
                     "Geometric area partition lost source measure",
@@ -1078,9 +1095,13 @@ fn split_plane(cell: Cell, plane: Plane) -> Result<Vec<Cell>, Diagnostic> {
             }
             // A sliver whose part on one side has no representable area stays
             // whole; it remains a boundary cell with its own bound.
-            Ok(if out.len() < 2 { vec![cell] } else { out })
+            if out.len() - start < 2 {
+                out.truncate(start);
+                out.push(cell);
+            }
         }
     }
+    Ok(())
 }
 
 fn classify(
@@ -1659,7 +1680,8 @@ mod tests {
             normal: [1., 0., 0.],
             offset: 1.,
         };
-        let parts = split_plane(t, p).unwrap();
+        let mut parts = Vec::new();
+        split_plane(t, p, &mut parts).unwrap();
         assert!(parts.len() >= 2);
         let area: f64 = parts.iter().map(Cell::measure).sum();
         assert!((area - 8. * 2f64.sqrt()).abs() < 1e-12);
