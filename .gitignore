@@ -24,3 +24,5 @@ __pycache__/
 /config.local.*
 *.pem
 /releases/.*.tmp/
+
+.team/
