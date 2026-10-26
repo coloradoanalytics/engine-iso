@@ -3,7 +3,16 @@
 Download the current release for your computer. Each release folder has an
 installation guide, `SHA256SUMS` and `BUILD-INFO.json`.
 
-## 0.1.1 (current)
+## 0.1.2 (current)
+
+| Computer | Download | SHA-256 |
+| --- | --- | --- |
+| Linux x86-64 | [engine-iso-0.1.2-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.2/engine-iso-0.1.2-linux-x86_64.tar.gz) | `130aff19a013a48d99fe01decb780bd17893487f78d240873be6f49703239b81` |
+| Windows x86-64 | [engine-iso-0.1.2-windows-x86_64.zip](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.2/engine-iso-0.1.2-windows-x86_64.zip) | `743de6bbfedf9bfb1e6d58059b2b716589d1ab24eb01cc2e3b73a3571fc3c70f` |
+
+[Installation guide](0.1.2/README.md) · [SHA256SUMS](0.1.2/SHA256SUMS) · [BUILD-INFO.json](0.1.2/BUILD-INFO.json)
+
+## 0.1.1
 
 | Computer | Download | SHA-256 |
 | --- | --- | --- |
