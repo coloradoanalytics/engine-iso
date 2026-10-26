@@ -1443,7 +1443,8 @@ job fails. Accepted receivers get an `integration` report with
 ### Pathway warnings
 
 Feature `pathway_warnings`: a problem confined to one source/receiver/
-reflection-family transfer does not fail the job. Codes `calculation_failed`,
+reflection-family transfer, including preparing its image reference, does not
+fail the job. Codes `calculation_failed`,
 `nonfinite_result` and `contact_search_incomplete` raised there are pathway
 errors; every other error still fails the job. A receiver with pathway problems
 has `warnings`, an array of objects with `kind`, `bounded` and `message`

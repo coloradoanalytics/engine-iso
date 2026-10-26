@@ -385,7 +385,10 @@ edge parameters are clamped before final validation. Edge predicates use their
 own metre tolerance, including a narrow endpoint strip.
 
 A solved route is accepted only if it passes the full checks: finite faces,
-every-leg clearance, mirror side and specular direction, the lateral
+every-leg clearance, mirror side and specular direction (1e-6 as the cross
+product of unit directions, plus 64 ulps of the largest coordinate per metre of
+the shorter leg, so rounding in projected coordinates cannot reject the
+micrometre-spaced contacts of a corner reflection), the lateral
 wavelength, side, factor-eight and convexity rules, the controlling upper hull
 of each vertical profile, and an unchanged support structure. Upper-hull
 collinearity is tested as a middle point's excess height (1e-8 m), not a
@@ -413,9 +416,10 @@ Integration samples of line and area sources are not complete families, so
 their incomplete searches are failed pathways.
 
 **Failed pathways.** A `calculation_failed`, `nonfinite_result` or
-incomplete-search error in one source/receiver/family excludes that family's
-energy; the receiver is marked incomplete with an unbounded warning and the
-calculation continues. An extended-source boundary allowance above the
+incomplete-search error in one source/receiver/family, including while
+preparing the family's image reference during the beam search, excludes that
+family's energy; the receiver is marked incomplete with an unbounded warning
+and the calculation continues. An extended-source boundary allowance above the
 source–receiver tolerance is a bounded warning and keeps its trial energy. All
 other errors stop the calculation: invalid input, unsupported features,
 cancellation, source-level search failures and result-size limits.

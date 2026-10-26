@@ -296,7 +296,7 @@ struct Contribution {
 }
 /// Errors confined to one source/receiver/reflection-family transfer. The run
 /// continues and reports them; all other diagnostics stop the calculation.
-fn pathway_error(code: &str) -> bool {
+pub(crate) fn pathway_error(code: &str) -> bool {
     matches!(
         code,
         "calculation_failed" | "nonfinite_result" | crate::path::joint_contact::INCOMPLETE
@@ -690,7 +690,7 @@ impl ItemRun<'_> {
     fn evaluate(
         &self,
         family: &Family,
-        stub: ReceiverStub,
+        mut stub: ReceiverStub,
     ) -> Result<(usize, Contribution), Diagnostic> {
         let (scene, source) = (self.scene, self.source);
         let ri = stub.receiver;
@@ -704,39 +704,42 @@ impl ItemRun<'_> {
         // A terminal calculation is synchronous. Count its hot-loop work
         // locally, then merge once, avoiding cache-line contention between
         // all workers on every geometry/search operation.
-        self.work
-            .isolated(|work| {
+        let failure = stub.failure.take();
+        match failure {
+            Some(error) => Err(error),
+            None => self.work.isolated(|work| {
                 calculate_receiver_stub(scene, source, family, stub, self.cutoffs, work)
-            })
-            .map_err(|mut error| {
-                if error.code != "cancelled" {
-                    error.message = format!(
-                        "Source {}, receiver {}, reflection faces {:?}: {}",
-                        source.id,
-                        receiver_id,
-                        faces(),
-                        error.message
-                    );
-                }
-                error
-            })
-            .or_else(|error| {
-                if !pathway_error(&error.code) {
-                    return Err(error);
-                }
-                // Unbounded: this family's energy is missing at the receiver.
-                Ok((
-                    ri,
-                    Contribution {
-                        warnings: vec![json!({"kind":"failed_pathway","code":error.code,
+            }),
+        }
+        .map_err(|mut error| {
+            if error.code != "cancelled" {
+                error.message = format!(
+                    "Source {}, receiver {}, reflection faces {:?}: {}",
+                    source.id,
+                    receiver_id,
+                    faces(),
+                    error.message
+                );
+            }
+            error
+        })
+        .or_else(|error| {
+            if !pathway_error(&error.code) {
+                return Err(error);
+            }
+            // Unbounded: this family's energy is missing at the receiver.
+            Ok((
+                ri,
+                Contribution {
+                    warnings: vec![json!({"kind":"failed_pathway","code":error.code,
                             "source_id":source.id,"receiver_id":receiver_id,
                             "reflection_faces":faces(),
                             "bounded":false,"message":error.message})],
-                        incomplete: true,
-                        ..Contribution::default()
-                    },
-                ))
-            })
+                    incomplete: true,
+                    ..Contribution::default()
+                },
+            ))
+        })
     }
 }
 
@@ -1549,6 +1552,73 @@ mod incomplete_contact_tests {
             result["warning_summary"]["failed_pathways"],
             list.len() as u64
         );
+    }
+
+    #[test]
+    fn a_failed_reference_is_a_pathway_warning_not_a_job_failure() {
+        let result = crate::calculate(
+            &with_reflector(true, "test_failed_reference"),
+            &AtomicBool::new(false),
+            &|_, _| {},
+        )
+        .unwrap();
+        let receiver = &result["receivers"][0];
+        assert_eq!(receiver["complete"], false);
+        assert!(receiver["a_weighted_db"].is_number());
+        let list = warnings(&result);
+        assert!(!list.is_empty());
+        assert!(list.iter().all(|w| {
+            w["kind"] == "failed_pathway"
+                && w["bounded"] == false
+                && w["code"] == "nonfinite_result"
+                && w["reflection_faces"] == json!(["test_failed_reference/face"])
+                && w["message"]
+                    .as_str()
+                    .unwrap()
+                    .contains("Test-only failed reference")
+        }));
+        assert_eq!(result["warning_summary"]["incomplete_receivers"], 1);
+    }
+
+    /// Two reflectors meeting at an inside corner, with the receiver placed so
+    /// the second-order contacts lie micrometres apart. The image-method
+    /// reference is specular by construction; rounding in projected
+    /// coordinates (here 7e5 m) must not reject it, and the result must match
+    /// the same scene at the origin.
+    fn corner_request(offset: [f64; 2], delta: f64) -> Value {
+        let at = |x: f64, y: f64, z: f64| json!([x + offset[0], y + offset[1], z]);
+        json!({
+            "sources":[{"id":"s","kind":"point","position":at(3.,4.,2.),"spectrum":vec![90.0_f64; 8]}],
+            "receivers":[{"id":"r","position":at(6.,8.+delta,2.)}],
+            "reflectors":[
+                {"id":"A","start":at(0.,-5.,0.),"end":at(0.,10.,0.),"height_m":10},
+                {"id":"B","start":at(-5.,0.,0.),"end":at(10.,0.,0.),"height_m":10}
+            ],
+            "ground":{"factor":0.0},
+            "settings":{"max_reflect_order":2,"minimum_contribution_db":null}
+        })
+    }
+
+    #[test]
+    fn corner_reflection_contacts_micrometres_apart_survive_projected_coordinates() {
+        for delta in [1e-6, 1e-7] {
+            let level = |offset| {
+                let result = crate::calculate(
+                    &corner_request(offset, delta),
+                    &AtomicBool::new(false),
+                    &|_, _| {},
+                )
+                .unwrap();
+                assert!(warnings(&result).is_empty());
+                result["receivers"][0]["a_weighted_db"].as_f64().unwrap()
+            };
+            let origin = level([0., 0.]);
+            let projected = level([713_800., 345_271.]);
+            assert!(
+                (origin - projected).abs() < 1e-6,
+                "delta {delta}: {origin} vs {projected}"
+            );
+        }
     }
 
     #[test]

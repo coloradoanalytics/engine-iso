@@ -98,6 +98,14 @@ pub fn prepare_reference_images(
     family: &Family,
     images: &[Point],
 ) -> Result<Option<PreparedReference>, Diagnostic> {
+    // Test-only trigger for pathway handling of a failed reference.
+    #[cfg(test)]
+    if family
+        .iter()
+        .any(|f| scene.faces[*f].object == "test_failed_reference")
+    {
+        return Err(Diagnostic::numerical("Test-only failed reference"));
+    }
     let Some(points) = reference_images(scene, s, r, family, images)? else {
         return Ok(None);
     };
@@ -1098,6 +1106,16 @@ fn route_loss(
         Ok(([0.; 8], 0.))
     }
 }
+/// Angular tolerance of the specular test, as the norm of the cross product of
+/// the reflected and outgoing unit directions.
+const SPECULAR_DIRECTION_TOLERANCE: f64 = 1e-6;
+/// Rounding allowance of the specular test: both directions are differences of
+/// absolute coordinates, so each carries an error of this many ulps of the
+/// largest coordinate per metre of the shorter leg. Projected coordinates reach
+/// 1e6 m, and the consecutive contacts of a corner reflection may lie
+/// micrometres apart; without this allowance rounding alone rejects an exact
+/// image-method contact there.
+const SPECULAR_ROUNDING_ULPS: f64 = 64.;
 fn specular_direction_matches(face: &Face, before: Point, contact: Point, after: Point) -> bool {
     let incoming = sub(contact, before);
     let outgoing = sub(after, contact);
@@ -1105,10 +1123,18 @@ fn specular_direction_matches(face: &Face, before: Point, contact: Point, after:
         incoming,
         scale(face.normal, 2. * dot(incoming, face.normal)),
     );
-    norm(cross(
-        scale(reflected, 1. / norm(reflected)),
-        scale(outgoing, 1. / norm(outgoing)),
-    )) <= 1e-6
+    let magnitude = [before, contact, after]
+        .iter()
+        .flatten()
+        .fold(0., |m: f64, x| m.max(x.abs()));
+    let shorter = norm(incoming).min(norm(outgoing));
+    let tolerance =
+        SPECULAR_DIRECTION_TOLERANCE + SPECULAR_ROUNDING_ULPS * f64::EPSILON * magnitude / shorter;
+    tolerance.is_finite()
+        && norm(cross(
+            scale(reflected, 1. / norm(reflected)),
+            scale(outgoing, 1. / norm(outgoing)),
+        )) <= tolerance
         && dot(reflected, outgoing) > 0.
 }
 

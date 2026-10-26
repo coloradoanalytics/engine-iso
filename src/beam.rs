@@ -27,6 +27,9 @@ impl SearchIndex {
 pub struct ReceiverStub {
     pub receiver: usize,
     pub reference: Option<PreparedReference>,
+    /// A pathway error met while preparing this connection's reference. The
+    /// stub is still evaluated so the receiver records the failed pathway.
+    pub failure: Option<Diagnostic>,
 }
 pub struct Stub {
     pub family: Family,
@@ -487,25 +490,35 @@ pub fn expand(
         check_cancel(cancel)?;
         stats.receiver_candidates += 1;
         let receiver = &scene.receivers[ri];
+        let mut failure = None;
         let reference = if source.kind == "point" {
-            let Some(reference) = prepare_reference_images(
+            match prepare_reference_images(
                 scene,
                 source.zones[0].cells[0].centroid(),
                 receiver.point,
                 family,
                 beam.point_images.as_ref().unwrap(),
-            )?
-            else {
-                stats.geometry_rejected += 1;
-                continue;
-            };
-            Some(reference)
+            ) {
+                Ok(Some(reference)) => Some(reference),
+                Ok(None) => {
+                    stats.geometry_rejected += 1;
+                    continue;
+                }
+                // A numerical failure of one connection's reference is that
+                // pathway's failure, reported at the receiver, not the job's.
+                Err(error) if crate::solver::pathway_error(&error.code) => {
+                    failure = Some(error);
+                    None
+                }
+                Err(error) => return Err(error),
+            }
         } else {
             None
         };
         receiver_stubs.push(ReceiverStub {
             receiver: ri,
             reference,
+            failure,
         });
     }
     let mut children = vec![];
