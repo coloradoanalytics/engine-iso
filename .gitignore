@@ -11,7 +11,9 @@ __pycache__/
 /.secrets/
 /CLAUDE.md
 /CLAUDE.local.md
+/AGENTS.md
 /AGENTS.local.md
+/.team/
 /.mcp.json
 /.npmrc
 /.netrc
@@ -25,6 +27,3 @@ __pycache__/
 *.pem
 /releases/.*.tmp/
 
-.team/
-
-.codex/
