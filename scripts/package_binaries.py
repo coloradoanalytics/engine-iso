@@ -53,10 +53,13 @@ for package in sorted(metadata['packages'], key=lambda p: (p['name'], p['version
     for path in sorted(directory.iterdir()):
         if path.is_file() and path.name.lower().startswith(('license', 'licence', 'copying', 'notice', 'copyright')):
             common[f'licenses/{key}/{path.name}'] = path.read_bytes()
-common['THIRD_PARTY_NOTICES.txt'] = '\n'.join(notices).encode()
 # Include the standard-library and static C-runtime notices as well as crates.
-for name in ('musl', 'mingw-w64-common', 'gcc-mingw-w64-base'):
+# The Linux executable loads the system's glibc and libgcc_s at run time; they
+# are not included. The Windows executable links the MinGW-w64 runtime.
+notices.append('The Linux executable uses the system glibc (2.35 or later) and libgcc_s, loaded at run time, not included.\n')
+for name in ('mingw-w64-common', 'gcc-mingw-w64-base'):
     common[f'licenses/toolchain/{name}-copyright'] = Path(f'/usr/share/doc/{name}/copyright').read_bytes()
+common['THIRD_PARTY_NOTICES.txt'] = '\n'.join(notices).encode()
 for directory in Path('/usr/local/rustup/toolchains').glob('*/share/doc/rust'):
     common['licenses/rust/COPYRIGHT-library.html'] = (directory / 'COPYRIGHT-library.html').read_bytes()
     for path in sorted((directory / 'licenses').rglob('*')):
@@ -89,15 +92,25 @@ if prebuilt:
     # remains verifiable after importing it into a fresh public repository.
     assert record['source_files_sha256'] == source_hashes, 'prebuilt binaries were built from different source'
     shipped = {a['target']: a['binary_sha256'] for a in record['artifacts'].values()}
-    for target, suffix in (('x86_64-unknown-linux-musl', ''), ('x86_64-pc-windows-gnu', '.exe')):
+    for target, suffix in (('x86_64-unknown-linux-gnu', ''), ('x86_64-pc-windows-gnu', '.exe')):
         assert hashlib.sha256(binary(target, suffix).read_bytes()).hexdigest() == shipped[target], target
-identity = json.loads(subprocess.check_output([str(binary('x86_64-unknown-linux-musl', '')), '--describe', '--threads', '1']))
+identity = json.loads(subprocess.check_output([str(binary('x86_64-unknown-linux-gnu', '')), '--describe', '--threads', '1']))
 assert identity['version'] == version, (identity['version'], version)
+# The Linux executable is dynamically linked against glibc; the newest symbol
+# version it references is the glibc the user needs. Keep it at the documented
+# floor, the same as engine-iso-pro's Linux release.
+GLIBC_FLOOR = (2, 35)
+symbols = subprocess.check_output(['objdump', '-T', str(binary('x86_64-unknown-linux-gnu', ''))], text=True)
+glibc_versions = {tuple(int(n) for n in v.split('.')) for v in re.findall(r'GLIBC_(\d+\.\d+(?:\.\d+)?)', symbols)}
+glibc_required = max(glibc_versions)
+if glibc_required > GLIBC_FLOOR:
+    sys.exit(f'Linux executable requires glibc {".".join(map(str, glibc_required))}, above the documented floor 2.35')
 manifest = {'version': version, 'engine_identity': identity,
-            'source_files_sha256': source_hashes, 'rustc': (build / 'rustc.txt').read_text().strip(), 'artifacts': {}}
+            'source_files_sha256': source_hashes, 'rustc': (build / 'rustc.txt').read_text().strip(),
+            'linux_glibc_required': '.'.join(map(str, glibc_required)), 'artifacts': {}}
 outputs = {}
 for platform, target, suffix, extension in (
-    ('linux-x86_64', 'x86_64-unknown-linux-musl', '', 'tar.gz'),
+    ('linux-x86_64', 'x86_64-unknown-linux-gnu', '', 'tar.gz'),
     ('windows-x86_64', 'x86_64-pc-windows-gnu', '.exe', 'zip'),
 ):
     data = binary(target, suffix).read_bytes()
@@ -133,11 +146,13 @@ outputs['README.md'] = f'''# engine-iso {version}
 
 The community ISO 9613-2:2024 calculation engine for baseline Intel/AMD x86-64.
 No Git or compiler is required. Each archive holds only the engine executable
-and `LICENSES.txt` (its license, third-party notices and source offer).
+and `LICENSES.txt` (its license, third-party notices and source offer). The
+Linux executable uses the system's glibc 2.35 or later (Ubuntu 22.04, Debian 12
+or newer) and libgcc_s, the same requirement as the Pro engine.
 
 | Computer | Download | Engine executable |
 | --- | --- | --- |
-| Linux x86-64 | [{linux}]({download_url}/{version}/{linux}) | `engine-iso-{version}` (static musl) |
+| Linux x86-64 | [{linux}]({download_url}/{version}/{linux}) | `engine-iso-{version}` (glibc 2.35 or later) |
 | Windows x86-64 | [{windows}]({download_url}/{version}/{windows}) | `engine-iso-{version}.exe` (Windows system DLLs) |
 
 Extract the archive into the `engines` folder beside `acalc-engine` (Windows:

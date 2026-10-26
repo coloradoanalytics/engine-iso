@@ -37,8 +37,9 @@ the engine-iso checksums and build details are in [releases](releases/README.md)
    API key empty.
 
 On Linux, run `./acalc-engine` (or its full path); the archives keep the
-programs executable. The Linux engine is statically linked;
-no separate Rust runtime is required. The Windows program is a command-line
+programs executable. The Linux engine needs the system's glibc 2.35 or later
+(Ubuntu 22.04, Debian 12 or newer); no separate Rust runtime is required. The
+Windows program is a command-line
 engine started by the service; double-clicking `engine-iso-<version>.exe` is not the way
 to run a calculation.
 
@@ -70,7 +71,7 @@ calculation API to QGIS and manages engine configuration, jobs and results.
 For developers: dependencies are pinned in `Cargo.lock`.
 To build both release archives with Docker, run
 [`scripts/build_binaries.sh`](scripts/build_binaries.sh). The build container
-installs MinGW-w64, musl-tools and the Windows/Linux Rust targets; no host
+installs MinGW-w64 and the Windows Rust target; no host
 cross-compiler installation is needed. The script writes
 `releases/<package version>/` with the archives, `SHA256SUMS`, `BUILD-INFO.json`
 (source hashes, Rust version, engine identity and

@@ -22,7 +22,7 @@ docker run --rm --user "$(id -u):$(id -g)" \
   -e CARGO_HOME=/build/cargo-home -e CARGO_TARGET_DIR=/build/target \
   -e SOURCE_DATE_EPOCH="$epoch" -e REPLACE="$replace" \
   engine-iso-binaries:rust1.99 bash -euc '
-    cargo build --release --locked --target x86_64-unknown-linux-musl
+    cargo build --release --locked --target x86_64-unknown-linux-gnu
     cargo build --release --locked --target x86_64-pc-windows-gnu
     cargo metadata --locked --format-version 1 > /build/metadata.json
     rustc -vV > /build/rustc.txt
