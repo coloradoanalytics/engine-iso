@@ -62,7 +62,11 @@ Terrain topology is immutable and shared by concurrent receiver operations.
 Source surfaces use their supplied mesh connectivity. Planar polygon helpers
 use first-valid-ear triangulation without rotating/reversing authored indices.
 Roof connectivity is checked for nonoverlap, area coverage and containment in
-the complete concave footprint. Geometry preparation checks emitting boundaries
+the complete concave footprint. Triangle clipping for these area checks works
+in a frame at the clipped triangle's first vertex, so footprints at projected
+map coordinates (UTM, Web Mercator) are checked like the same footprint at the
+origin, and the area tolerances include a floor of 64 ε s² for an XY extent s
+so kilometre-scale meshes and footprints are not rejected on rounding alone. Geometry preparation checks emitting boundaries
 and terrain vertices inside projected emitting triangles, so a terrain peak
 cannot be hidden by clear triangle corners. Solid/mesh checks include both
 directions of noncoplanar intersection. These tests concern input geometry;
