@@ -1074,13 +1074,10 @@ impl Scene {
                 }
                 for roof in &building.roof_triangles {
                     let rt = roof.map(|i| building.roof[i]);
-                    let overlap = clipped_triangle_polygon(*t, rt);
-                    if overlap.len() < 3
-                        || polygon_area(&overlap).abs() <= clip_overlap_tolerance(*t, rt)
-                    {
+                    if !clipped_triangles_overlap(*t, rt) {
                         continue;
                     }
-                    for p in overlap {
+                    for p in clipped_triangle_polygon(*t, rt) {
                         let source = point_on_xy_triangle_plane(*t, p).unwrap();
                         let roof = point_on_xy_triangle_plane(rt, p).unwrap();
                         if source[2] < roof[2] - 1e-7 {
@@ -1176,16 +1173,15 @@ impl Scene {
         }
         validate_mesh(&mesh, cancel)?;
         let footprint_tris = triangulate_polygon(&base)?;
-        let rounding = clip_area_rounding(xy_span(&base));
         for cell in &mesh {
             check_cancel(cancel)?;
             let Cell::Triangle(t) = cell else {
                 unreachable!()
             };
-            let interior: f64 = footprint_tris
+            let (interior, rounding) = footprint_tris
                 .iter()
-                .map(|i| clipped_triangle_area(*t, i.map(|j| base[j])))
-                .sum();
+                .map(|i| clipped_area(*t, i.map(|j| base[j])))
+                .fold((0., 0.), |sum, c| (sum.0 + c.0, sum.1 + c.1));
             if (interior - cell.measure()).abs() > 1e-9 * cell.measure().max(1.) + rounding {
                 return Err(Diagnostic::invalid(
                     "Roof triangle crosses a concave footprint boundary",
@@ -1457,7 +1453,7 @@ impl Scene {
             let projected = triangle.map(project);
             let covered: f64 = host_tris
                 .iter()
-                .map(|t| clipped_triangle_area(projected, t.map(|i| f.projected[i])))
+                .map(|t| clipped_area(projected, t.map(|i| f.projected[i])).0)
                 .sum();
             if (covered - triangle_area(triangle)).abs() > 1e-9 * triangle_area(triangle).max(1.) {
                 return Err(Diagnostic::invalid(
@@ -1841,10 +1837,10 @@ pub fn cell_edges(c: &Cell) -> Vec<[Point; 2]> {
 /// The part of triangle `a` inside triangle `b` in the XY projection.
 /// Clipping works in a frame at `a[0]`: at projected map coordinates
 /// (10^5 to 10^7 m) one ulp is 10^-11 to 10^-9 m, and clip points rounded
-/// there carry area errors of 10^-9 to 10^-8 m², above the containment and
-/// overlap tolerances. Nearby coordinates subtract exactly (Sterbenz), so
-/// the clipped geometry is unchanged and the result no longer depends on
-/// where the model lies.
+/// there carry area errors above the containment and overlap tolerances.
+/// Coordinates within a factor of two subtract exactly (Sterbenz), so a
+/// model's position does not affect the clipped geometry; otherwise the
+/// subtraction rounds within the bound `clipped_area` reports.
 fn clipped_triangle_polygon(a: [Point; 3], b: [Point; 3]) -> Vec<Point> {
     let o = a[0];
     clipped_local(a.map(|p| sub(p, o)), b.map(|p| sub(p, o)))
@@ -1852,9 +1848,33 @@ fn clipped_triangle_polygon(a: [Point; 3], b: [Point; 3]) -> Vec<Point> {
         .map(|p| add(p, o))
         .collect()
 }
-fn clipped_triangle_area(a: [Point; 3], b: [Point; 3]) -> f64 {
+/// The clipped area and a bound on its rounding. Clip points are good to a
+/// few ulps of the local extent L of the two triangles, and a polygon's area
+/// moves by its perimeter times that: 64 ε L s for a clipped region of XY
+/// extent s, which covers up to six edges. Used as a tolerance this hides
+/// only overlaps thinner than 64 ε L (1.4e-5 m at L = 1e9 m), never a
+/// compact one, unlike an area floor in L².
+fn clipped_area(a: [Point; 3], b: [Point; 3]) -> (f64, f64) {
     let o = a[0];
-    polygon_area(&clipped_local(a.map(|p| sub(p, o)), b.map(|p| sub(p, o)))).abs()
+    let (a, b) = (a.map(|p| sub(p, o)), b.map(|p| sub(p, o)));
+    let p = clipped_local(a, b);
+    if p.len() < 3 {
+        return (0., 0.);
+    }
+    let extent = xy_span(&[a[0], a[1], a[2], b[0], b[1], b[2]]);
+    (
+        polygon_area(&p).abs(),
+        64. * f64::EPSILON * extent * xy_span(&p),
+    )
+}
+/// Whether two triangles' XY interiors overlap beyond rounding.
+fn clipped_triangles_overlap(a: [Point; 3], b: [Point; 3]) -> bool {
+    let (area, rounding) = clipped_area(a, b);
+    area > rounding.max(1e-12)
+}
+fn xy_span(p: &[Point]) -> f64 {
+    let b = xy_bounds(p);
+    (b[2] - b[0]).max(b[3] - b[1])
 }
 fn clipped_local(a: [Point; 3], b: [Point; 3]) -> Vec<Point> {
     let mut p = a.to_vec();
@@ -1893,24 +1913,9 @@ pub fn polygons_overlap(a: &[Point], b: &[Point]) -> Result<bool, Diagnostic> {
 fn triangulations_overlap(a: &[Point], ta: &[[usize; 3]], b: &[Point], tb: &[[usize; 3]]) -> bool {
     ta.iter().any(|x| {
         tb.iter().any(|y| {
-            let (p, q) = ([a[x[0]], a[x[1]], a[x[2]]], [b[y[0]], b[y[1]], b[y[2]]]);
-            clipped_triangle_area(p, q) > clip_overlap_tolerance(p, q)
+            clipped_triangles_overlap([a[x[0]], a[x[1]], a[x[2]]], [b[y[0]], b[y[1]], b[y[2]]])
         })
     })
-}
-/// Rounding in an area clipped in a local frame grows with the square of the
-/// geometry's XY extent: a few ulps of each clip-point coordinate times the
-/// span. Used as a floor so area checks hold for kilometre-scale geometry.
-fn clip_area_rounding(span: f64) -> f64 {
-    64. * f64::EPSILON * span * span
-}
-fn xy_span(p: &[Point]) -> f64 {
-    let b = xy_bounds(p);
-    (b[2] - b[0]).max(b[3] - b[1])
-}
-/// The area above which two clipped triangles overlap.
-fn clip_overlap_tolerance(a: [Point; 3], b: [Point; 3]) -> f64 {
-    clip_area_rounding(xy_span(&[a[0], a[1], a[2], b[0], b[1], b[2]])).max(1e-12)
 }
 /// `[min_x, min_y, max_x, max_y]`.
 fn xy_bounds(p: &[Point]) -> [f64; 4] {
@@ -1969,8 +1974,7 @@ fn validate_mesh(cells: &[Cell], cancel: &AtomicBool) -> Result<(), Diagnostic> 
             }
             if b.iter().all(|p| dot(sub(*p, a[0]), n).abs() < 1e-8) {
                 let project = |p: Point| [dot(sub(p, a[0]), u), dot(sub(p, a[0]), v), 0.];
-                let (p, q) = (a.map(project), b.map(project));
-                if clipped_triangle_area(p, q) > clip_overlap_tolerance(p, q) {
+                if clipped_triangles_overlap(a.map(project), b.map(project)) {
                     return Err(Diagnostic::invalid("Emitting triangle interiors overlap"));
                 }
             } else {

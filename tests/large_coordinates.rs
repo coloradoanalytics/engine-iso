@@ -16,9 +16,9 @@ const GROUND: f64 = 1515.7;
 
 fn run(buildings: Vec<Value>, at: [f64; 2]) -> Result<Value, String> {
     let request = json!({
-        "sources":[{"id":"s","kind":"point","position":[at[0] + 5000., at[1], GROUND + 1.],
+        "sources":[{"id":"s","kind":"point","position":[at[0] + 90_000., at[1], GROUND + 1.],
             "spectrum":vec![90.0_f64; 8]}],
-        "receivers":[{"id":"r","position":[at[0] - 5000., at[1], GROUND + 1.5]}],
+        "receivers":[{"id":"r","position":[at[0] - 90_000., at[1], GROUND + 1.5]}],
         "buildings":buildings,
         "ground":{"elevation_m":GROUND},
         "settings":{"max_reflect_order":0}
@@ -107,7 +107,7 @@ fn rotated_triangulation(local: &[[f64; 2]], start: usize) -> Option<Vec<[usize;
 #[test]
 fn concave_footprints_prepare_at_map_coordinates() {
     for at in OFFSETS {
-        for (i, star) in [1., 40.].into_iter().flat_map(stars).enumerate() {
+        for (i, star) in [1., 40., 1e3].into_iter().flat_map(stars).enumerate() {
             for start in [0, 1, star.len() / 2] {
                 let Some(mesh) = rotated_triangulation(&star, start) else {
                     continue;
@@ -192,5 +192,46 @@ fn buildings_sharing_a_wall_prepare_at_map_coordinates() {
             at,
         );
         assert!(result.is_ok(), "at {at:?}: {}", result.unwrap_err());
+    }
+}
+
+/// A triangle of size `l` and a second one whose corner intrudes `depth` past
+/// the first's long edge: the overlap is a compact (2/3)·depth² triangle.
+fn intruding_corner(l: f64, depth: f64) -> ([[f64; 3]; 3], [[f64; 3]; 3]) {
+    let a = [[0., 0., 0.], [l, 0., 0.], [0., l, 0.]];
+    let (x, y) = (l / 2. - depth, l / 2. - depth);
+    let b = [
+        [x, y, 0.],
+        [x + l / 2., y + l / 4., 0.],
+        [x + l / 4., y + l / 2., 0.],
+    ];
+    (a, b)
+}
+
+/// The overlap tolerance bounds the *width* of what it can hide (64 ε L, a
+/// few dozen ulps of the span), so compact overlaps are found at every span
+/// the request contract allows. An area floor of 64 ε L² hid each of these.
+#[test]
+fn compact_overlaps_are_found_at_every_span() {
+    let overlaps =
+        |a: &[[f64; 3]], b: &[[f64; 3]]| iso_rust::scene::polygons_overlap(a, b).unwrap();
+    for (l, depth) in [(1e5, 0.01), (1e6, 0.1), (1e9, 100.), (1e9, 0.01)] {
+        let (a, b) = intruding_corner(l, depth);
+        assert!(overlaps(&a, &b), "span {l} depth {depth}");
+    }
+}
+
+#[test]
+fn touching_triangles_do_not_overlap_at_any_span() {
+    for l in [1e3, 1e6, 1e9] {
+        // Shared long edge, irrational-ish vertices so clip points round.
+        let p = [l * 0.137_035_999, l * 0.271_828_182, 0.];
+        let q = [l * 0.914_159_265, l * 0.577_215_123, 0.];
+        let side_a = [l * 0.161_803_398, l * 0.933_012_701, 0.];
+        let side_b = [l * 0.702_106_123, l * 0.012_345_678, 0.];
+        assert!(
+            !iso_rust::scene::polygons_overlap(&[p, q, side_a], &[q, p, side_b]).unwrap(),
+            "span {l}"
+        );
     }
 }

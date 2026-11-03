@@ -65,8 +65,12 @@ Roof connectivity is checked for nonoverlap, area coverage and containment in
 the complete concave footprint. Triangle clipping for these area checks works
 in a frame at the clipped triangle's first vertex, so footprints at projected
 map coordinates (UTM, Web Mercator) are checked like the same footprint at the
-origin, and the area tolerances include a floor of 64 ε s² for an XY extent s
-so kilometre-scale meshes and footprints are not rejected on rounding alone. Geometry preparation checks emitting boundaries
+origin. Overlap and containment tolerances include a rounding bound of 64 ε L s
+for triangles of local XY extent L and a clipped region of extent s, so
+large meshes are not rejected on rounding alone. The bound hides only overlaps
+thinner than 64 ε L (1.4e-5 m at L = 1e9 m, the request coordinate limit), never
+a compact one. Containment also keeps its relative tolerance of 1e-9 of the
+roof triangle's area (at least 1e-9 m²). Geometry preparation checks emitting boundaries
 and terrain vertices inside projected emitting triangles, so a terrain peak
 cannot be hidden by clear triangle corners. Solid/mesh checks include both
 directions of noncoplanar intersection. These tests concern input geometry;
