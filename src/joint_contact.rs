@@ -1945,7 +1945,7 @@ impl Plan {
             counts.push(count);
         }
         if supports.len() > MAX_SUPPORTS {
-            return Err(Diagnostic::unsupported(
+            return Err(incomplete(
                 "Joint route exceeds the 16-support numerical profile",
             ));
         }
@@ -3746,6 +3746,49 @@ mod tests {
                 "an actual sloping section still has sliding roof intersections"
             );
         }
+    }
+
+    /// The support limit is a search limit: reaching it makes the family's
+    /// search incomplete, which the calculation bounds or reports, and must
+    /// not stop the run the way an unsupported feature does.
+    #[test]
+    fn exceeding_the_support_limit_is_an_incomplete_search() {
+        let cancel = AtomicBool::new(false);
+        let corners = MAX_SUPPORTS + 3;
+        let footprint: Vec<Point> = (0..corners)
+            .map(|i| {
+                let angle = i as f64 * std::f64::consts::TAU / corners as f64;
+                [100. * angle.cos(), 100. * angle.sin(), 0.]
+            })
+            .collect();
+        let scene = Scene::prepare(
+            &json!({"buildings":[{"id":"b","footprint":footprint,"height_m":10}],
+                "sources":[],"receivers":[],"settings":{}}),
+            &cancel,
+        )
+        .unwrap();
+        let route = |supports: usize| {
+            let mut points = vec![[-500., 0., 2.]];
+            points.extend(footprint[..supports].iter().map(|p| [p[0], p[1], 5.]));
+            points.push([500., 0., 2.]);
+            Route {
+                diffraction: (1..=supports).collect(),
+                sections: vec![0, supports + 1],
+                kinds: vec![1],
+                reflections: vec![],
+                vertical: [0.; 8],
+                lateral: [0.; 8],
+                terrain_support: false,
+                points,
+            }
+        };
+        let plan = Plan::from_route(&scene, &route(MAX_SUPPORTS)).unwrap();
+        assert_eq!(plan.supports.len(), MAX_SUPPORTS);
+        let error = Plan::from_route(&scene, &route(MAX_SUPPORTS + 1))
+            .err()
+            .unwrap();
+        assert_eq!(error.code, INCOMPLETE);
+        assert!(crate::solver::pathway_error(&error.code));
     }
 
     #[test]

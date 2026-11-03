@@ -170,8 +170,11 @@ unverified.
   user-selected 1 cm control bounds contact enclosure width, not acoustic error.
   Finite-face, clearance, section-plane and reflection-direction checks remain
   separate. Limits are 16 supports, 256 discovered sequences per initial choice
-  and 20,000 interval boxes per sequence. Unresolved work fails explicitly;
-  general topology completeness and global minimum-path discovery are unverified.
+  and 20,000 interval boxes per sequence. Reaching a limit or leaving work
+  unresolved makes that family's search incomplete: its energy is excluded and
+  reported as a bounded omission for a point source, or a failed pathway for a
+  line or area sample, and the calculation continues. General topology
+  completeness and global minimum-path discovery are unverified.
 - Long-term descriptors belong to physical sources and remain fixed throughout
   subdivision. Irregular-terrain and nonvertical-reflected long-term profiles
   remain unsupported.
