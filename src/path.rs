@@ -279,8 +279,9 @@ fn cumulative(points: &[Point]) -> Vec<f64> {
 /// A weighted mean lies within the G values it averages, but the portion
 /// lengths round separately from `hi - lo`, so the computed mean can fall a few
 /// units in the last place outside them. It is held to their range, so a mean
-/// of G = 1 cannot be rejected as above 1. An out-of-range or non-finite G still
-/// gives an out-of-range or non-finite mean for `general_ground` to reject.
+/// of G = 1 cannot be rejected as above 1. This does not validate the factors:
+/// a mix of valid and invalid G can average into [0,1]. Request validation
+/// checks each factor before it gets here; `general_ground` checks the means.
 fn length_weighted_ground(portions: &[(f64, f64, f64)], lo: f64, hi: f64) -> f64 {
     let mut sum = Sum::default();
     let (mut least, mut most) = (f64::INFINITY, f64::NEG_INFINITY);
