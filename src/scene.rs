@@ -1851,9 +1851,10 @@ fn clipped_triangle_polygon(a: [Point; 3], b: [Point; 3]) -> Vec<Point> {
 /// The clipped area and a bound on its rounding. Clip points are good to a
 /// few ulps of the local extent L of the two triangles, and a polygon's area
 /// moves by its perimeter times that: 64 ε L s for a clipped region of XY
-/// extent s, which covers up to six edges. Used as a tolerance this hides
-/// only overlaps thinner than 64 ε L (1.4e-5 m at L = 1e9 m), never a
-/// compact one, unlike an area floor in L².
+/// extent s, which covers up to six edges. Used as a tolerance this can miss
+/// a real overlap whose clipped width is at or below 64 ε L (1.4e-5 m at
+/// L = 1e9 m), whatever its length. An area floor in L² would also miss
+/// compact overlaps far wider than that.
 fn clipped_area(a: [Point; 3], b: [Point; 3]) -> (f64, f64) {
     let o = a[0];
     let (a, b) = (a.map(|p| sub(p, o)), b.map(|p| sub(p, o)));

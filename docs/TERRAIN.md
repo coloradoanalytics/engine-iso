@@ -67,10 +67,13 @@ in a frame at the clipped triangle's first vertex, so footprints at projected
 map coordinates (UTM, Web Mercator) are checked like the same footprint at the
 origin. Overlap and containment tolerances include a rounding bound of 64 ε L s
 for triangles of local XY extent L and a clipped region of extent s, so
-large meshes are not rejected on rounding alone. The bound hides only overlaps
-thinner than 64 ε L (1.4e-5 m at L = 1e9 m, the request coordinate limit), never
-a compact one. Containment also keeps its relative tolerance of 1e-9 of the
-roof triangle's area (at least 1e-9 m²). Geometry preparation checks emitting boundaries
+large meshes are not rejected on rounding alone. Two triangles count as
+overlapping only when the clipped area exceeds both that bound and 1e-12 m², so
+smaller real overlaps can be missed: a sliver of any length no wider than about
+64 ε L (1.4e-5 m at L = 1e9 m, the request coordinate limit), and a compact
+overlap whose clipped dimensions are at or below that width or about 1e-6 m (the
+1e-12 m² floor). Containment also keeps its relative tolerance of 1e-9 of the
+roof triangle's area (at least 1e-9 m²), so it can miss a larger crossing. Geometry preparation checks emitting boundaries
 and terrain vertices inside projected emitting triangles, so a terrain peak
 cannot be hidden by clear triangle corners. Solid/mesh checks include both
 directions of noncoplanar intersection. These tests concern input geometry;

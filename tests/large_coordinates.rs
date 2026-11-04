@@ -209,8 +209,9 @@ fn intruding_corner(l: f64, depth: f64) -> ([[f64; 3]; 3], [[f64; 3]; 3]) {
 }
 
 /// The overlap tolerance bounds the *width* of what it can hide (64 ε L, a
-/// few dozen ulps of the span), so compact overlaps are found at every span
-/// the request contract allows. An area floor of 64 ε L² hid each of these.
+/// few dozen ulps of the span), so compact overlaps wider than that are found
+/// at every span the request contract allows, up to the 1e-12 m² floor. An area
+/// floor of 64 ε L² hid each of these.
 #[test]
 fn compact_overlaps_are_found_at_every_span() {
     let overlaps =
