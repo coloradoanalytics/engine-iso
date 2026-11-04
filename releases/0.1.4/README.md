@@ -43,7 +43,16 @@ Corresponding source: <https://github.com/coloradoanalytics/engine-iso>, the com
   joint routes beyond 16 supports) are not calculated. Each receiver reports an
   upper limit on what they could add, per octave band, in its
   `omission_upper_db` and `omission_increase_db`, with a warning when above
-  tolerance. These are upper limits, not measured losses. In a partial run of one
-  444-building project (24 of 50 sources) about half the receivers had some, and
-  7 of 14,701 had an upper limit above 1 dBA. They appear in the result data; QGIS rasters show plain dBA, so check the
-  calculation's metadata for affected receivers.
+  tolerance. These are upper limits, not measured losses. They appear in the
+  result data; QGIS rasters show plain dBA, so check the calculation's metadata
+  for affected receivers.
+- **One full model run.** One 444-building project with 50 sources completed on
+  this Linux package with no errors, failed pathways or incomplete receivers.
+  A request holds at most 10,000 point receivers, so its 14,701 grid positions
+  were sent as point receivers in two requests, each with all 50 sources. 71% of
+  receivers had some omitted energy. The A-weighted upper limit was above 1 dBA
+  at 4 receivers (worst 1.52 dBA), and a single band's above 1 dB at 26 (worst
+  5.90 dB, at 8 kHz).
+- **Not covered by that run.** The native receiver grid, which reports rasters
+  without omission data, has not run with all 50 sources in one request. Neither
+  this run nor the package establishes physical accuracy or ISO conformity.
