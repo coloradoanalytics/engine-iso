@@ -7,43 +7,7 @@ installation guide, `SHA256SUMS` and `BUILD-INFO.json`.
 
 | Computer | Download | SHA-256 |
 | --- | --- | --- |
-| Linux x86-64 | [engine-iso-0.1.4-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.4/engine-iso-0.1.4-linux-x86_64.tar.gz) | `9c2fd9ff8de0e7e25033b96ec85afb03ebfaf1dba8c113dce9fd04e7182491b7` |
-| Windows x86-64 | [engine-iso-0.1.4-windows-x86_64.zip](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.4/engine-iso-0.1.4-windows-x86_64.zip) | `036eba0b41048721137eb3b75b5545579c32977a4621bd3082c34b2c6c47eb0e` |
+| Linux x86-64 | [engine-iso-0.1.4-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.4/engine-iso-0.1.4-linux-x86_64.tar.gz) | `7d637d739727c3ec95038a8ff768c9fc149fd179e8220419635e8a67a4687dc3` |
+| Windows x86-64 | [engine-iso-0.1.4-windows-x86_64.zip](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.4/engine-iso-0.1.4-windows-x86_64.zip) | `8821063b20ed5fe7ee9e014ab2baf25512150e67489a889882ca85def7e25900` |
 
 [Installation guide](0.1.4/README.md) · [SHA256SUMS](0.1.4/SHA256SUMS) · [BUILD-INFO.json](0.1.4/BUILD-INFO.json)
-
-## 0.1.3
-
-| Computer | Download | SHA-256 |
-| --- | --- | --- |
-| Linux x86-64 | [engine-iso-0.1.3-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.3/engine-iso-0.1.3-linux-x86_64.tar.gz) | `2e5ab0ab7667524f6aecd2315903977f2822196400da90f435eb9c27841208c8` |
-| Windows x86-64 | [engine-iso-0.1.3-windows-x86_64.zip](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.3/engine-iso-0.1.3-windows-x86_64.zip) | `ec10b2601922cbdb72ce10c86898b0371f175996c13d76c40e1eb27bbcb01cc7` |
-
-[Installation guide](0.1.3/README.md) · [SHA256SUMS](0.1.3/SHA256SUMS) · [BUILD-INFO.json](0.1.3/BUILD-INFO.json)
-
-## 0.1.2
-
-| Computer | Download | SHA-256 |
-| --- | --- | --- |
-| Linux x86-64 | [engine-iso-0.1.2-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.2/engine-iso-0.1.2-linux-x86_64.tar.gz) | `130aff19a013a48d99fe01decb780bd17893487f78d240873be6f49703239b81` |
-| Windows x86-64 | [engine-iso-0.1.2-windows-x86_64.zip](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.2/engine-iso-0.1.2-windows-x86_64.zip) | `743de6bbfedf9bfb1e6d58059b2b716589d1ab24eb01cc2e3b73a3571fc3c70f` |
-
-[Installation guide](0.1.2/README.md) · [SHA256SUMS](0.1.2/SHA256SUMS) · [BUILD-INFO.json](0.1.2/BUILD-INFO.json)
-
-## 0.1.1
-
-| Computer | Download | SHA-256 |
-| --- | --- | --- |
-| Linux x86-64 | [engine-iso-0.1.1-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.1/engine-iso-0.1.1-linux-x86_64.tar.gz) | `0333eb3dcf384b9660fe336401009bd151c322ffb5f32a65a2187d0acd9f54c1` |
-| Windows x86-64 | [engine-iso-0.1.1-windows-x86_64.zip](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.1/engine-iso-0.1.1-windows-x86_64.zip) | `42c84a673591eb83a2aa7e4c8c53c4f88ac7f5422e79eb50c2658cdf407fd14f` |
-
-[Installation guide](0.1.1/README.md) · [SHA256SUMS](0.1.1/SHA256SUMS) · [BUILD-INFO.json](0.1.1/BUILD-INFO.json)
-
-## 0.1.0
-
-| Computer | Download | SHA-256 |
-| --- | --- | --- |
-| Linux x86-64 | [engine-iso-0.1.0-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.0/engine-iso-0.1.0-linux-x86_64.tar.gz) | `36c0f1494969ea2bd7a9d9884ce82bb3fadb523bed55d480e0ac204c7acbc841` |
-| Windows x86-64 | [engine-iso-0.1.0-windows-x86_64.zip](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.0/engine-iso-0.1.0-windows-x86_64.zip) | `bb6b4c8f89aac7692b95fcc9d19e2a68b67baa070665a3d7adee1e7ba855b361` |
-
-[Installation guide](0.1.0/README.md) · [SHA256SUMS](0.1.0/SHA256SUMS) · [BUILD-INFO.json](0.1.0/BUILD-INFO.json)

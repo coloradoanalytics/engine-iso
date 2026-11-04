@@ -33,3 +33,17 @@ This is an engineering implementation, not a verified ISO conformity release.
 Use the same target, build and math library on all nodes of a calculation farm.
 Corresponding source: <https://github.com/coloradoanalytics/engine-iso>, the commit whose source files match
 `source_files_sha256` in `BUILD-INFO.json`.
+
+## Tester release limits
+
+- **Windows** is cross-compiled from Linux and has not been run, under Wine or
+  on Windows. Only its archive and executable hashes and its format are checked.
+- **Linux** is run from the extracted package on engine-protocol requests.
+- **Omitted energy.** Paths outside the numerical search limits (for example,
+  joint routes beyond 16 supports) are not calculated. Each receiver reports an
+  upper limit on what they could add, per octave band, in its
+  `omission_upper_db` and `omission_increase_db`, with a warning when above
+  tolerance. These are upper limits, not measured losses. In a partial run of one
+  444-building project (24 of 50 sources) about half the receivers had some, and
+  7 of 14,701 had an upper limit above 1 dBA. They appear in the result data; QGIS rasters show plain dBA, so check the
+  calculation's metadata for affected receivers.

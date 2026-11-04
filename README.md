@@ -7,7 +7,7 @@ and [request/result contract](docs/API.md). It targets **ISO 9613-2:2024** with
 ## Download and install
 
 New to Acalc? Start with the **[QGIS plugin and complete setup guide](https://github.com/coloradoanalytics/acalc-qgis#install-and-run-acalc)**.
-Download [acalc-qgis-0.8.3.zip](https://github.com/coloradoanalytics/acalc-qgis/raw/refs/heads/main/releases/0.8.3/acalc-qgis-0.8.3.zip), leave it zipped, and install it in QGIS
+Download [acalc-qgis-0.8.4.zip](https://github.com/coloradoanalytics/acalc-qgis/raw/refs/heads/main/releases/0.8.4/acalc-qgis-0.8.4.zip), leave it zipped, and install it in QGIS
 via **Plugins → Manage and Install Plugins → Install from ZIP**. Enable **Acalc**
 and open **Plugins → Acalc → Acalc**. QGIS 3.34 or later in the 3.x series is required.
 
@@ -17,8 +17,8 @@ the engine-iso checksums and build details are in [releases](releases/README.md)
 
 | Computer | Acalc Engine service | ISO calculation engine |
 | --- | --- | --- |
-| Linux x86-64 | [acalc-engine-0.1.2-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/acalc-engine/raw/refs/heads/main/releases/0.1.2/acalc-engine-0.1.2-linux-x86_64.tar.gz) | [engine-iso-0.1.4-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.4/engine-iso-0.1.4-linux-x86_64.tar.gz) |
-| Windows x86-64 | [acalc-engine-0.1.2-windows-x86_64.zip](https://github.com/coloradoanalytics/acalc-engine/raw/refs/heads/main/releases/0.1.2/acalc-engine-0.1.2-windows-x86_64.zip) | [engine-iso-0.1.4-windows-x86_64.zip](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.4/engine-iso-0.1.4-windows-x86_64.zip) |
+| Linux x86-64 | [acalc-engine-0.1.4-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/acalc-engine/raw/refs/heads/main/releases/0.1.4/acalc-engine-0.1.4-linux-x86_64.tar.gz) | [engine-iso-0.1.4-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.4/engine-iso-0.1.4-linux-x86_64.tar.gz) |
+| Windows x86-64 | [acalc-engine-0.1.4-windows-x86_64.zip](https://github.com/coloradoanalytics/acalc-engine/raw/refs/heads/main/releases/0.1.4/acalc-engine-0.1.4-windows-x86_64.zip) | [engine-iso-0.1.4-windows-x86_64.zip](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.4/engine-iso-0.1.4-windows-x86_64.zip) |
 
 1. Extract the service archive into a writable folder. It holds `acalc-engine`
    (Windows: `acalc-engine.exe`), `LICENSES.txt` and an empty `engines` folder.
@@ -46,8 +46,8 @@ to run a calculation.
 The links above download the actual archives. Saving a repository file-view
 page does not download the binary. Each release folder's `SHA256SUMS` and
 `BUILD-INFO.json` ([0.1.4](releases/0.1.4/)) identify its artifacts.
-The Linux packages have been exercised locally; the 0.1.0 Windows package was
-smoke-tested under Wine, with native Windows testing still outstanding.
+The Linux package has been exercised locally. The 0.1.4 Windows package is
+cross-compiled and has not been run, under Wine or on Windows.
 For farms, use the same target and build on every node: identical source alone
 does not guarantee bit-identical results across different math libraries.
 
