@@ -17,16 +17,16 @@ the engine-iso checksums and build details are in [releases](releases/README.md)
 
 | Computer | Acalc Engine service | ISO calculation engine |
 | --- | --- | --- |
-| Linux x86-64 | [acalc-engine-0.1.2-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/acalc-engine/raw/refs/heads/main/releases/0.1.2/acalc-engine-0.1.2-linux-x86_64.tar.gz) | [engine-iso-0.1.3-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.3/engine-iso-0.1.3-linux-x86_64.tar.gz) |
-| Windows x86-64 | [acalc-engine-0.1.2-windows-x86_64.zip](https://github.com/coloradoanalytics/acalc-engine/raw/refs/heads/main/releases/0.1.2/acalc-engine-0.1.2-windows-x86_64.zip) | [engine-iso-0.1.3-windows-x86_64.zip](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.3/engine-iso-0.1.3-windows-x86_64.zip) |
+| Linux x86-64 | [acalc-engine-0.1.2-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/acalc-engine/raw/refs/heads/main/releases/0.1.2/acalc-engine-0.1.2-linux-x86_64.tar.gz) | [engine-iso-0.1.4-linux-x86_64.tar.gz](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.4/engine-iso-0.1.4-linux-x86_64.tar.gz) |
+| Windows x86-64 | [acalc-engine-0.1.2-windows-x86_64.zip](https://github.com/coloradoanalytics/acalc-engine/raw/refs/heads/main/releases/0.1.2/acalc-engine-0.1.2-windows-x86_64.zip) | [engine-iso-0.1.4-windows-x86_64.zip](https://github.com/coloradoanalytics/engine-iso/raw/refs/heads/main/releases/0.1.4/engine-iso-0.1.4-windows-x86_64.zip) |
 
 1. Extract the service archive into a writable folder. It holds `acalc-engine`
    (Windows: `acalc-engine.exe`), `LICENSES.txt` and an empty `engines` folder.
 2. Extract the engine archive into that `engines` folder, keeping the archive's
    own folder. The engine then is
-   `engines/engine-iso-0.1.3-linux-x86_64/engine-iso-0.1.3` (Windows:
-   `engines\engine-iso-0.1.3-windows-x86_64\engine-iso-0.1.3.exe`). On Linux,
-   run `tar -xzf engine-iso-0.1.3-linux-x86_64.tar.gz -C engines`; on Windows,
+   `engines/engine-iso-0.1.4-linux-x86_64/engine-iso-0.1.4` (Windows:
+   `engines\engine-iso-0.1.4-windows-x86_64\engine-iso-0.1.4.exe`). On Linux,
+   run `tar -xzf engine-iso-0.1.4-linux-x86_64.tar.gz -C engines`; on Windows,
    right-click the zip → **Extract All** and choose the `engines` folder.
 3. Start **acalc-engine**, then open <http://127.0.0.1:8342>. The service finds
    the engine in `engines` at startup, from any working folder, and the
@@ -45,7 +45,7 @@ to run a calculation.
 
 The links above download the actual archives. Saving a repository file-view
 page does not download the binary. Each release folder's `SHA256SUMS` and
-`BUILD-INFO.json` ([0.1.3](releases/0.1.3/)) identify its artifacts.
+`BUILD-INFO.json` ([0.1.4](releases/0.1.4/)) identify its artifacts.
 The Linux packages have been exercised locally; the 0.1.0 Windows package was
 smoke-tested under Wine, with native Windows testing still outstanding.
 For farms, use the same target and build on every node: identical source alone
