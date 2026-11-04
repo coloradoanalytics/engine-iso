@@ -1,0 +1,60 @@
+{
+  "version": "0.1.4",
+  "engine_identity": {
+    "algorithm_revision": "sha256:04673150fea6b9aca5057c655be855a1abb46b131f9ec410bf3517574f27f4d1",
+    "atmosphere": "ISO 9613-1:1993",
+    "build_revision": "sha256:8cbd1db343cf6f1607444894aaa4802da2eaaaa55ad7eee9443ef1cc4ceac073",
+    "divisible": true,
+    "engine": "engine-iso",
+    "kernels": "scalar",
+    "method": "ISO 9613-2:2024",
+    "protocol": 1,
+    "title": "ISO 9613-2:2024 outdoor sound propagation",
+    "version": "0.1.4",
+    "workers": 1
+  },
+  "source_files_sha256": {
+    "Cargo.toml": "2f172b904819d9a4642e7a7c55228e6e5ad40fd8464a3043b49db6e802de3567",
+    "Cargo.lock": "742dab2d4db77b0e09cbf3ea0ea7d3f6cae7d14154c0492c06b6631ace900849",
+    "src/acoustics.rs": "f5002d4bc9a6abcfb3d6bf2bd3f6a82a25622ddbfd4017c10199d8e3fc90d500",
+    "src/area_raster.rs": "4dca641b224104988c9d439d90ade16b5488250a653a88d19d05438b1f91346f",
+    "src/beam.rs": "19bbbbafe7ee850790193e87b0713409af0630313b15c1846551eddcfa2b95be",
+    "src/capabilities.rs": "33156ffbf49cbdd37d30cfa06af41d44ad7be0c6b29c199f44810df05c44e1d2",
+    "src/cli.rs": "494c93debfdffed96a2bbef1102988d773891e93627e9f995586699bb4c71b03",
+    "src/engine.rs": "db717089c65fdc2ac9c476f17c2e563d3d0bee83130456d7272aaf261a42da6b",
+    "src/foliage.rs": "75f2550afa855e579ae41618e1742e9f8f0aed0682a6795b378e7aeb74411ece",
+    "src/geometry.rs": "7ca256292ea598ad56130b8325a94c7ef9ff254ba853436833438d4da029d468",
+    "src/integration.rs": "d3aa0ff44b68e5254c6f3facd6dfef61a8a288ec378383119ab41b7ba814bc6e",
+    "src/joint_contact.rs": "2aa71d013e712cb259b49230d80f6c4209455ae005d57b6c3b1486f10032de95",
+    "src/kernels.rs": "5a89ead9b2febda54b436ab7b7f4dbc1c03a6824a681cd42ecff0016c45f6369",
+    "src/lateral.rs": "2410153367c43c62e38b8a19525510182b59e81178d479bfcd72c0239cfdd060",
+    "src/legacy_contacts.rs": "e68af0a95d2e107b887caebd273b2cc8a48df758bef9464903ddb0fdcc9aebc6",
+    "src/lib.rs": "77ffbaba1fde590eafa6ae35c3801f620140bdd9b96245ee305d5fa49428dd3a",
+    "src/main.rs": "809e718981b49c176951fc375ab1a18686cc9b1b8cef0102a5f427dcebbc37b6",
+    "src/path.rs": "bf220b720c9b7f4948412f115ce6f8d6d50de6df14279529c2fcdbd1a14d8f85",
+    "src/request.rs": "aa20bcabc237cc733f56ebb86a1429bc18c68e3efb51561c4f2692438971b066",
+    "src/scene.rs": "dcbc7d4a5417b3b3198a0a95ea12c5f358e0dcebbbdd7cc205356fe744bd86b0",
+    "src/solver.rs": "0aed83d7cdcb1c019e685fd4b1ac7f92ff0e98f42eb882d9d14b443c39402082",
+    "src/spatial.rs": "b0d08c4cf7de3b98d8a0fca93e80b2030009b9671dfa2e9642da9be9f30262fd",
+    "src/types.rs": "346d223858ca815f820ee2c19b4826c241ade6998ea0f2a2059930c04ed30228",
+    "src/validation.rs": "40e865bfa8a745f15a7ee189bc98e4476f79a302a8cb25163cd4b65180163f90"
+  },
+  "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1",
+  "linux_glibc_required": "2.35",
+  "artifacts": {
+    "engine-iso-0.1.4-linux-x86_64.tar.gz": {
+      "target": "x86_64-unknown-linux-gnu",
+      "executable": "engine-iso-0.1.4-linux-x86_64/engine-iso-0.1.4",
+      "sha256": "9c2fd9ff8de0e7e25033b96ec85afb03ebfaf1dba8c113dce9fd04e7182491b7",
+      "binary_sha256": "2ce6aacf1600896988595f40542f80101085663a40294eab4ddf17752ec410c0",
+      "bytes": 1815617
+    },
+    "engine-iso-0.1.4-windows-x86_64.zip": {
+      "target": "x86_64-pc-windows-gnu",
+      "executable": "engine-iso-0.1.4-windows-x86_64/engine-iso-0.1.4.exe",
+      "sha256": "036eba0b41048721137eb3b75b5545579c32977a4621bd3082c34b2c6c47eb0e",
+      "binary_sha256": "226897202662815e05a48775ac3186c2429d2f1620dc62d33b07589b38162d19",
+      "bytes": 1801569
+    }
+  }
+}
