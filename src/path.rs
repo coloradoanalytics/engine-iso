@@ -275,6 +275,30 @@ fn cumulative(points: &[Point]) -> Vec<f64> {
     }
     s
 }
+/// Length-weighted mean G of the `(start, end, G)` portions over `lo..hi`.
+/// A weighted mean lies within the G values it averages, but the portion
+/// lengths round separately from `hi - lo`, so the computed mean can fall a few
+/// units in the last place outside them. It is held to their range, so a mean
+/// of G = 1 cannot be rejected as above 1. An out-of-range or non-finite G still
+/// gives an out-of-range or non-finite mean for `general_ground` to reject.
+fn length_weighted_ground(portions: &[(f64, f64, f64)], lo: f64, hi: f64) -> f64 {
+    let mut sum = Sum::default();
+    let (mut least, mut most) = (f64::INFINITY, f64::NEG_INFINITY);
+    for (a, b, g) in portions {
+        let overlap = (hi.min(*b) - lo.max(*a)).max(0.);
+        sum.add(overlap * g);
+        if overlap > 0. {
+            least = least.min(*g);
+            most = most.max(*g);
+        }
+    }
+    let mean = sum.total() / (hi - lo);
+    if least <= most {
+        mean.clamp(least, most)
+    } else {
+        mean
+    }
+}
 fn ground(scene: &Scene, reference: &[Point]) -> Result<(Bands, f64), Diagnostic> {
     let s = reference[0];
     let r = *reference.last().unwrap();
@@ -350,11 +374,7 @@ fn ground(scene: &Scene, reference: &[Point]) -> Result<(Bands, f64), Diagnostic
         if hi - lo <= 1e-12 {
             return scene.ground_at(endpoint);
         }
-        let mut sum = Sum::default();
-        for (a, b, g) in &portions {
-            sum.add((hi.min(*b) - lo.max(*a)).max(0.) * g)
-        }
-        sum.total() / (hi - lo)
+        length_weighted_ground(&portions, lo, hi)
     };
     let gs = average(0., (30. * hs).min(dp), s);
     let gr = average((dp - 30. * hr).max(0.), dp, r);
@@ -2112,5 +2132,75 @@ mod reflection_family_count_tests {
         assert!(all.iter().all(|f| f.len() < 2 || f[0] != f[1]));
         cancel.store(true, Ordering::Relaxed);
         assert_eq!(families(&scene, &cancel).unwrap_err().code, "cancelled");
+    }
+}
+
+#[cfg(test)]
+mod ground_mean_tests {
+    use super::length_weighted_ground;
+
+    #[test]
+    fn mean_is_length_weighted_within_the_averaged_values() {
+        let p = [(0., 10., 0.), (10., 30., 1.), (30., 40., 0.5)];
+        assert!((length_weighted_ground(&p, 0., 40.) - 0.625).abs() < 1e-15);
+        // Only portions inside the window count, by their overlap.
+        assert_eq!(length_weighted_ground(&p, 10., 30.), 1.);
+        assert!((length_weighted_ground(&p, 5., 15.) - 0.5).abs() < 1e-15);
+    }
+
+    /// Deterministic random partitions: every mean of a constant G stays that
+    /// G exactly, and every mean of mixed G stays within the values averaged.
+    #[test]
+    fn rounding_stays_within_the_averaged_values() {
+        let mut state = 0x2545_f491_4f6c_dd1d_u64;
+        let mut next = move || {
+            state ^= state << 13;
+            state ^= state >> 7;
+            state ^= state << 17;
+            (state >> 11) as f64 / (1u64 << 53) as f64
+        };
+        for _ in 0..20_000 {
+            let n = 2 + (next() * 8.) as usize;
+            let (mut at, mut constant, mut mixed) = (0., vec![], vec![]);
+            for _ in 0..n {
+                let end = at + 1e-3 + next() * 10f64.powf(next() * 4.);
+                constant.push((at, end, 1.));
+                mixed.push((at, end, if next() < 0.5 { 0.3 } else { 0.7 }));
+                at = end;
+            }
+            let lo = next() * constant[0].1;
+            let hi = at - next() * (at - constant[n - 1].0);
+            assert_eq!(length_weighted_ground(&constant, lo, hi), 1.);
+            let mean = length_weighted_ground(&mixed, lo, hi);
+            assert!((0.3..=0.7).contains(&mean), "{mean}");
+        }
+    }
+
+    #[test]
+    fn the_ground_method_still_checks_its_factors() {
+        use crate::acoustics::general_ground;
+        assert!(general_ground(3., 2., 800., 0., 0.5, 1.).is_ok());
+        for bad in [
+            1. + f64::EPSILON,
+            -f64::MIN_POSITIVE,
+            1.5,
+            f64::NAN,
+            f64::INFINITY,
+        ] {
+            assert!(general_ground(3., 2., 800., bad, 0.5, 0.5).is_err());
+            assert!(general_ground(3., 2., 800., 0.5, bad, 0.5).is_err());
+            assert!(general_ground(3., 2., 800., 0.5, 0.5, bad).is_err());
+        }
+    }
+
+    #[test]
+    fn invalid_values_are_not_hidden() {
+        assert_eq!(length_weighted_ground(&[(0., 10., 1.5)], 0., 10.), 1.5);
+        assert_eq!(length_weighted_ground(&[(0., 10., -0.5)], 0., 10.), -0.5);
+        assert!(length_weighted_ground(&[(0., 10., f64::NAN)], 0., 10.).is_nan());
+        let mixed = [(0., 5., f64::NAN), (5., 10., 1.)];
+        assert!(length_weighted_ground(&mixed, 0., 10.).is_nan());
+        let infinite = [(0., 5., f64::INFINITY), (5., 10., f64::NEG_INFINITY)];
+        assert!(length_weighted_ground(&infinite, 0., 10.).is_nan());
     }
 }

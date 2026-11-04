@@ -449,7 +449,9 @@ ISO 9613-2:2024 7.4.1.
 `general` uses ISO 9613-2 7.3.1, Table 3 and equations (10)–(13), including the
 2024 geometry correction. Source, middle and receiver regions follow the whole
 horizontal reference trace and use length-weighted ground factors from the
-ground regions crossed. D_omega is zero. The standard intends this method for
+ground regions crossed; each mean is held to the range of the factors it
+averages, so that rounding in the lengths cannot take it outside that range.
+D_omega is zero. The standard intends this method for
 approximately planar ground (including constant slopes); the engine also
 evaluates it on irregular terrain, without flattening the terrain, as an
 unverified engineering extension.
