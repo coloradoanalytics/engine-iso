@@ -965,7 +965,7 @@ Resolved values are echoed in the result.
 | --- | --- | --- |
 | `ground_method` | `"general"` | `"general"` or manually selected `"mean_path_height"`; see ground methods below. |
 | `max_reflect_order` | `0` | Integer 0–5; counts reflecting faces only. |
-| `pruning_strategy` | `null` | `"dba"` or `"dbc"`: automatic live pruning that protects that weighted level; `null` disables it. Must be one of the advertised `pruning_strategies`. |
+| `pruning_strategy` | `null` | `"dba"` or `"dbc"`: automatic live pruning, an empirical approximation aimed at that weighted level; `null` disables it. Must be one of the advertised `pruning_strategies`. |
 | `minimum_contribution_db` | `null` | Optional fixed absolute unweighted octave SPL threshold in dB re 20 µPa. Omitted or `null` disables it; any finite number enables it. Equality is retained. Must be null with a `pruning_strategy`. |
 | `area_raster_factor` | `0.5` | Positive, at most 0.5; cell extent/distance refinement factor. |
 | `area_max_extent_m` | `null` | Optional positive maximum cell extent. |
@@ -977,23 +977,32 @@ Resolved values are echoed in the result.
 
 With a `pruning_strategy`, the engine evaluates each reflection order of each
 source as a separate task. Direct paths are never pruned. Once every source's
-direct paths have completed, each reflection task uses, when it starts,
-per-band cutoffs of
-(quietest receiver's weighted level from contributions completed so far)
-− (10 log10(source count) + 15 dB for dBA or + 20 dB for dBC)
-− (band weighting). No order waits for the previous one; cutoffs only rise as
-tasks complete. Pruned results therefore depend slightly on scheduling and can
-differ between runs; unpruned results do not. `diagnostics.pruning.stages`
-reports, per reflection order, `tasks_without_cutoff` and the lowest and highest
-applied `weighted_cutoff_db` (null if none). The margin is empirical: weighted
-totals stayed within about 0.02 dB of unpruned results in the recorded tests,
-but no bound is certified and individual octave bands can lose more. Path
-counts include beams re-expanded for each order.
+direct paths have completed, each reflection task uses, when it starts, for
+each receiver, per-band cutoffs of
+(that receiver's weighted level from contributions completed so far)
+− (10 log10(source count) + 20 dB for dBA or + 25 dB for dBC)
+− (band weighting). Each receiver is judged against its own level; a receiver
+with no energy yet is not pruned. No order waits for the previous one; cutoffs
+only rise as tasks complete. Pruned results therefore depend slightly on
+scheduling and can differ between runs; unpruned results do not.
+`diagnostics.pruning.stages` reports, per reflection order,
+`tasks_without_cutoff` (sources whose first task of that order started with no
+receiver cutoff) and `weighted_cutoff_db`, the lowest and highest receiver
+cutoff applied before band weighting (null if none). The margin is empirical.
+In the recorded checks (a 12-source courtyard at third order and a 200-source
+synthetic site at first order) weighted totals stayed within 0.05 dB of
+unpruned results, while single octave bands that contribute little to the
+weighted level lost up to about 2 dB (dBA) and 4 dB (dBC). These are
+observations on two scenes, not bounds: no total error bound is certified.
+Path counts include beams re-expanded for each order.
 
 Either kind of cutoff prunes a band only when a conservative upper bound on its
 energy is below the cutoff, before its paths are built. Reflection beams are
 not extended when no band can reach the cutoff through them
-(`path_search.prefix_pruned_beams`). Point families with only vertical
+(`path_search.prefix_pruned_beams`); under a strategy that test uses the lowest
+cutoff among the receivers the task serves, and none if any of them has no
+cutoff. The count is taken from each source's first receiver block; under a
+strategy other blocks, with their own cutoffs, may cut different beams. Point families with only vertical
 reflectors use the unscreened family cap times source power; line/area
 families sum per-cell bounds over all zones and skip integration of pruned
 bands. Computed contributions are never discarded. Equality survives. Pruned

@@ -195,9 +195,9 @@ unverified.
 - Pruning is off by default. `"pruning_strategy": "dba"` or `"dbc"` runs each
   reflection order of each source as a task, without waiting between orders.
   Once all direct paths are done, each task takes per-band cutoffs when it
-  starts from the quietest receiver's weighted level so far, less
-  10 log10(source count) + 15 dB (dBA) or + 20 dB (dBC). Pruned results can
-  differ slightly between runs. A fixed `"minimum_contribution_db"` is also accepted (not with a
+  starts, for each receiver from that receiver's own weighted level so far,
+  less 10 log10(source count) + 20 dB (dBA) or + 25 dB (dBC). Pruned results
+  can differ slightly between runs. A fixed `"minimum_contribution_db"` is also accepted (not with a
   strategy). Either prunes only on conservative bounds before path
   construction: reflection prefixes (distance to the reflector plus to the
   nearest receiver, and the reflector size criterion), the unscreened family cap

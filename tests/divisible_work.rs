@@ -120,6 +120,121 @@ fn items_run_anywhere_in_any_order_merge_to_the_local_result() {
     assert_eq!(again.result, local.result);
 }
 
+/// A pruning strategy through the protocol: every item's input is taken
+/// from the merge session as bytes and passed unchanged to `run_item` on
+/// another engine. With one item at a time on one-worker engines, each item
+/// starts from the same completed contributions as in the one-worker local
+/// run, so the results are identical. (Items in flight together would differ:
+/// thresholds are live.)
+#[test]
+fn strategy_item_inputs_carry_receiver_thresholds_through_the_protocol() {
+    for strategy in ["dba", "dbc"] {
+        let mut request = request();
+        request["settings"]["pruning_strategy"] = json!(strategy);
+        let local = calculate(&Engine::start(1), &request);
+        let (coordinator, node) = (Engine::start(1), Engine::start(1));
+        let bytes = request.to_string().into_bytes();
+        let key = key(&bytes);
+        let session = coordinator.call(
+            json!({"op": "merge", "key": key, "artifact_base": BASE}),
+            &bytes,
+        );
+        let accepted = session.next();
+        assert_eq!(accepted.header["event"], "accepted", "{}", accepted.header);
+        let planned = loop {
+            let frame = session.next();
+            if frame.header["event"] == "planned" {
+                break frame;
+            }
+        };
+        let items = planned.header["items"].as_u64().unwrap() as usize;
+        let plan = node.request(json!({"op": "plan", "key": key}), &bytes);
+        assert_eq!(plan.header["ok"]["items"], items, "{}", plan.header);
+        // Three stages (orders 0, 1, 2) of equally many items.
+        let per_stage = items / 3;
+        let run = |payload: &[u8], item: usize| {
+            node.request(json!({"op": "run_item", "key": key, "item": item}), payload)
+        };
+        let mut with_thresholds = 0;
+        let mut last_list = None;
+        for item in 0..items {
+            let input = coordinator.request(
+                json!({"op": "item_input", "session": session.id, "item": item}),
+                b"",
+            );
+            let fields = input.json();
+            assert_eq!(
+                fields["cutoffs"],
+                json!(vec![Value::Null; 8]),
+                "{strategy} item {item}"
+            );
+            match fields.get("receiver_thresholds") {
+                // Direct items carry no thresholds.
+                None => assert!(item < per_stage, "{strategy} item {item}"),
+                Some(list) => {
+                    assert!(item >= per_stage, "{strategy} item {item}");
+                    let list = list.as_array().unwrap();
+                    // Bit patterns of finite thresholds, or null.
+                    assert!(list.iter().any(|t| t.is_u64()), "{strategy} item {item}");
+                    assert!(list.iter().all(|t| t.is_u64() || t.is_null()));
+                    with_thresholds += 1;
+                    last_list = Some((item, fields.clone()));
+                }
+            }
+            let output = run(&input.payload, item);
+            assert!(output.header["ok"]["seconds"].is_f64(), "{}", output.header);
+            let merged = coordinator.request(
+                json!({"op": "item_output", "session": session.id, "item": item}),
+                &output.payload,
+            );
+            assert!(merged.header["ok"].is_null(), "{}", merged.header);
+        }
+        assert_eq!(with_thresholds, items - per_stage, "{strategy}");
+        // Inputs that do not fit the item are refused by the node; they are
+        // not merged, so they leave the calculation unchanged.
+        let (item, fields) = last_list.unwrap();
+        let list = fields["receiver_thresholds"].as_array().unwrap().clone();
+        let refused = |fields: &Value, item: usize| {
+            let output = run(fields.to_string().as_bytes(), item);
+            assert_eq!(
+                output.header["error"]["code"], "invalid_input",
+                "{strategy}: {fields}"
+            );
+        };
+        let mut short = fields.clone();
+        short["receiver_thresholds"] = json!(list[1..]);
+        refused(&short, item);
+        let mut infinite = fields.clone();
+        infinite["receiver_thresholds"][0] = json!(f64::INFINITY.to_bits());
+        refused(&infinite, item);
+        let mut both = fields.clone();
+        both["cutoffs"] = json!(vec![30f64.to_bits(); 8]);
+        refused(&both, item);
+        // A direct item takes no thresholds.
+        refused(&fields, 0);
+        // The form of earlier builds, without a list, still runs.
+        let legacy = run(
+            br#"{"cutoffs":[null,null,null,null,null,null,null,null]}"#,
+            item,
+        );
+        assert!(legacy.header["ok"]["seconds"].is_f64(), "{}", legacy.header);
+        let finished = coordinator.request(json!({"op": "finish", "session": session.id}), b"");
+        assert!(finished.header["ok"].is_null());
+        let farmed = follow(session, accepted.header["progress"].clone());
+        assert_eq!(
+            serde_json::to_string(&farmed.result).unwrap(),
+            serde_json::to_string(&local.result).unwrap(),
+            "{strategy}"
+        );
+        assert_eq!(farmed.artifacts, local.artifacts, "{strategy}");
+        let stages = farmed.result["diagnostics"]["pruning"]["stages"]
+            .as_array()
+            .unwrap();
+        assert!(stages[0]["weighted_cutoff_db"].is_null());
+        assert!(stages[1]["weighted_cutoff_db"].is_array(), "{strategy}");
+    }
+}
+
 #[test]
 fn item_errors_unknown_plans_and_cancellation_are_reported() {
     let engine = Engine::start(1);

@@ -59,7 +59,8 @@ fn strategy_is_validated_and_exclusive_with_a_fixed_cutoff() {
     assert!(iso_rust::validation::validate(&v).is_ok());
 }
 
-fn quietest(result: &Value, weights: [f64; 8]) -> f64 {
+/// Weighted level of every receiver, in request order.
+fn weighted_levels(result: &Value, weights: [f64; 8]) -> Vec<f64> {
     result["receivers"]
         .as_array()
         .unwrap()
@@ -70,12 +71,18 @@ fn quietest(result: &Value, weights: [f64; 8]) -> f64 {
                 .sum();
             10. * e.log10()
         })
-        .fold(f64::INFINITY, f64::min)
+        .collect()
+}
+fn lowest(levels: &[f64]) -> f64 {
+    levels.iter().copied().fold(f64::INFINITY, f64::min)
+}
+fn highest(levels: &[f64]) -> f64 {
+    levels.iter().copied().fold(f64::NEG_INFINITY, f64::max)
 }
 
 #[test]
-fn live_cutoffs_lie_between_the_direct_and_final_quietest_levels() {
-    for (strategy, weights, constant) in [("dba", A, 15.), ("dbc", C, 20.)] {
+fn live_thresholds_follow_each_receivers_own_level() {
+    for (strategy, weights, constant) in [("dba", A, 20.), ("dbc", C, 25.)] {
         let mut v = scene(2);
         let uncut = calculate(&v, 4);
         v["settings"]["pruning_strategy"] = json!(strategy);
@@ -93,24 +100,79 @@ fn live_cutoffs_lie_between_the_direct_and_final_quietest_levels() {
         // Direct paths are never pruned.
         assert_eq!(orders[0]["tasks_without_cutoff"], 12);
         assert!(orders[0]["weighted_cutoff_db"].is_null());
-        // Contributions only add energy, so each weighted cutoff lies
-        // between the direct-path quietest level and the final uncut quietest
-        // level, each less the margin.
-        let low = quietest(&calculate(&direct, 4), weights) - margin;
-        let high = quietest(&uncut, weights) - margin;
+        // Contributions only add energy, so every receiver's threshold lies
+        // between its direct-path level and its final uncut level, each less
+        // the margin. The reported range is the lowest and highest threshold
+        // applied: the quietest and the loudest receiver bound them.
+        let first = weighted_levels(&calculate(&direct, 4), weights);
+        let last = weighted_levels(&uncut, weights);
         for order in &orders[1..] {
             assert_eq!(order["tasks_without_cutoff"], 0, "{strategy}");
             let range = order["weighted_cutoff_db"].as_array().unwrap();
             let (lo, hi) = (range[0].as_f64().unwrap(), range[1].as_f64().unwrap());
             assert!(
-                low - 1e-9 <= lo && lo <= hi && hi <= high + 1e-9,
-                "{strategy}: {lo} {hi} not in [{low}, {high}]"
+                lowest(&first) - margin - 1e-9 <= lo && lo <= lowest(&last) - margin + 1e-9,
+                "{strategy}: lowest {lo}"
             );
+            assert!(
+                highest(&first) - margin - 1e-9 <= hi && hi <= highest(&last) - margin + 1e-9,
+                "{strategy}: highest {hi}"
+            );
+            // The receivers differ by tens of decibels, and so do their
+            // thresholds: the loud one is not held to the quiet one's.
+            assert!(hi > lowest(&last) - margin + 20., "{strategy}: {lo} {hi}");
         }
         // Later orders see more completed energy.
-        let lowest = |k: usize| orders[k]["weighted_cutoff_db"][0].as_f64().unwrap();
-        assert!(lowest(2) >= lowest(1), "{strategy}");
+        let low = |k: usize| orders[k]["weighted_cutoff_db"][0].as_f64().unwrap();
+        assert!(low(2) >= low(1), "{strategy}");
     }
+}
+
+/// Every skipped band is below the threshold of the receiver it would have
+/// reached, and the loud receiver skips contributions that the quietest
+/// receiver's threshold would have kept.
+#[test]
+fn each_receiver_is_pruned_against_its_own_level() {
+    let mut v = scene(2);
+    let uncut = weighted_levels(&calculate(&v, 4), A);
+    v["settings"]["pruning_strategy"] = json!("dba");
+    v["output"] = json!({"path_diagnostics":"summary"});
+    let result = calculate(&v, 1);
+    let margin = 10. * 12f64.log10() + 20.;
+    let ids = ["near", "mid", "far"];
+    let mut skipped = [0usize; 3];
+    let mut beyond_quietest = [0usize; 3];
+    for record in result["path_diagnostics"].as_array().unwrap() {
+        let Some(omitted) = record.get("omitted_energy") else {
+            continue;
+        };
+        let r = ids
+            .iter()
+            .position(|id| record["receiver_id"] == *id)
+            .unwrap();
+        for b in 0..8 {
+            let bound = omitted[b].as_f64().unwrap();
+            if bound == 0. {
+                continue;
+            }
+            let weighted = 10. * bound.log10() + A[b];
+            // A threshold never exceeds the receiver's final level less the margin.
+            assert!(
+                weighted < uncut[r] - margin + 1e-9,
+                "{}: band {b} bound {weighted} above its own threshold",
+                ids[r]
+            );
+            skipped[r] += 1;
+            if weighted >= lowest(&uncut) - margin {
+                beyond_quietest[r] += 1;
+            }
+        }
+    }
+    assert!(skipped.iter().all(|n| *n > 0), "{skipped:?}");
+    // near is the loudest receiver, far the quietest.
+    assert!(uncut[0] > uncut[2] + 20.);
+    assert!(beyond_quietest[0] > 0, "{beyond_quietest:?}");
+    assert_eq!(beyond_quietest[2], 0, "{beyond_quietest:?}");
 }
 
 #[test]

@@ -55,7 +55,7 @@ numerical range is an error, not a zero.
 | Ground | A default ground factor `G` with ground-region overrides. Ground factor is separate from wall absorption. |
 | Reflection material | Energy absorption per band in [0, 1]; default 0.1. Full absorption reflects nothing. |
 | `max_reflect_order` | 0–5, counting reflections only. Order 0 still includes direct and screened paths. |
-| `pruning_strategy` | `"dba"` or `"dbc"` enables automatic pruning protecting that weighted level; absent or `null` (default) disables it. |
+| `pruning_strategy` | `"dba"` or `"dbc"` enables automatic pruning, an empirical approximation aimed at that weighted level; absent or `null` (default) disables it. |
 | `minimum_contribution_db` | A fixed absolute band cutoff; absent or `null` (default) disables it. Cannot be combined with a strategy. |
 | Area integration | Extent/distance factor, optional maximum extent, absolute and relative energy tolerances, and depth limits. These control refinement, not which paths exist. |
 
@@ -654,44 +654,52 @@ or missed sample is never treated as zero.
 
 ### Pruning strategies
 
-`pruning_strategy` names the weighted level to protect: `"dba"` (A-weighting)
+`pruning_strategy` names the weighted level the pruning aims at: `"dba"` (A-weighting)
 or `"dbc"` (C-weighting). The calculation then runs one task per source and
 reflection order: order 0 evaluates direct and screened paths without pruning,
 and order k only families with exactly k reflections. Tasks start in order-major
 sequence as workers become free; no order waits for the previous one. Once
 every source's order-0 task has finished, each later task takes, when it
-starts, the cutoff:
+starts, a cutoff for each receiver it serves:
 
 ```text
-L_q      = lowest weighted level, over receivers with energy, of all contributions completed so far
-margin   = 10 log10(number of original sources) + c,   c = 15 dB (dBA) or 20 dB (dBC)
-cutoff_b = L_q − margin − W_b          (W_b: A- or C-weighting of band b)
+L_r        = weighted level at receiver r of all contributions completed so far
+margin     = 10 log10(number of original sources) + c,   c = 20 dB (dBA) or 25 dB (dBC)
+cutoff_r,b = L_r − margin − W_b        (W_b: A- or C-weighting of band b)
 ```
 
-A band contribution is skipped when its upper bound is below `cutoff_b`, so its
-weighted level is at least the margin below the quietest receiver so far.
-Because calculated energy is kept, L_q only rises, and tasks started earlier
-use lower, more cautious cutoffs. A task that starts before every direct path
-is complete, or while no receiver has energy, runs unpruned. L_q may include
-higher-order energy from other sources. Because cutoffs depend on which tasks
-have finished, pruned results can differ slightly between runs; unpruned
-results do not.
+A band contribution at receiver r is skipped when its upper bound is below
+`cutoff_r,b`, so its weighted level is at least the margin below that
+receiver's own level so far. Each receiver is judged against its own level,
+never against a quieter receiver elsewhere in the model. A receiver with no
+energy yet has no cutoff and is not pruned. Because calculated energy is kept,
+L_r only rises, and tasks started earlier use lower, more cautious cutoffs. A
+task that starts before every direct path is complete runs unpruned. L_r may
+include higher-order energy from other sources. Because cutoffs depend on
+which tasks have finished, pruned results can differ slightly between runs;
+unpruned results do not. The same task given the same cutoffs always gives the
+same result.
 
 The margin is empirical, not a guarantee: many skipped contributions can add
 up, and their number grows with the number of sources, hence the
-10 log10(N) term. dBC needs the larger constant because its total is set by the
-loud low bands. Individual octave bands, especially quiet ones, can lose more
-than the weighted total.
+10 log10(N) term. The constant governs the loss at every receiver, because
+each is judged against its own level. dBC needs the larger constant because
+its total is set by the loud low bands. Individual octave bands, especially
+those that contribute little to the weighted level, can lose far more than the
+weighted total.
 
 `minimum_contribution_db` applies one fixed absolute cutoff in every band
 instead.
 
 ### Where bounds are tested
 
-Each test uses the band cutoff in force; a family without a valid bound below
-the cutoff is calculated in full.
+Each test uses the band cutoff in force at the receiver concerned; a family
+without a valid bound below the cutoff is calculated in full.
 
-- **Reflection prefixes.** Before a beam continues through a reflector, each
+- **Reflection prefixes.** A beam serves every receiver of its task that lies
+  in it, so this test uses a cutoff no higher than any of theirs: under a
+  strategy, the lowest cutoff among the task's receivers, and none if any of
+  them has no cutoff. Before a beam continues through a reflector, each
   active band is bounded for every continuation at every receiver: source
   power, maximum directivity, a +6 dB net ground allowance, the reflectors'
   material losses, and divergence and absorption over a lower bound on route

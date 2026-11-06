@@ -18,7 +18,7 @@ use crate::{
     area_raster,
     request::decode_submission,
     scene::Cutoffs,
-    solver::{ItemOutput, Merge, Plan},
+    solver::{ItemCutoffs, ItemOutput, Merge, Plan},
     types::*,
     validation,
 };
@@ -80,11 +80,35 @@ pub fn hello(workers: usize) -> Value {
     })
 }
 
-/// A work item's input: the cutoffs it starts with.
+/// A work item's input: the cutoffs it starts with. Values travel as bit
+/// patterns. `receiver_thresholds` holds a pruning strategy's weighted
+/// threshold for each receiver of the item's block, in block order.
 #[derive(Serialize, Deserialize)]
 struct ItemInput {
     #[serde(with = "optional_band_bits")]
     cutoffs: Cutoffs,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    receiver_thresholds: Option<Vec<Option<u64>>>,
+}
+impl From<ItemCutoffs> for ItemInput {
+    fn from(cutoffs: ItemCutoffs) -> Self {
+        Self {
+            cutoffs: cutoffs.fixed,
+            receiver_thresholds: cutoffs
+                .thresholds
+                .map(|t| t.into_iter().map(|t| t.map(f64::to_bits)).collect()),
+        }
+    }
+}
+impl From<ItemInput> for ItemCutoffs {
+    fn from(input: ItemInput) -> Self {
+        Self {
+            fixed: input.cutoffs,
+            thresholds: input
+                .receiver_thresholds
+                .map(|t| t.into_iter().map(|t| t.map(f64::from_bits)).collect()),
+        }
+    }
 }
 
 /// Progress of one request, in the snapshot form clients know: task points,
@@ -339,12 +363,13 @@ impl Server {
                         );
                     }
                 };
+                let cutoffs = ItemCutoffs::from(input);
                 let cancel = self.register(id);
                 let server = self.clone();
                 self.pool.spawn(move || {
                     let (result, seconds) = own_time(|| {
                         catch(|| {
-                            let output = plan.run_item(item, &input.cutoffs, &cancel)?;
+                            let output = plan.run_item(item, &cutoffs, &cancel)?;
                             serde_json::to_vec(&output).map_err(|e| {
                                 Diagnostic::new(
                                     "internal_error",
@@ -493,9 +518,7 @@ impl Server {
                             self.error(id, outside(item));
                             continue;
                         }
-                        let input = ItemInput {
-                            cutoffs: merge.cutoffs(item),
-                        };
+                        let input = ItemInput::from(merge.cutoffs(item));
                         let bytes = serde_json::to_vec(&input).expect("cutoffs serialize");
                         self.ok(id, json!({}), &bytes);
                     }
@@ -652,4 +675,61 @@ pub fn serve(
     }
     lock(&server.sessions).clear();
     result
+}
+
+#[cfg(test)]
+mod item_input_tests {
+    use super::ItemInput;
+    use crate::solver::ItemCutoffs;
+
+    fn round_trip(cutoffs: &ItemCutoffs) -> (String, ItemCutoffs) {
+        let wire = serde_json::to_string(&ItemInput::from(cutoffs.clone())).unwrap();
+        let back = serde_json::from_str::<ItemInput>(&wire).unwrap().into();
+        (wire, back)
+    }
+
+    /// Receiver thresholds travel as bit patterns, in block order, so a node
+    /// applies exactly the values the merge session took.
+    #[test]
+    fn receiver_thresholds_arrive_exactly() {
+        let values = [
+            Some(41.3_f64.ln()),
+            None,
+            Some(-0.0),
+            Some(f64::MIN_POSITIVE),
+        ];
+        let cutoffs = ItemCutoffs {
+            fixed: [None; 8],
+            thresholds: Some(values.to_vec()),
+        };
+        let (wire, back) = round_trip(&cutoffs);
+        assert!(wire.contains("receiver_thresholds"), "{wire}");
+        let bits = |t: &[Option<f64>]| t.iter().map(|t| t.map(f64::to_bits)).collect::<Vec<_>>();
+        assert_eq!(bits(&back.thresholds.unwrap()), bits(&values));
+        assert_eq!(back.fixed, [None; 8]);
+    }
+
+    /// A fixed cutoff carries no threshold list, and an input without one
+    /// (the form of earlier builds) still parses: its band cutoffs apply to
+    /// every receiver.
+    #[test]
+    fn inputs_without_a_threshold_list_are_fixed_cutoffs() {
+        let fixed = ItemCutoffs::fixed([Some(30.); 8]);
+        let (wire, back) = round_trip(&fixed);
+        assert!(!wire.contains("receiver_thresholds"), "{wire}");
+        assert_eq!(back, fixed);
+        let unpruned: ItemCutoffs = serde_json::from_str::<ItemInput>(
+            r#"{"cutoffs":[null,null,null,null,null,null,null,null]}"#,
+        )
+        .unwrap()
+        .into();
+        assert_eq!(unpruned, ItemCutoffs::default());
+        let bits = 30f64.to_bits();
+        let legacy: ItemCutoffs = serde_json::from_str::<ItemInput>(&format!(
+            r#"{{"cutoffs":[{bits},{bits},{bits},{bits},{bits},{bits},{bits},{bits}]}}"#
+        ))
+        .unwrap()
+        .into();
+        assert_eq!(legacy, fixed);
+    }
 }

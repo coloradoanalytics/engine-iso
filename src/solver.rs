@@ -168,14 +168,16 @@ struct SourceTotal {
 }
 /// Constant added to 10 log10(source count) to give the pruning margin. The
 /// margin scales with the number of sources because skipped contributions
-/// below the threshold accumulate roughly in proportion to it. Both values
-/// keep the weighted total within about 0.01 dB in the recorded tests. dBC
-/// needs more: its total is set by the loud low bands, so the same margin
-/// leaves the higher bands' thresholds relatively higher than under dBA.
+/// below a receiver's threshold accumulate roughly in proportion to it. Each
+/// receiver is judged against its own level, so the constant sets the loss at
+/// every receiver, not only at the quietest: both values kept the weighted
+/// total within 0.05 dB in the recorded checks, which is no bound. dBC needs more: its
+/// total is set by the loud low bands, so the same margin leaves the higher
+/// bands' thresholds relatively higher than under dBA.
 pub fn pruning_constant(strategy: &str) -> f64 {
     match strategy {
-        "dbc" => 20.,
-        _ => 15.,
+        "dbc" => 25.,
+        _ => 20.,
     }
 }
 
@@ -185,81 +187,112 @@ fn strategy_weights(scene: &Scene) -> [f64; 8] {
         _ => acoustics::A_WEIGHTING,
     }
 }
-/// Per-band cutoffs of a pruning strategy: a band contribution is skipped
-/// when, once weighted, it is at least the margin below the quietest
-/// receiver's weighted level from the contributions completed so far.
-/// Receivers with no energy yet are ignored; if none has energy, no pruning.
-fn strategy_cutoffs(scene: &Scene, energy: &[Bands]) -> Cutoffs {
-    let weights = strategy_weights(scene);
-    let mut quietest = f64::INFINITY;
-    for receiver in energy {
-        let mut weighted = Sum::default();
-        for b in 0..8 {
-            weighted.add(receiver[b] * 10f64.powf(weights[b] / 10.));
-        }
-        let weighted = weighted.total();
-        if weighted > 0. {
-            quietest = quietest.min(10. * weighted.log10());
-        }
+/// A receiver's weighted threshold under a pruning strategy: its weighted
+/// level from the contributions completed so far, less the margin. A band
+/// contribution at that receiver is skipped when, once weighted, its upper
+/// bound is below the threshold. A receiver with no energy yet has no
+/// threshold and is not pruned.
+fn receiver_threshold(weights: &[f64; 8], margin: f64, energy: &Bands) -> Option<f64> {
+    let mut weighted = Sum::default();
+    for b in 0..8 {
+        weighted.add(energy[b] * 10f64.powf(weights[b] / 10.));
     }
-    if !quietest.is_finite() {
-        return [None; 8];
-    }
-    let margin = pruning_margin(
-        scene.settings.strategy.as_deref().unwrap_or("dba"),
-        scene.sources.len(),
-    );
-    std::array::from_fn(|b| Some(quietest - margin - weights[b]))
+    let weighted = weighted.total();
+    (weighted > 0.).then(|| 10. * weighted.log10() - margin)
 }
-/// Live cutoffs of a pruning strategy. Contributions only add energy, so the
-/// quietest receiver's level, and with it every cutoff, rises as items
-/// complete; an item started earlier uses a lower, more conservative cutoff.
-/// Direct paths are never pruned, and no cutoff applies until every direct
-/// item has completed.
+/// The cutoffs a work item starts with. A fixed cutoff applies to every
+/// receiver. Under a pruning strategy each receiver of the item's block has
+/// its own weighted threshold (see `receiver_threshold`), so a contribution
+/// is judged against the receiver it reaches, never against a quieter one
+/// elsewhere in the model.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct ItemCutoffs {
+    /// Per-band cutoffs applied at every receiver.
+    pub fixed: Cutoffs,
+    /// Weighted thresholds of the block's receivers, in block order.
+    pub thresholds: Option<Vec<Option<f64>>>,
+}
+impl ItemCutoffs {
+    pub fn fixed(fixed: Cutoffs) -> Self {
+        Self {
+            fixed,
+            thresholds: None,
+        }
+    }
+    /// Whether these cutoffs fit an item of reflection order `order` (`None`
+    /// without a strategy) over a block of `receivers`. Receiver thresholds
+    /// belong to a strategy's reflection items only, one finite value or none
+    /// per receiver, and never accompany fixed cutoffs: a list that fits no
+    /// such item is rejected, not applied. A merge session sends none to
+    /// direct items; a node holds to that too.
+    fn check(&self, order: Option<usize>, receivers: usize) -> Result<(), Diagnostic> {
+        let Some(thresholds) = &self.thresholds else {
+            return Ok(());
+        };
+        let problem = if !matches!(order, Some(k) if k > 0) {
+            Some("receiver thresholds for an item that is not a strategy's reflection item".into())
+        } else if pruning(&self.fixed) {
+            Some("receiver thresholds together with fixed cutoffs".into())
+        } else if thresholds.len() != receivers {
+            Some(format!(
+                "{} receiver thresholds for a block of {receivers} receivers",
+                thresholds.len()
+            ))
+        } else if thresholds.iter().flatten().any(|t| !t.is_finite()) {
+            Some("a receiver threshold that is not finite".into())
+        } else {
+            None
+        };
+        match problem {
+            Some(problem) => Err(Diagnostic::invalid(format!(
+                "Work item input has {problem}"
+            ))),
+            None => Ok(()),
+        }
+    }
+    /// Band cutoffs at the `k`-th receiver of the block.
+    fn at(&self, weights: &[f64; 8], k: usize) -> Cutoffs {
+        match &self.thresholds {
+            None => self.fixed,
+            Some(thresholds) => match thresholds.get(k).copied().flatten() {
+                Some(t) => std::array::from_fn(|b| Some(t - weights[b])),
+                None => [None; 8],
+            },
+        }
+    }
+    /// Band cutoffs no higher than any receiver's, for decisions shared by
+    /// the whole block (reflection prefixes). None when any receiver of the
+    /// block has no threshold: nothing may be cut on its behalf.
+    fn floor(&self, weights: &[f64; 8]) -> Cutoffs {
+        match &self.thresholds {
+            None => self.fixed,
+            Some(thresholds) => {
+                let mut lowest = f64::INFINITY;
+                for t in thresholds {
+                    match t {
+                        Some(t) => lowest = lowest.min(*t),
+                        None => return [None; 8],
+                    }
+                }
+                if lowest.is_finite() {
+                    std::array::from_fn(|b| Some(lowest - weights[b]))
+                } else {
+                    [None; 8]
+                }
+            }
+        }
+    }
+}
+/// Live state of a pruning strategy. Contributions only add energy, so each
+/// receiver's level, and with it its threshold, rises as items complete; an
+/// item started earlier uses lower, more conservative thresholds. Direct
+/// paths are never pruned, and no threshold applies until every direct item
+/// has completed.
 struct Live {
     direct_pending: usize,
-    cutoffs: Cutoffs,
-    refreshed: std::time::Instant,
-    /// Per reflection order: sources started without a cutoff, and the lowest
-    /// and highest weighted cutoff applied.
+    /// Per reflection order: sources started without any threshold, and the
+    /// lowest and highest receiver threshold applied.
     used: Vec<(usize, f64, f64)>,
-}
-impl Live {
-    /// Cutoffs for an item of reflection order `order` starting now. Sources
-    /// are counted once, by their first receiver block.
-    fn snapshot(&mut self, scene: &Scene, order: usize, first: bool) -> Cutoffs {
-        let cutoffs = if order == 0 { [None; 8] } else { self.cutoffs };
-        let used = &mut self.used[order];
-        match cutoffs[4] {
-            // Strategy cutoffs are one weighted threshold for all bands.
-            Some(c) => {
-                let weighted = c + strategy_weights(scene)[4];
-                used.1 = used.1.min(weighted);
-                used.2 = used.2.max(weighted);
-            }
-            None if first => used.0 += 1,
-            None => {}
-        }
-        cutoffs
-    }
-    fn complete(&mut self, scene: &Scene, order: usize, totals: &Totals) {
-        if order == 0 {
-            self.direct_pending -= 1;
-        }
-        // Throttled: recomputing scans every receiver.
-        if self.direct_pending == 0
-            && (self.cutoffs[4].is_none()
-                || self.refreshed.elapsed() >= std::time::Duration::from_millis(20))
-        {
-            let energy: Vec<Bands> = totals
-                .energy
-                .iter()
-                .map(|e| e.each_ref().map(Exact::total))
-                .collect();
-            self.cutoffs = strategy_cutoffs(scene, &energy);
-            self.refreshed = std::time::Instant::now();
-        }
-    }
 }
 pub fn pruning_margin(strategy: &str, sources: usize) -> f64 {
     10. * (sources.max(1) as f64).log10() + pruning_constant(strategy)
@@ -618,10 +651,13 @@ struct ItemRun<'a> {
     index: &'a SearchIndex,
     block: &'a ReceiverBlock,
     order: Option<usize>,
-    cutoffs: &'a Cutoffs,
+    cutoffs: &'a ItemCutoffs,
+    /// Cutoffs valid for every receiver of the block (`ItemCutoffs::floor`).
+    floor: Cutoffs,
+    weights: [f64; 8],
     work: &'a Work<'a>,
     paths: &'a PathCounter<'a>,
-    /// Tracing is identical in every block: count its statistics once.
+    /// Tracing statistics are counted once per source, by its first block.
     first: bool,
 }
 impl ItemRun<'_> {
@@ -652,7 +688,7 @@ impl ItemRun<'_> {
             self.block,
             node,
             self.order,
-            self.cutoffs,
+            &self.floor,
             self.work.cancel,
         )?;
         let (paths, stats) = (self.paths, &expansion.stats);
@@ -705,10 +741,11 @@ impl ItemRun<'_> {
         // locally, then merge once, avoiding cache-line contention between
         // all workers on every geometry/search operation.
         let failure = stub.failure.take();
+        let cutoffs = self.cutoffs.at(&self.weights, ri - self.block.range.start);
         match failure {
             Some(error) => Err(error),
             None => self.work.isolated(|work| {
-                calculate_receiver_stub(scene, source, family, stub, self.cutoffs, work)
+                calculate_receiver_stub(scene, source, family, stub, &cutoffs, work)
             }),
         }
         .map_err(|mut error| {
@@ -754,11 +791,13 @@ fn trace_item(
     first: bool,
     source: &Source,
     order: Option<usize>,
-    cutoffs: &Cutoffs,
+    cutoffs: &ItemCutoffs,
     work: &Work,
     paths: &PathCounter,
 ) -> Result<(Vec<(usize, Contribution)>, crate::integration::Summary), Diagnostic> {
     check_cancel(work.cancel)?;
+    cutoffs.check(order, block.range.len())?;
+    let weights = strategy_weights(scene);
     let run = ItemRun {
         scene,
         source,
@@ -766,6 +805,8 @@ fn trace_item(
         block,
         order,
         cutoffs,
+        floor: cutoffs.floor(&weights),
+        weights,
         work,
         paths,
         first,
@@ -1041,7 +1082,7 @@ impl Plan {
     fn trace(
         &self,
         item: usize,
-        cutoffs: &Cutoffs,
+        cutoffs: &ItemCutoffs,
         cancel: &AtomicBool,
         paths: &PathCounter,
     ) -> Result<(Vec<(usize, Contribution)>, crate::integration::Summary), Diagnostic> {
@@ -1067,7 +1108,7 @@ impl Plan {
     pub fn run_item(
         &self,
         item: usize,
-        cutoffs: &Cutoffs,
+        cutoffs: &ItemCutoffs,
         cancel: &AtomicBool,
     ) -> Result<ItemOutput, Diagnostic> {
         if item >= self.items() {
@@ -1117,8 +1158,6 @@ impl<'a> Merge<'a> {
             )),
             live: Mutex::new(Live {
                 direct_pending: plan.per_stage(),
-                cutoffs: [None; 8],
-                refreshed: std::time::Instant::now(),
                 used: vec![(0, f64::INFINITY, f64::NEG_INFINITY); plan.orders.len()],
             }),
             paths: PathCounter::new(path_counts),
@@ -1129,16 +1168,52 @@ impl<'a> Merge<'a> {
             failed: AtomicBool::new(false),
         }
     }
-    /// Cutoffs for `item` if it starts now.
-    pub fn cutoffs(&self, item: usize) -> Cutoffs {
-        let (stage, _, bi) = self.plan.locate(item);
-        match self.plan.orders[stage] {
-            Some(k) => self
-                .live
-                .lock()
-                .unwrap_or_else(|e| e.into_inner())
-                .snapshot(&self.plan.scene, k, bi == 0),
-            None => self.plan.scene.settings.cutoffs,
+    /// Cutoffs for `item` if it starts now. Under a strategy, a reflection
+    /// item started after every direct item has completed takes a threshold
+    /// for each receiver of its block from that receiver's running total.
+    pub fn cutoffs(&self, item: usize) -> ItemCutoffs {
+        let plan = self.plan;
+        let scene = &plan.scene;
+        let (stage, si, bi) = plan.locate(item);
+        let Some(order) = plan.orders[stage] else {
+            return ItemCutoffs::fixed(scene.settings.cutoffs);
+        };
+        // Locks are taken in the order `add` takes them: totals, then live.
+        let totals = self.totals.lock().unwrap_or_else(|e| e.into_inner());
+        let mut live = self.live.lock().unwrap_or_else(|e| e.into_inner());
+        let thresholds = (order > 0 && live.direct_pending == 0).then(|| {
+            let weights = strategy_weights(scene);
+            let margin = pruning_margin(
+                scene.settings.strategy.as_deref().unwrap_or("dba"),
+                scene.sources.len(),
+            );
+            plan.blocks(si)[bi]
+                .range
+                .clone()
+                .map(|ri| {
+                    receiver_threshold(
+                        &weights,
+                        margin,
+                        &totals.energy[ri].each_ref().map(Exact::total),
+                    )
+                })
+                .collect::<Vec<_>>()
+        });
+        drop(totals);
+        // Sources are counted once, by their first receiver block.
+        let used = &mut live.used[order];
+        let mut any = false;
+        for t in thresholds.iter().flatten().flatten() {
+            used.1 = used.1.min(*t);
+            used.2 = used.2.max(*t);
+            any = true;
+        }
+        if !any && bi == 0 {
+            used.0 += 1;
+        }
+        ItemCutoffs {
+            fixed: [None; 8],
+            thresholds,
         }
     }
     fn add(
@@ -1153,11 +1228,11 @@ impl<'a> Merge<'a> {
             let mut totals = self.totals.lock().unwrap_or_else(|e| e.into_inner());
             totals.merge(stage * plan.sources() + si, si, contributions)?;
             totals.integration.merge(integration);
-            if let Some(k) = plan.orders[stage] {
+            if plan.orders[stage] == Some(0) {
                 self.live
                     .lock()
                     .unwrap_or_else(|e| e.into_inner())
-                    .complete(&plan.scene, k, &totals);
+                    .direct_pending -= 1;
             }
         }
         let item_share = 1. / (plan.orders.len() * plan.blocks(si).len()) as f64;
@@ -1369,7 +1444,7 @@ impl<'a> Merge<'a> {
         if let Some(strategy) = &scene.settings.strategy {
             result["diagnostics"]["pruning"] = json!({"strategy":strategy,
                 "margin_db":pruning_margin(strategy, scene.sources.len()),"source_count":scene.sources.len(),
-                "rule":format!("direct paths unpruned; once all have completed, each reflection task takes band cutoff = quietest receiver weighted level from contributions completed when it starts - margin - band weighting; margin = 10 log10(source count) + {} dB", pruning_constant(strategy)),
+                "rule":format!("direct paths unpruned; once all have completed, each reflection task takes, for each receiver, band cutoff = that receiver's weighted level from contributions completed when the task starts - margin - band weighting; a receiver with no energy yet is not pruned; reflection prefixes use the lowest threshold of the task's receiver block; margin = 10 log10(source count) + {} dB", pruning_constant(strategy)),
                 "stages":stage_reports});
         }
         result["diagnostics"]["path_search"] = json!({
@@ -1695,6 +1770,13 @@ mod work_plan_tests {
             "output":{"area_source_contributions":true}
         })
     }
+    fn run_local(request: &Value, threads: usize) -> Value {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(threads)
+            .build()
+            .unwrap()
+            .install(|| crate::calculate(request, &AtomicBool::new(false), &|_, _| {}).unwrap())
+    }
     fn run(request: &Value, threads: usize, target_items: usize) -> Value {
         let mut value = rayon::ThreadPoolBuilder::new()
             .num_threads(threads)
@@ -1793,6 +1875,239 @@ mod work_plan_tests {
             serde_json::to_string(&distributed).unwrap(),
             serde_json::to_string(&local).unwrap()
         );
+    }
+
+    /// The cutoffs of an item follow the receivers of its block: a fixed
+    /// cutoff is the same everywhere, a strategy gives each receiver its own,
+    /// and work shared by the block uses none higher than any receiver's.
+    #[test]
+    fn item_cutoffs_follow_the_block_receivers() {
+        use super::{ItemCutoffs, receiver_threshold};
+        let weights = crate::acoustics::A_WEIGHTING;
+        let fixed = ItemCutoffs::fixed([Some(10.); 8]);
+        assert_eq!(fixed.at(&weights, 3), [Some(10.); 8]);
+        assert_eq!(fixed.floor(&weights), [Some(10.); 8]);
+        let unpruned = ItemCutoffs::default();
+        assert_eq!(unpruned.at(&weights, 0), [None; 8]);
+        assert_eq!(unpruned.floor(&weights), [None; 8]);
+        let live = ItemCutoffs {
+            fixed: [None; 8],
+            thresholds: Some(vec![Some(40.), None, Some(25.)]),
+        };
+        for b in 0..8 {
+            assert_eq!(live.at(&weights, 0)[b], Some(40. - weights[b]));
+            assert_eq!(live.at(&weights, 2)[b], Some(25. - weights[b]));
+        }
+        // A receiver without energy, or outside the list, is not pruned, and
+        // nothing shared by the block is cut on its behalf.
+        assert_eq!(live.at(&weights, 1), [None; 8]);
+        assert_eq!(live.at(&weights, 3), [None; 8]);
+        assert_eq!(live.floor(&weights), [None; 8]);
+        let all = ItemCutoffs {
+            fixed: [None; 8],
+            thresholds: Some(vec![Some(40.), Some(25.), Some(31.)]),
+        };
+        for b in 0..8 {
+            assert_eq!(all.floor(&weights)[b], Some(25. - weights[b]));
+        }
+        let empty = ItemCutoffs {
+            fixed: [None; 8],
+            thresholds: Some(vec![]),
+        };
+        assert_eq!(empty.floor(&weights), [None; 8]);
+        // Threshold = weighted level less the margin; none without energy.
+        assert_eq!(receiver_threshold(&weights, 20., &[0.; 8]), None);
+        let mut energy = [0.; 8];
+        energy[4] = 1e6;
+        let t = receiver_threshold(&weights, 20., &energy).unwrap();
+        assert!((t - 40.).abs() < 1e-12, "{t}");
+    }
+
+    /// With a strategy, items run one after another as a node runs them,
+    /// carried as JSON, give the one-worker local result bit for bit: every
+    /// item then starts from the same completed contributions in both runs.
+    /// (Runs with several workers differ, because thresholds are live.)
+    #[test]
+    fn serial_strategy_items_match_the_one_worker_run() {
+        use super::{ItemOutput, Merge, Plan};
+        let mut request = request();
+        request["sources"] = json!([request["sources"][0], request["sources"][1]]);
+        request["settings"]["pruning_strategy"] = json!("dba");
+        let local = run_local(&request, 1);
+        let cancel = AtomicBool::new(false);
+        let plan = Plan::prepare(request.clone(), &cancel).unwrap();
+        let merge = Merge::new(&plan, &|_, _| {}, &|_, _| {});
+        let mut applied = 0;
+        for item in 0..plan.items() {
+            let cutoffs = merge.cutoffs(item);
+            if let Some(thresholds) = &cutoffs.thresholds {
+                applied += thresholds.iter().flatten().count();
+            }
+            let wire =
+                serde_json::to_vec(&plan.run_item(item, &cutoffs, &cancel).unwrap()).unwrap();
+            let output: ItemOutput = serde_json::from_slice(&wire).unwrap();
+            merge.add_output(item, output).unwrap();
+        }
+        assert!(applied > 0, "no receiver threshold was applied");
+        let serial = merge.finish(&cancel).unwrap();
+        assert_eq!(
+            serde_json::to_string(&serial).unwrap(),
+            serde_json::to_string(&local).unwrap()
+        );
+    }
+
+    /// A threshold list that does not fit its item is an invalid input,
+    /// never applied: the wrong length (it would reach the wrong receivers),
+    /// a value that is not finite, a list beside fixed cutoffs, and a list
+    /// for a direct item or for a plan without a strategy.
+    #[test]
+    fn a_threshold_list_that_does_not_fit_its_item_is_rejected() {
+        use super::{ItemCutoffs, Plan};
+        let mut request = request();
+        request["sources"] = json!([request["sources"][0]]);
+        let cancel = AtomicBool::new(false);
+        let unpruned = Plan::prepare(request.clone(), &cancel).unwrap();
+        request["settings"]["pruning_strategy"] = json!("dba");
+        let plan = Plan::prepare(request, &cancel).unwrap();
+        let item = plan.items() - 1;
+        let (stage, si, bi) = plan.locate(item);
+        assert!(stage > 0);
+        let receivers = plan.blocks(si)[bi].range.len();
+        let list = |thresholds: Vec<Option<f64>>| ItemCutoffs {
+            fixed: [None; 8],
+            thresholds: Some(thresholds),
+        };
+        let rejected = |plan: &Plan, item: usize, cutoffs: &ItemCutoffs| {
+            let error = plan.run_item(item, cutoffs, &cancel).err().unwrap();
+            assert_eq!(error.code, "invalid_input", "{error:?}");
+        };
+        let right = list(vec![Some(30.); receivers]);
+        assert!(plan.run_item(item, &right, &cancel).is_ok());
+        assert!(
+            plan.run_item(item, &list(vec![None; receivers]), &cancel)
+                .is_ok()
+        );
+        for wrong in [receivers + 1, receivers - 1] {
+            rejected(&plan, item, &list(vec![Some(30.); wrong]));
+        }
+        for bad in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY] {
+            let mut thresholds = vec![Some(30.); receivers];
+            thresholds[receivers - 1] = Some(bad);
+            rejected(&plan, item, &list(thresholds));
+        }
+        let mut both = right.clone();
+        both.fixed = [Some(10.); 8];
+        rejected(&plan, item, &both);
+        // Direct items (stage 0) and plans without a strategy take no list.
+        let direct_block = plan.blocks(0)[0].range.len();
+        rejected(&plan, 0, &list(vec![Some(30.); direct_block]));
+        rejected(&unpruned, 0, &list(vec![Some(30.); direct_block]));
+        // Without a list, band cutoffs apply to every receiver, as before.
+        assert!(
+            plan.run_item(item, &ItemCutoffs::fixed([Some(10.); 8]), &cancel)
+                .is_ok()
+        );
+        assert!(
+            plan.run_item(item, &ItemCutoffs::default(), &cancel)
+                .is_ok()
+        );
+    }
+
+    /// Receivers in a later block of a source are pruned against their own
+    /// levels. Loud and quiet receivers alternate, so every block holds both
+    /// and a threshold applied to the wrong receiver, or to none, shows.
+    #[test]
+    fn later_blocks_apply_each_receivers_own_threshold() {
+        use super::Plan;
+        let mut buildings = vec![];
+        for (i, (x, y)) in [(0., 0.), (60., 0.), (0., 60.), (60., 60.), (30., 120.)]
+            .iter()
+            .enumerate()
+        {
+            buildings.push(json!({"id":format!("b{i}"),"footprint":[[x,y,0],[x+20.,*y,0],[x+20.,y+20.,0],[*x,y+20.,0]],"height_m":12}));
+        }
+        let sources: Vec<Value> = (0..12)
+            .map(|i| {
+                json!({"id":format!("s{i}"),"kind":"point","position":[5. + 7. * i as f64, 40. + (i % 3) as f64 * 5., 2],
+                "spectrum":[85,88,90,92,95,92,88,84]})
+            })
+            .collect();
+        // 48 receivers: loud (in the courtyard), middle and quiet (far away)
+        // in turn, so each of the three 16-receiver blocks mixes all three.
+        let receivers: Vec<Value> = (0..48)
+            .map(|i| {
+                let k = (i / 3) as f64;
+                let position = match i % 3 {
+                    0 => [25. + 2. * k, 30., 1.5],
+                    1 => [150. + 2. * k, 45., 1.5],
+                    _ => [400. + 2. * k, -200., 1.5],
+                };
+                json!({"id":format!("r{i}"),"position":position})
+            })
+            .collect();
+        let mut request = json!({"sources":sources,"receivers":receivers,"buildings":buildings,
+            "settings":{"max_reflect_order":2,"minimum_contribution_db":null}});
+        let weights = crate::acoustics::A_WEIGHTING;
+        let weighted = |r: &Value| {
+            let e: f64 = (0..8)
+                .map(|b| {
+                    r["octave_db"][b]
+                        .as_f64()
+                        .map_or(0., |l| 10f64.powf((l + weights[b]) / 10.))
+                })
+                .sum();
+            10. * e.log10()
+        };
+        let uncut: Vec<f64> = run_local(&request, 4)["receivers"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(weighted)
+            .collect();
+        let quietest = uncut.iter().copied().fold(f64::INFINITY, f64::min);
+        request["settings"]["pruning_strategy"] = json!("dba");
+        request["output"] = json!({"path_diagnostics":"summary"});
+        let cancel = AtomicBool::new(false);
+        let plan = Plan::prepare(request.clone(), &cancel).unwrap();
+        let blocks: Vec<_> = plan.blocks(0).iter().map(|b| b.range.clone()).collect();
+        assert_eq!(blocks, [0..16, 16..32, 32..48]);
+        let result = run_local(&request, 1);
+        let margin = super::pruning_margin("dba", 12);
+        // Per receiver: skipped bands, and those the quietest receiver's
+        // threshold would have kept.
+        let mut skipped = [0usize; 48];
+        let mut beyond_quietest = [0usize; 48];
+        for record in result["path_diagnostics"].as_array().unwrap() {
+            let Some(omitted) = record.get("omitted_energy") else {
+                continue;
+            };
+            let id = record["receiver_id"].as_str().unwrap();
+            let r: usize = id[1..].parse().unwrap();
+            for b in 0..8 {
+                let bound = omitted[b].as_f64().unwrap();
+                if bound == 0. {
+                    continue;
+                }
+                let level = 10. * bound.log10() + weights[b];
+                // Never above the receiver's own final threshold.
+                assert!(level < uncut[r] - margin + 1e-9, "{id}: band {b} {level}");
+                skipped[r] += 1;
+                if level >= quietest - margin {
+                    beyond_quietest[r] += 1;
+                }
+            }
+        }
+        for block in &blocks[1..] {
+            // The loud receivers of a later block are pruned, and beyond what
+            // the quietest receiver's threshold allows.
+            for r in block.clone().filter(|r| r % 3 == 0) {
+                assert!(uncut[r] > quietest + 20.);
+                assert!(skipped[r] > 0, "r{r} of block {block:?} was not pruned");
+                assert!(beyond_quietest[r] > 0, "r{r} of block {block:?}");
+            }
+            // Its other receivers are pruned too, each within its own level.
+            assert!(block.clone().any(|r| r % 3 != 0 && skipped[r] > 0));
+        }
     }
 
     /// Zone integration reports are summarized unless a run asks for the
