@@ -975,10 +975,23 @@ Resolved values are echoed in the result.
 | `meteorological_mode` | `"downwind"` | `"downwind"` or `"long_term"`, subject to supported source/path combinations. |
 | `c0` | `0` | Finite nonnegative C₀ in dB; must be zero for downwind output. |
 
-With a `pruning_strategy`, the engine evaluates each reflection order of each
-source as a separate task. Direct paths are never pruned. Once every source's
-direct paths have completed, each reflection task uses, when it starts, for
-each receiver, per-band cutoffs of
+With a `pruning_strategy`, the engine first evaluates the direct paths, ranked
+at each receiver by an upper bound on what each source can deliver there. The
+sources whose weighted bound is within c dB of the largest (c = 20 dB for dBA,
+25 dB for dBC) are evaluated first; of the others, the lowest-bound sources are
+omitted while their bounds sum to at most 10^(−c/10) of the weighted energy
+those leaders delivered, and the rest are evaluated. Omitted bounds are
+reported as omitted energy, and the weighted energy omitted among direct paths
+is at most 10^(−c/10) of the energy computed at the receiver (0.043 dB for dBA,
+0.014 dB for dBC), which limits the weighted level only, not single bands.
+Direct results do not depend on scheduling on a single engine.
+`diagnostics.pruning.direct` counts source-receiver pairs: `leading_pairs`,
+`evaluated_pairs`, `omitted_pairs`, and `unranked_pairs` (evaluated in full
+because a work item ran before the receiver's leaders were merged).
+
+The engine then evaluates each reflection order of each source as a separate
+task. Once every source's direct paths have completed, each reflection task
+uses, when it starts, for each receiver, per-band cutoffs of
 (that receiver's weighted level from contributions completed so far)
 − (10 log10(source count) + 20 dB for dBA or + 25 dB for dBC)
 − (band weighting). Each receiver is judged against its own level; a receiver
@@ -987,8 +1000,10 @@ only rise as tasks complete. Pruned results therefore depend slightly on
 scheduling and can differ between runs; unpruned results do not.
 `diagnostics.pruning.stages` reports, per reflection order,
 `tasks_without_cutoff` (sources whose first task of that order started with no
-receiver cutoff) and `weighted_cutoff_db`, the lowest and highest receiver
-cutoff applied before band weighting (null if none). The margin is empirical.
+receiver cutoff; for order 0, sources whose first task of the remaining
+sources ranked no receiver) and `weighted_cutoff_db`, the lowest and highest
+receiver cutoff applied before band weighting (null if none, and always null
+for order 0). For reflections the margin is empirical.
 In the recorded checks (a 12-source courtyard at third order and a 200-source
 synthetic site at first order) weighted totals stayed within 0.05 dB of
 unpruned results, while single octave bands that contribute little to the
@@ -1002,7 +1017,9 @@ not extended when no band can reach the cutoff through them
 (`path_search.prefix_pruned_beams`); under a strategy that test uses the lowest
 cutoff among the receivers the task serves, and none if any of them has no
 cutoff. The count is taken from each source's first receiver block; under a
-strategy other blocks, with their own cutoffs, may cut different beams. Point families with only vertical
+strategy other blocks, with their own cutoffs, may cut different beams.
+Direct families under a strategy use the ranking bound; under a fixed cutoff,
+and for reflections, point families with only vertical
 reflectors use the unscreened family cap times source power; line/area
 families sum per-cell bounds over all zones and skip integration of pruned
 bands. Computed contributions are never discarded. Equality survives. Pruned

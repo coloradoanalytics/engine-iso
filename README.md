@@ -116,7 +116,8 @@ running work items.
 
 CPU work uses one shared Rayon work-stealing pool. A calculation is divided
 into work items of one source, one block of receivers and (with a pruning
-strategy) one reflection order; each source-receiver pair lies in exactly one
+strategy) one stage: the direct paths in two ranked stages, then each
+reflection order. Each family of a source-receiver pair lies in exactly one
 item, and energy sums are exact (correctly rounded), so without pruning results
 do not depend on scheduling, worker count or how the work is divided. With a
 pruning strategy, live cutoffs depend on which items have completed, so pruned
@@ -192,7 +193,11 @@ unverified.
   and do not depend on how the work is divided. Beams, empty beams and
   reflector candidates are separate `path_search` diagnostics. An empty beam
   contains no receiver (before exact geometry tests).
-- Pruning is off by default. `"pruning_strategy": "dba"` or `"dbc"` runs each
+- Pruning is off by default. `"pruning_strategy": "dba"` or `"dbc"` first
+  ranks the direct paths at each receiver by an upper bound: the leading
+  sources are evaluated, and the lowest-bound others are omitted while their
+  bounds sum to at most 10^(−c/10) of what the leaders delivered there
+  (c = 20 dB for dBA, 25 dB for dBC). It then runs each
   reflection order of each source as a task, without waiting between orders.
   Once all direct paths are done, each task takes per-band cutoffs when it
   starts, for each receiver from that receiver's own weighted level so far,

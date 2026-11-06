@@ -89,6 +89,11 @@ struct ItemInput {
     cutoffs: Cutoffs,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     receiver_thresholds: Option<Vec<Option<u64>>>,
+    /// What a strategy's direct item does at each receiver of its block:
+    /// 0 leaves it to the other direct stage, 1 evaluates it, 2 omits the
+    /// source there and reports its bound.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    receiver_actions: Option<Vec<u8>>,
 }
 impl From<ItemCutoffs> for ItemInput {
     fn from(cutoffs: ItemCutoffs) -> Self {
@@ -97,6 +102,7 @@ impl From<ItemCutoffs> for ItemInput {
             receiver_thresholds: cutoffs
                 .thresholds
                 .map(|t| t.into_iter().map(|t| t.map(f64::to_bits)).collect()),
+            receiver_actions: cutoffs.direct,
         }
     }
 }
@@ -107,6 +113,7 @@ impl From<ItemInput> for ItemCutoffs {
             thresholds: input
                 .receiver_thresholds
                 .map(|t| t.into_iter().map(|t| t.map(f64::from_bits)).collect()),
+            direct: input.receiver_actions,
         }
     }
 }
@@ -699,8 +706,8 @@ mod item_input_tests {
             Some(f64::MIN_POSITIVE),
         ];
         let cutoffs = ItemCutoffs {
-            fixed: [None; 8],
             thresholds: Some(values.to_vec()),
+            ..ItemCutoffs::default()
         };
         let (wire, back) = round_trip(&cutoffs);
         assert!(wire.contains("receiver_thresholds"), "{wire}");

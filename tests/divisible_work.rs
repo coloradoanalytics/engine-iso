@@ -150,8 +150,10 @@ fn strategy_item_inputs_carry_receiver_thresholds_through_the_protocol() {
         let items = planned.header["items"].as_u64().unwrap() as usize;
         let plan = node.request(json!({"op": "plan", "key": key}), &bytes);
         assert_eq!(plan.header["ok"]["items"], items, "{}", plan.header);
-        // Three stages (orders 0, 1, 2) of equally many items.
-        let per_stage = items / 3;
+        // Four stages of equally many items: the leading and the remaining
+        // sources' direct paths, then reflection orders 1 and 2.
+        let per_stage = items / 4;
+        let direct = 2 * per_stage;
         let run = |payload: &[u8], item: usize| {
             node.request(json!({"op": "run_item", "key": key, "item": item}), payload)
         };
@@ -168,11 +170,20 @@ fn strategy_item_inputs_carry_receiver_thresholds_through_the_protocol() {
                 json!(vec![Value::Null; 8]),
                 "{strategy} item {item}"
             );
-            match fields.get("receiver_thresholds") {
-                // Direct items carry no thresholds.
-                None => assert!(item < per_stage, "{strategy} item {item}"),
+            // Direct items carry one action per receiver, nothing else.
+            match fields.get("receiver_actions") {
                 Some(list) => {
-                    assert!(item >= per_stage, "{strategy} item {item}");
+                    assert!(item < direct, "{strategy} item {item}");
+                    let list = list.as_array().unwrap();
+                    let limit = if item < per_stage { 1 } else { 2 };
+                    assert!(list.iter().all(|a| a.as_u64().unwrap() <= limit));
+                }
+                None => assert!(item >= direct, "{strategy} item {item}"),
+            }
+            match fields.get("receiver_thresholds") {
+                None => assert!(item < direct, "{strategy} item {item}"),
+                Some(list) => {
+                    assert!(item >= direct, "{strategy} item {item}");
                     let list = list.as_array().unwrap();
                     // Bit patterns of finite thresholds, or null.
                     assert!(list.iter().any(|t| t.is_u64()), "{strategy} item {item}");
@@ -189,7 +200,7 @@ fn strategy_item_inputs_carry_receiver_thresholds_through_the_protocol() {
             );
             assert!(merged.header["ok"].is_null(), "{}", merged.header);
         }
-        assert_eq!(with_thresholds, items - per_stage, "{strategy}");
+        assert_eq!(with_thresholds, items - direct, "{strategy}");
         // Inputs that do not fit the item are refused by the node; they are
         // not merged, so they leave the calculation unchanged.
         let (item, fields) = last_list.unwrap();
@@ -210,8 +221,10 @@ fn strategy_item_inputs_carry_receiver_thresholds_through_the_protocol() {
         let mut both = fields.clone();
         both["cutoffs"] = json!(vec![30f64.to_bits(); 8]);
         refused(&both, item);
-        // A direct item takes no thresholds.
+        // A direct item takes no thresholds, and needs its actions.
         refused(&fields, 0);
+        refused(&json!({"cutoffs": vec![Value::Null; 8]}), 0);
+        refused(&json!({"cutoffs": vec![Value::Null; 8]}), per_stage);
         // The form of earlier builds, without a list, still runs.
         let legacy = run(
             br#"{"cutoffs":[null,null,null,null,null,null,null,null]}"#,

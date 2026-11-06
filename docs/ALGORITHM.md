@@ -655,12 +655,52 @@ or missed sample is never treated as zero.
 ### Pruning strategies
 
 `pruning_strategy` names the weighted level the pruning aims at: `"dba"` (A-weighting)
-or `"dbc"` (C-weighting). The calculation then runs one task per source and
-reflection order: order 0 evaluates direct and screened paths without pruning,
-and order k only families with exactly k reflections. Tasks start in order-major
-sequence as workers become free; no order waits for the previous one. Once
-every source's order-0 task has finished, each later task takes, when it
-starts, a cutoff for each receiver it serves:
+or `"dbc"` (C-weighting). The calculation then runs the direct and screened
+paths of every source first, in two ranked stages, and after them one task per
+source and reflection order k, of the families with exactly k reflections.
+Both parts use the same margin constant c: 20 dB (dBA) or 25 dB (dBC).
+
+**Direct paths: ranking.** At each receiver the sources are ranked by an upper
+bound on what each can deliver along its direct family:
+
+```text
+U_s,r,b = W_s,b * 10^((D_max,b + 6 − 11) / 10) / d² * 10^(−α_b * d / 10)
+U_s,r   = sum_b(U_s,r,b * 10^(W_b / 10))
+```
+
+W_s,b is the whole source's power, D_max its largest directivity, 6 dB the net
+ground allowance of the other bounds, α_b the atmospheric coefficient and d the
+shortest distance from the receiver to the source's bounding box (for a point
+source, to the source). Screening, meteorology and miscellaneous losses are
+taken as zero. The direct family never exceeds the bound, because it is capped
+at its unscreened reference.
+
+- **Leaders.** The sources whose U_s,r is within c dB of the largest at
+  receiver r are evaluated first, without pruning.
+- **The others.** Let E_r be the weighted energy the leaders delivered at r.
+  Taken from the lowest bound upwards, the other sources are omitted while
+  their bounds sum to at most 10^(−c/10) * E_r; a source whose bound equals the
+  first that no longer fits is kept. The rest are evaluated without pruning.
+  An omitted source's bound is reported as omitted energy.
+
+The weighted energy omitted among direct paths at a receiver is therefore at
+most 10^(−c/10) of the energy computed there: a weighted loss of at most
+10 log10(1 + 10^(−c/10)), 0.043 dB for dBA and 0.014 dB for dBC, under the
+assumptions of the bound. This limits the weighted level, not single octave
+bands, and it covers direct paths only. No leader can be omitted: the leaders'
+energy is no more than their bounds, so everything omitted lies more than c dB
+below the largest bound. A receiver whose leaders delivered nothing omits
+nothing.
+
+A single engine finishes every leader before it starts the others, so the
+direct result does not depend on scheduling or worker count. When work items
+are run elsewhere in another order, a receiver whose leaders are not all merged
+is evaluated in full: more is calculated, never less.
+
+**Reflections: thresholds.** Reflection tasks start in order-major sequence as
+workers become free; no order waits for the previous one. Once every direct
+task has finished, each reflection task takes, when it starts, a cutoff for
+each receiver it serves:
 
 ```text
 L_r        = weighted level at receiver r of all contributions completed so far
@@ -680,9 +720,9 @@ which tasks have finished, pruned results can differ slightly between runs;
 unpruned results do not. The same task given the same cutoffs always gives the
 same result.
 
-The margin is empirical, not a guarantee: many skipped contributions can add
-up, and their number grows with the number of sources, hence the
-10 log10(N) term. The constant governs the loss at every receiver, because
+For reflections the margin is empirical, not a guarantee: many skipped
+contributions can add up, and their number grows with the number of sources,
+hence the 10 log10(N) term. The constant governs the loss at every receiver, because
 each is judged against its own level. dBC needs the larger constant because
 its total is set by the loud low bands. Individual octave bands, especially
 those that contribute little to the weighted level, can lose far more than the
@@ -695,6 +735,9 @@ instead.
 
 Each test uses the band cutoff in force at the receiver concerned; a family
 without a valid bound below the cutoff is calculated in full.
+
+- **Direct families under a strategy**: the ranking bound U_s,r,b above, by the
+  rule given there rather than by a cutoff.
 
 - **Reflection prefixes.** A beam serves every receiver of its task that lies
   in it, so this test uses a cutoff no higher than any of theirs: under a
@@ -734,7 +777,8 @@ parallel work; each source–receiver pair is calculated within one work item.
 Energies are summed with exact, correctly rounded sums, so results do not
 depend on order, partitioning or worker count (except with pruning, above).
 Lists such as warnings follow a canonical order: reflection order, then source,
-then family.
+then family; under a pruning strategy the direct paths of each receiver's
+leading sources come before those of its other sources.
 
 Scene preparation, source geometry and reflection prefixes are shared and
 immutable. Each beam carries its own copy of the active-band mask; silent,

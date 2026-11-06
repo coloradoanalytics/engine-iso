@@ -211,37 +211,81 @@ pub struct ItemCutoffs {
     pub fixed: Cutoffs,
     /// Weighted thresholds of the block's receivers, in block order.
     pub thresholds: Option<Vec<Option<f64>>>,
+    /// What a strategy's direct item does at each receiver of its block, in
+    /// block order: `SKIP`, `EVALUATE` or `OMIT`.
+    pub direct: Option<Vec<u8>>,
 }
+/// A direct item leaves this receiver to the other direct stage.
+pub const SKIP: u8 = 0;
+/// A direct item evaluates this receiver, unpruned.
+pub const EVALUATE: u8 = 1;
+/// A direct item reports the source's bound at this receiver as omitted
+/// energy and does not evaluate it: the source is ranked out there.
+pub const OMIT: u8 = 2;
 impl ItemCutoffs {
     pub fn fixed(fixed: Cutoffs) -> Self {
         Self {
             fixed,
-            thresholds: None,
+            ..Self::default()
         }
     }
-    /// Whether these cutoffs fit an item of reflection order `order` (`None`
-    /// without a strategy) over a block of `receivers`. Receiver thresholds
-    /// belong to a strategy's reflection items only, one finite value or none
-    /// per receiver, and never accompany fixed cutoffs: a list that fits no
-    /// such item is rejected, not applied. A merge session sends none to
-    /// direct items; a node holds to that too.
-    fn check(&self, order: Option<usize>, receivers: usize) -> Result<(), Diagnostic> {
-        let Some(thresholds) = &self.thresholds else {
-            return Ok(());
+    /// What a direct item does at the `k`-th receiver of its block.
+    fn action(&self, k: usize) -> u8 {
+        match &self.direct {
+            None => EVALUATE,
+            Some(actions) => actions.get(k).copied().unwrap_or(SKIP),
+        }
+    }
+    /// Whether these cutoffs fit an item of `stage` over a block of
+    /// `receivers`. A strategy's direct items take one action per receiver
+    /// and nothing else: without the list both direct stages would evaluate
+    /// every receiver. Receiver thresholds belong to a strategy's reflection
+    /// items only, one finite value or none per receiver. Neither list
+    /// accompanies fixed cutoffs. A list that fits no such item is rejected,
+    /// not applied.
+    fn check(&self, stage: Stage, receivers: usize) -> Result<(), Diagnostic> {
+        let length = |what: &str, n: usize| {
+            (n != receivers)
+                .then(|| format!("{n} receiver {what} for a block of {receivers} receivers"))
         };
-        let problem = if !matches!(order, Some(k) if k > 0) {
-            Some("receiver thresholds for an item that is not a strategy's reflection item".into())
-        } else if pruning(&self.fixed) {
-            Some("receiver thresholds together with fixed cutoffs".into())
-        } else if thresholds.len() != receivers {
-            Some(format!(
-                "{} receiver thresholds for a block of {receivers} receivers",
-                thresholds.len()
-            ))
-        } else if thresholds.iter().flatten().any(|t| !t.is_finite()) {
-            Some("a receiver threshold that is not finite".into())
-        } else {
-            None
+        let problem = match (&self.direct, &self.thresholds) {
+            (Some(_), Some(_)) => Some("both receiver actions and receiver thresholds".into()),
+            (Some(actions), None) => {
+                if !stage.direct() {
+                    Some("receiver actions for an item that is not a strategy's direct item".into())
+                } else if pruning(&self.fixed) {
+                    Some("receiver actions together with fixed cutoffs".into())
+                } else if let Some(problem) = length("actions", actions.len()) {
+                    Some(problem)
+                } else if actions
+                    .iter()
+                    .any(|a| *a > OMIT || (stage == Stage::Lead && *a == OMIT))
+                {
+                    Some("a receiver action that does not fit the item".into())
+                } else {
+                    None
+                }
+            }
+            (None, Some(thresholds)) => {
+                if !matches!(stage, Stage::Order(_)) {
+                    Some(
+                        "receiver thresholds for an item that is not a strategy's reflection item"
+                            .into(),
+                    )
+                } else if pruning(&self.fixed) {
+                    Some("receiver thresholds together with fixed cutoffs".into())
+                } else if let Some(problem) = length("thresholds", thresholds.len()) {
+                    Some(problem)
+                } else if thresholds.iter().flatten().any(|t| !t.is_finite()) {
+                    Some("a receiver threshold that is not finite".into())
+                } else {
+                    None
+                }
+            }
+            (None, None) if stage.direct() => {
+                Some("no receiver actions for a strategy's direct item".into())
+            }
+            (None, None) => None,
         };
         match problem {
             Some(problem) => Err(Diagnostic::invalid(format!(
@@ -283,11 +327,201 @@ impl ItemCutoffs {
         }
     }
 }
+/// A stage of the work plan.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Stage {
+    /// Every reflection order in one item: no pruning strategy.
+    All,
+    /// Direct paths from each receiver's leading sources.
+    Lead,
+    /// Direct paths from each receiver's other sources.
+    Rest,
+    /// Families with exactly this many reflections, at least one.
+    Order(usize),
+}
+impl Stage {
+    /// The one reflection order the stage connects, if it is limited to one.
+    fn order(self) -> Option<usize> {
+        match self {
+            Stage::All => None,
+            Stage::Lead | Stage::Rest => Some(0),
+            Stage::Order(k) => Some(k),
+        }
+    }
+    fn direct(self) -> bool {
+        matches!(self, Stage::Lead | Stage::Rest)
+    }
+}
+
+/// Ranking of the sources at each receiver under a pruning strategy, by a
+/// conservative bound on what each can deliver along the direct family.
+///
+/// The bound has the terms of the reflection prefix bound: whole-source
+/// power, maximum directivity, a +6 dB net ground allowance, and divergence
+/// and air absorption over the shortest distance from the receiver to the
+/// source's bounding box. Screening, meteorology and miscellaneous losses are
+/// taken as zero. The direct family never exceeds it, because the family is
+/// capped at its unscreened reference.
+///
+/// At a receiver, the sources whose weighted bound is within the strategy's
+/// margin constant c of the largest are its leaders: none of them can be
+/// ranked out, since the bounds of everything ranked out sum to at most
+/// 10^(-c/10) of the leaders' energy and that energy is no more than the
+/// leaders' bounds. Leaders are evaluated first; the other sources are then
+/// ranked against what the leaders delivered (see `rest_floor`).
+struct Ranking {
+    /// Per source: its bounding box and, per band, its power times the
+    /// directivity and ground allowance and the constant of divergence.
+    sources: Vec<(Point, Point, Bands)>,
+    /// Linear strategy weighting of each band.
+    weights: Bands,
+    /// 10^(-c/10).
+    fraction: f64,
+    /// Per receiver: the lowest weighted bound of a leader.
+    lead_floor: Vec<f64>,
+    /// Per receiver: its number of leaders.
+    leaders: Vec<u32>,
+}
+impl Ranking {
+    fn new(scene: &Scene, cancel: &AtomicBool) -> Result<Self, Diagnostic> {
+        let strategy = scene.settings.strategy.as_deref().unwrap_or("dba");
+        let sources = scene
+            .sources
+            .iter()
+            .map(|source| {
+                let mut low = [f64::INFINITY; 3];
+                let mut high = [f64::NEG_INFINITY; 3];
+                for cell in source.zones.iter().flat_map(|z| &z.cells) {
+                    for p in cell.vertices() {
+                        for k in 0..3 {
+                            low[k] = low[k].min(p[k]);
+                            high[k] = high[k].max(p[k]);
+                        }
+                    }
+                }
+                let gain = std::array::from_fn(|b| {
+                    let power: f64 = source.zones.iter().map(|z| z.power[b]).sum();
+                    let directivity = source
+                        .zones
+                        .iter()
+                        .map(|z| {
+                            z.directivity
+                                .as_ref()
+                                .map_or(0., |d| d.maximum_correction()[b])
+                        })
+                        .fold(f64::NEG_INFINITY, f64::max);
+                    if power > 0. {
+                        power * 10f64.powf((directivity + 6. - 11.) / 10.)
+                    } else {
+                        0.
+                    }
+                });
+                (low, high, gain)
+            })
+            .collect();
+        let mut ranking = Self {
+            sources,
+            weights: strategy_weights(scene).map(|w| 10f64.powf(w / 10.)),
+            fraction: 10f64.powf(-pruning_constant(strategy) / 10.),
+            lead_floor: vec![],
+            leaders: vec![],
+        };
+        let floors: Result<Vec<(f64, u32)>, Diagnostic> = (0..scene.receivers.len())
+            .into_par_iter()
+            .map(|ri| {
+                check_cancel(cancel)?;
+                let bounds: Vec<f64> = (0..scene.sources.len())
+                    .map(|si| ranking.weighted(scene, si, ri))
+                    .collect();
+                let floor = bounds.iter().copied().fold(0., f64::max) * ranking.fraction;
+                let leaders = bounds.iter().filter(|u| **u > 0. && **u >= floor).count();
+                Ok((floor, leaders as u32))
+            })
+            .collect();
+        (ranking.lead_floor, ranking.leaders) = floors?.into_iter().unzip();
+        Ok(ranking)
+    }
+    /// Upper bound of the direct family's energy from source `si` at
+    /// receiver `ri`, per band.
+    fn bound(&self, scene: &Scene, si: usize, ri: usize) -> Bands {
+        let (low, high, gain) = &self.sources[si];
+        let p = scene.receivers[ri].point;
+        let squared: f64 = (0..3)
+            .map(|k| (low[k] - p[k]).max(p[k] - high[k]).max(0.).powi(2))
+            .sum();
+        let scale = low
+            .iter()
+            .chain(high)
+            .chain(&p)
+            .map(|x| x.abs())
+            .fold(1., f64::max);
+        let reach = squared.sqrt() - 1e-9 * scale;
+        std::array::from_fn(|b| {
+            if gain[b] <= 0. {
+                0.
+            } else if reach <= 0. {
+                f64::INFINITY
+            } else {
+                gain[b] / (reach * reach) * 10f64.powf(-scene.alpha[b] * reach / 10.) * (1. + 1e-12)
+            }
+        })
+    }
+    /// The strategy-weighted sum of `bound` over the bands.
+    fn weighted(&self, scene: &Scene, si: usize, ri: usize) -> f64 {
+        let bound = self.bound(scene, si, ri);
+        (0..8).map(|b| bound[b] * self.weights[b]).sum()
+    }
+    /// Whether source `si` is a leader at receiver `ri`.
+    fn leads(&self, scene: &Scene, si: usize, ri: usize) -> bool {
+        let bound = self.weighted(scene, si, ri);
+        bound > 0. && bound >= self.lead_floor[ri]
+    }
+    /// The lowest weighted bound still evaluated at receiver `ri` once its
+    /// leaders have delivered the weighted energy `lead`: the other sources
+    /// are taken from the lowest bound upwards, and ranked out while their
+    /// bounds sum to at most 10^(-c/10) of `lead`. A source is ranked out
+    /// when its bound is below the value returned; equal bounds are kept.
+    fn rest_floor(&self, scene: &Scene, ri: usize, lead: f64) -> f64 {
+        let budget = lead * self.fraction;
+        let mut bounds: Vec<f64> = (0..scene.sources.len())
+            .map(|si| self.weighted(scene, si, ri))
+            .filter(|u| *u > 0. && *u < self.lead_floor[ri])
+            .collect();
+        bounds.sort_unstable_by(f64::total_cmp);
+        let mut sum = 0.;
+        for bound in bounds {
+            if sum + bound > budget {
+                return bound;
+            }
+            sum += bound;
+        }
+        f64::INFINITY
+    }
+}
+
+/// Merge-side state of the ranked direct stages.
+#[derive(Default)]
+struct Ranked {
+    /// Weighted energy each receiver has from its leaders.
+    lead: Vec<Exact>,
+    /// Leaders of each receiver whose lead item has not been merged.
+    pending: Vec<u32>,
+    /// Once a receiver's leaders are merged: `Ranking::rest_floor` there.
+    rest_floor: Vec<Option<f64>>,
+    /// Lead items merged; each is counted once.
+    merged: Vec<bool>,
+    /// Source-receiver pairs: leading, evaluated after ranking, ranked out,
+    /// and evaluated because the receiver's leaders were not all merged.
+    pairs: [usize; 4],
+    /// Sources whose first remaining-source item ranked no receiver, because
+    /// leaders were still to be merged.
+    unranked: usize,
+}
+
 /// Live state of a pruning strategy. Contributions only add energy, so each
 /// receiver's level, and with it its threshold, rises as items complete; an
-/// item started earlier uses lower, more conservative thresholds. Direct
-/// paths are never pruned, and no threshold applies until every direct item
-/// has completed.
+/// item started earlier uses lower, more conservative thresholds. No
+/// threshold applies until every direct item has completed.
 struct Live {
     direct_pending: usize,
     /// Per reflection order: sources started without any threshold, and the
@@ -650,7 +884,8 @@ struct ItemRun<'a> {
     source: &'a Source,
     index: &'a SearchIndex,
     block: &'a ReceiverBlock,
-    order: Option<usize>,
+    stage: Stage,
+    ranking: Option<&'a Ranking>,
     cutoffs: &'a ItemCutoffs,
     /// Cutoffs valid for every receiver of the block (`ItemCutoffs::floor`).
     floor: Cutoffs,
@@ -681,14 +916,18 @@ impl ItemRun<'_> {
     }
     /// Expand one node: connect and evaluate its receivers, return children.
     fn step(&self, node: &Node, pairs: &mut Pairs) -> Result<Vec<Node>, Diagnostic> {
+        let start = self.block.range.start;
+        // A direct item connects only the receivers it is to evaluate.
+        let evaluated = |ri: usize| self.cutoffs.action(ri - start) == EVALUATE;
         let expansion = beam::expand(
             self.scene,
             self.source,
             self.index,
             self.block,
             node,
-            self.order,
+            self.stage.order(),
             &self.floor,
+            self.stage.direct().then_some(&evaluated),
             self.work.cancel,
         )?;
         let (paths, stats) = (self.paths, &expansion.stats);
@@ -707,14 +946,17 @@ impl ItemRun<'_> {
                 .fetch_add(stats.prefix_pruned, Ordering::Relaxed);
             paths.empty_beams.fetch_add(stats.empty, Ordering::Relaxed);
         }
-        if !expansion.receiver_stubs.is_empty() {
-            let family = &node.family;
-            let results: Result<Vec<_>, Diagnostic> = expansion
-                .receiver_stubs
-                .into_par_iter()
-                .map(|stub| self.evaluate(family, stub))
-                .collect();
-            let results = results?;
+        let family = &node.family;
+        let results: Result<Vec<_>, Diagnostic> = expansion
+            .receiver_stubs
+            .into_par_iter()
+            .map(|stub| self.evaluate(family, stub))
+            .collect();
+        let mut results = results?;
+        if self.stage == Stage::Rest && family.is_empty() {
+            results.extend(self.ranked_out());
+        }
+        if !results.is_empty() {
             paths.record(&results);
             paths.count_ledgers(results.iter().map(|(_, c)| c.ledgers.len()).sum())?;
             for (ri, c) in results {
@@ -722,6 +964,41 @@ impl ItemRun<'_> {
             }
         }
         Ok(expansion.children)
+    }
+    /// The receivers of the block where the source is ranked out: its direct
+    /// family is not evaluated there, and its bound is the omitted energy.
+    fn ranked_out(&self) -> Vec<(usize, Contribution)> {
+        let (scene, source) = (self.scene, self.source);
+        let Some(ranking) = self.ranking else {
+            return vec![];
+        };
+        let si = scene
+            .sources
+            .iter()
+            .position(|s| std::ptr::eq(s, source))
+            .expect("the item's source is one of the scene's");
+        let diagnostics = string(&scene.output, "path_diagnostics", "none") != "none";
+        self.block
+            .range
+            .clone()
+            .filter(|ri| self.cutoffs.action(ri - self.block.range.start) == OMIT)
+            .map(|ri| {
+                let mut out = Contribution {
+                    omitted: ranking.bound(scene, si, ri),
+                    ..Contribution::default()
+                };
+                out.bounded_bands = out.omitted.iter().filter(|e| **e > 0.).count();
+                if diagnostics {
+                    out.ledgers.push(json!({"receiver_id":scene.receivers[ri].id,"source_id":source.id,
+                        "reflection_faces":[],
+                        "completed_family_energy":out.energy,"omitted_energy":out.omitted,
+                        "omission_basis":"ranked direct bound: source power, maximum directivity, +6 dB ground allowance, divergence and air absorption over the shortest distance to the source",
+                        "bounded_pruned_bands":out.bounded_bands,
+                        "cutoff_scope":"complete original source, direct family; all zones"}));
+                }
+                (ri, out)
+            })
+            .collect()
     }
     fn evaluate(
         &self,
@@ -790,20 +1067,22 @@ fn trace_item(
     block: &ReceiverBlock,
     first: bool,
     source: &Source,
-    order: Option<usize>,
+    stage: Stage,
+    ranking: Option<&Ranking>,
     cutoffs: &ItemCutoffs,
     work: &Work,
     paths: &PathCounter,
 ) -> Result<(Vec<(usize, Contribution)>, crate::integration::Summary), Diagnostic> {
     check_cancel(work.cancel)?;
-    cutoffs.check(order, block.range.len())?;
+    cutoffs.check(stage, block.range.len())?;
     let weights = strategy_weights(scene);
     let run = ItemRun {
         scene,
         source,
         index,
         block,
-        order,
+        stage,
+        ranking,
         cutoffs,
         floor: cutoffs.floor(&weights),
         weights,
@@ -964,8 +1243,10 @@ pub struct ItemOutput {
 /// scene and the same items, and an item index means the same work anywhere.
 ///
 /// Item `i` is (stage, source, receiver block) in stage-major, then source,
-/// then block order; a stage is one reflection order under a pruning
-/// strategy, or every order otherwise.
+/// then block order. Without a pruning strategy there is one stage of every
+/// reflection order. Under a strategy the direct paths take two stages, each
+/// receiver's leading sources and then its other sources (see `Ranking`),
+/// and each reflection order is one further stage.
 pub struct Plan {
     request: Value,
     scene: Scene,
@@ -975,7 +1256,9 @@ pub struct Plan {
     /// Each source's first item within a stage; the last entry is the
     /// stage's item count.
     offsets: Vec<usize>,
-    orders: Vec<Option<usize>>,
+    stages: Vec<Stage>,
+    /// Source ranking at each receiver, under a pruning strategy.
+    ranking: Option<Ranking>,
     /// Receivers whose per-source breakdown is accumulated and reported.
     detailed: Vec<bool>,
 }
@@ -1015,13 +1298,20 @@ impl Plan {
             .iter()
             .map(|r| r.area.is_none() || area_details)
             .collect();
-        // A pruning strategy evaluates each reflection order of each source as
-        // separate items with live cutoffs (see `Live`); without a strategy each
-        // item covers every order.
-        let orders = if scene.settings.strategy.is_some() {
-            (0..=scene.settings.order).map(Some).collect()
+        // A pruning strategy evaluates the direct paths of each source in two
+        // ranked stages and each reflection order as a further stage with live
+        // cutoffs (see `Ranking`, `Live`); without a strategy each item covers
+        // every order.
+        let (stages, ranking) = if scene.settings.strategy.is_some() {
+            (
+                [Stage::Lead, Stage::Rest]
+                    .into_iter()
+                    .chain((1..=scene.settings.order).map(Stage::Order))
+                    .collect(),
+                Some(Ranking::new(&scene, cancel)?),
+            )
         } else {
-            vec![None]
+            (vec![Stage::All], None)
         };
         let partitions = [true, false].map(|point| {
             let sources = scene
@@ -1054,7 +1344,8 @@ impl Plan {
             index,
             partitions,
             offsets,
-            orders,
+            stages,
+            ranking,
             detailed,
         })
     }
@@ -1065,7 +1356,7 @@ impl Plan {
         self.scene.receivers.len()
     }
     pub fn items(&self) -> usize {
-        self.orders.len() * self.per_stage()
+        self.stages.len() * self.per_stage()
     }
     fn per_stage(&self) -> usize {
         *self.offsets.last().unwrap()
@@ -1097,7 +1388,8 @@ impl Plan {
             &self.blocks(si)[bi],
             bi == 0,
             &self.scene.sources[si],
-            self.orders[stage],
+            self.stages[stage],
+            self.ranking.as_ref(),
             cutoffs,
             &work,
             paths,
@@ -1134,6 +1426,7 @@ pub struct Merge<'a> {
     plan: &'a Plan,
     totals: Mutex<Totals>,
     live: Mutex<Live>,
+    ranked: Mutex<Ranked>,
     paths: PathCounter<'a>,
     progress: &'a (dyn Fn(f64, &str) + Sync),
     /// Progress credit of completed items, and the run's total.
@@ -1157,8 +1450,19 @@ impl<'a> Merge<'a> {
                 &plan.detailed,
             )),
             live: Mutex::new(Live {
-                direct_pending: plan.per_stage(),
-                used: vec![(0, f64::INFINITY, f64::NEG_INFINITY); plan.orders.len()],
+                direct_pending: plan.stages.iter().filter(|s| s.direct()).count()
+                    * plan.per_stage(),
+                used: vec![(0, f64::INFINITY, f64::NEG_INFINITY); scene.settings.order + 1],
+            }),
+            ranked: Mutex::new(match &plan.ranking {
+                Some(ranking) => Ranked {
+                    lead: vec![Exact::default(); scene.receivers.len()],
+                    pending: ranking.leaders.clone(),
+                    rest_floor: vec![None; scene.receivers.len()],
+                    merged: vec![false; plan.per_stage()],
+                    ..Ranked::default()
+                },
+                None => Ranked::default(),
             }),
             paths: PathCounter::new(path_counts),
             progress,
@@ -1168,28 +1472,36 @@ impl<'a> Merge<'a> {
             failed: AtomicBool::new(false),
         }
     }
-    /// Cutoffs for `item` if it starts now. Under a strategy, a reflection
-    /// item started after every direct item has completed takes a threshold
-    /// for each receiver of its block from that receiver's running total.
+    /// Cutoffs for `item` if it starts now. Under a strategy, a direct item
+    /// takes an action for each receiver of its block from the source
+    /// ranking, and a reflection item started after every direct item has
+    /// completed takes a threshold for each receiver from that receiver's
+    /// running total.
     pub fn cutoffs(&self, item: usize) -> ItemCutoffs {
         let plan = self.plan;
         let scene = &plan.scene;
         let (stage, si, bi) = plan.locate(item);
-        let Some(order) = plan.orders[stage] else {
-            return ItemCutoffs::fixed(scene.settings.cutoffs);
+        let range = plan.blocks(si)[bi].range.clone();
+        let order = match plan.stages[stage] {
+            Stage::All => return ItemCutoffs::fixed(scene.settings.cutoffs),
+            Stage::Lead | Stage::Rest => {
+                return ItemCutoffs {
+                    direct: Some(self.direct(plan.stages[stage], si, bi == 0, range)),
+                    ..ItemCutoffs::default()
+                };
+            }
+            Stage::Order(order) => order,
         };
         // Locks are taken in the order `add` takes them: totals, then live.
         let totals = self.totals.lock().unwrap_or_else(|e| e.into_inner());
         let mut live = self.live.lock().unwrap_or_else(|e| e.into_inner());
-        let thresholds = (order > 0 && live.direct_pending == 0).then(|| {
+        let thresholds = (live.direct_pending == 0).then(|| {
             let weights = strategy_weights(scene);
             let margin = pruning_margin(
                 scene.settings.strategy.as_deref().unwrap_or("dba"),
                 scene.sources.len(),
             );
-            plan.blocks(si)[bi]
-                .range
-                .clone()
+            range
                 .map(|ri| {
                     receiver_threshold(
                         &weights,
@@ -1212,9 +1524,95 @@ impl<'a> Merge<'a> {
             used.0 += 1;
         }
         ItemCutoffs {
-            fixed: [None; 8],
             thresholds,
+            ..ItemCutoffs::default()
         }
+    }
+    /// The actions of a direct item of source `si` over the receivers
+    /// `range`. A lead item evaluates the receivers the source leads at. An
+    /// item of the remaining sources evaluates, at each other receiver, the
+    /// source unless it is ranked out there; a receiver whose leaders have
+    /// not all been merged ranks nothing out yet.
+    fn direct(
+        &self,
+        stage: Stage,
+        si: usize,
+        first: bool,
+        range: std::ops::Range<usize>,
+    ) -> Vec<u8> {
+        let scene = &self.plan.scene;
+        let ranking = self
+            .plan
+            .ranking
+            .as_ref()
+            .expect("a strategy plan has a ranking");
+        if stage == Stage::Lead {
+            let actions: Vec<u8> = range
+                .map(|ri| {
+                    if ranking.leads(scene, si, ri) {
+                        EVALUATE
+                    } else {
+                        SKIP
+                    }
+                })
+                .collect();
+            let mut ranked = self.ranked.lock().unwrap_or_else(|e| e.into_inner());
+            ranked.pairs[0] += actions.iter().filter(|a| **a == EVALUATE).count();
+            return actions;
+        }
+        // Receivers ready to rank, with their floor if already found, or
+        // the leaders' energy to find it from.
+        let states: Vec<Option<Result<f64, f64>>> = {
+            let ranked = self.ranked.lock().unwrap_or_else(|e| e.into_inner());
+            range
+                .clone()
+                .map(|ri| {
+                    (ranked.pending[ri] == 0).then(|| match ranked.rest_floor[ri] {
+                        Some(floor) => Ok(floor),
+                        None => Err(ranked.lead[ri].total()),
+                    })
+                })
+                .collect()
+        };
+        // Floors are found outside the lock; they depend only on the plan
+        // and the leaders' energy, so every caller finds the same value.
+        let floors: Vec<Option<f64>> = range
+            .clone()
+            .zip(states)
+            .map(|(ri, state)| {
+                state.map(|state| state.unwrap_or_else(|lead| ranking.rest_floor(scene, ri, lead)))
+            })
+            .collect();
+        let mut ranked = self.ranked.lock().unwrap_or_else(|e| e.into_inner());
+        let (mut ranks, mut waits) = (false, false);
+        let actions = range
+            .zip(floors)
+            .map(|(ri, floor)| {
+                let bound = ranking.weighted(scene, si, ri);
+                if bound > 0. && bound >= ranking.lead_floor[ri] {
+                    return SKIP;
+                }
+                let Some(floor) = floor else {
+                    ranked.pairs[3] += 1;
+                    waits = true;
+                    return EVALUATE;
+                };
+                ranked.rest_floor[ri] = Some(floor);
+                ranks = true;
+                // A source without power has nothing to omit: evaluate it.
+                if bound > 0. && bound < floor {
+                    ranked.pairs[2] += 1;
+                    OMIT
+                } else {
+                    ranked.pairs[1] += 1;
+                    EVALUATE
+                }
+            })
+            .collect();
+        if waits && !ranks && first {
+            ranked.unranked += 1;
+        }
+        actions
     }
     fn add(
         &self,
@@ -1223,19 +1621,38 @@ impl<'a> Merge<'a> {
         integration: crate::integration::Summary,
     ) -> Result<(), Diagnostic> {
         let plan = self.plan;
-        let (stage, si, _) = plan.locate(item);
+        let (stage, si, bi) = plan.locate(item);
+        if let (Stage::Lead, Some(ranking)) = (plan.stages[stage], &plan.ranking) {
+            // The leaders' energy and the receivers they are complete at.
+            let mut ranked = self.ranked.lock().unwrap_or_else(|e| e.into_inner());
+            let lead = item % plan.per_stage();
+            if !std::mem::replace(&mut ranked.merged[lead], true) {
+                for (ri, c) in &contributions {
+                    if let Some(sum) = ranked.lead.get_mut(*ri) {
+                        for b in 0..8 {
+                            sum.add(c.energy[b] * ranking.weights[b]);
+                        }
+                    }
+                }
+                for ri in plan.blocks(si)[bi].range.clone() {
+                    if ranking.leads(&plan.scene, si, ri) {
+                        ranked.pending[ri] = ranked.pending[ri].saturating_sub(1);
+                    }
+                }
+            }
+        }
         {
             let mut totals = self.totals.lock().unwrap_or_else(|e| e.into_inner());
             totals.merge(stage * plan.sources() + si, si, contributions)?;
             totals.integration.merge(integration);
-            if plan.orders[stage] == Some(0) {
+            if plan.stages[stage].direct() {
                 self.live
                     .lock()
                     .unwrap_or_else(|e| e.into_inner())
                     .direct_pending -= 1;
             }
         }
-        let item_share = 1. / (plan.orders.len() * plan.blocks(si).len()) as f64;
+        let item_share = 1. / (plan.stages.len() * plan.blocks(si).len()) as f64;
         let mut credit = self.completed.lock().unwrap_or_else(|e| e.into_inner());
         *credit += plan.scene.sources[si].weight as f64 * item_share;
         let amount = 1. + *credit;
@@ -1271,6 +1688,7 @@ impl<'a> Merge<'a> {
             plan,
             totals,
             live,
+            ranked,
             paths,
             failure,
             ..
@@ -1278,18 +1696,25 @@ impl<'a> Merge<'a> {
         let Plan {
             request,
             scene,
-            orders,
             detailed,
             ..
         } = plan;
         let failure = failure.into_inner().unwrap_or_else(|e| e.into_inner());
+        let ranked = ranked.into_inner().unwrap_or_else(|e| e.into_inner());
+        // One report per reflection order. Direct paths have no weighted
+        // cutoff: they are ranked (see `diagnostics.pruning.direct`).
         let stage_reports: Vec<Value> = live
             .into_inner()
             .unwrap_or_else(|e| e.into_inner())
             .used
             .iter()
-            .zip(orders)
-            .map(|((unpruned, lo, hi), order)| {
+            .enumerate()
+            .map(|(order, (unpruned, lo, hi))| {
+                let unpruned = if order == 0 {
+                    ranked.unranked
+                } else {
+                    *unpruned
+                };
                 json!({"reflection_order":order,"tasks_without_cutoff":unpruned,
                     "weighted_cutoff_db":if lo.is_finite() {json!([lo, hi])} else {Value::Null}})
             })
@@ -1444,7 +1869,9 @@ impl<'a> Merge<'a> {
         if let Some(strategy) = &scene.settings.strategy {
             result["diagnostics"]["pruning"] = json!({"strategy":strategy,
                 "margin_db":pruning_margin(strategy, scene.sources.len()),"source_count":scene.sources.len(),
-                "rule":format!("direct paths unpruned; once all have completed, each reflection task takes, for each receiver, band cutoff = that receiver's weighted level from contributions completed when the task starts - margin - band weighting; a receiver with no energy yet is not pruned; reflection prefixes use the lowest threshold of the task's receiver block; margin = 10 log10(source count) + {} dB", pruning_constant(strategy)),
+                "rule":format!("direct paths are ranked at each receiver by an upper bound: sources within {c} dB of the largest bound are evaluated first, then the lowest-bound others are omitted while their bounds sum to at most 10^(-{c}/10) of the weighted energy those leaders delivered there; once all direct paths have completed, each reflection task takes, for each receiver, band cutoff = that receiver's weighted level from contributions completed when the task starts - margin - band weighting; a receiver with no energy yet is not pruned; reflection prefixes use the lowest threshold of the task's receiver block; margin = 10 log10(source count) + {c} dB", c = pruning_constant(strategy)),
+                "direct":{"leading_pairs":ranked.pairs[0],"evaluated_pairs":ranked.pairs[1],
+                    "omitted_pairs":ranked.pairs[2],"unranked_pairs":ranked.pairs[3]},
                 "stages":stage_reports});
         }
         result["diagnostics"]["path_search"] = json!({
@@ -1512,22 +1939,29 @@ fn calculate_planned(
     let merge = Merge::new(&plan, progress, path_counts);
     // Items start in order-major sequence whenever a worker is free; no
     // order waits for the previous one. Items share the merge's counters.
-    bounded(
-        plan.items(),
-        2 * rayon::current_num_threads().max(1),
-        |item| {
-            if merge.failed() {
-                return;
-            }
-            let cutoffs = merge.cutoffs(item);
-            if let Err(error) = plan
-                .trace(item, &cutoffs, cancel, &merge.paths)
-                .and_then(|(out, integration)| merge.add(item, out, integration))
-            {
-                merge.fail(error);
-            }
-        },
-    );
+    // Under a strategy the lead items finish first, so that every receiver
+    // is ranked from all of its leaders and the direct result is the same in
+    // every run; they are direct paths only, so the wait is short.
+    let run = |item: usize| {
+        if merge.failed() {
+            return;
+        }
+        let cutoffs = merge.cutoffs(item);
+        if let Err(error) = plan
+            .trace(item, &cutoffs, cancel, &merge.paths)
+            .and_then(|(out, integration)| merge.add(item, out, integration))
+        {
+            merge.fail(error);
+        }
+    };
+    let in_flight = 2 * rayon::current_num_threads().max(1);
+    let lead = if plan.ranking.is_some() {
+        plan.per_stage()
+    } else {
+        0
+    };
+    bounded(lead, in_flight, run);
+    bounded(plan.items() - lead, in_flight, |item| run(item + lead));
     merge.finish(cancel)
 }
 
@@ -1891,8 +2325,8 @@ mod work_plan_tests {
         assert_eq!(unpruned.at(&weights, 0), [None; 8]);
         assert_eq!(unpruned.floor(&weights), [None; 8]);
         let live = ItemCutoffs {
-            fixed: [None; 8],
             thresholds: Some(vec![Some(40.), None, Some(25.)]),
+            ..ItemCutoffs::default()
         };
         for b in 0..8 {
             assert_eq!(live.at(&weights, 0)[b], Some(40. - weights[b]));
@@ -1904,15 +2338,15 @@ mod work_plan_tests {
         assert_eq!(live.at(&weights, 3), [None; 8]);
         assert_eq!(live.floor(&weights), [None; 8]);
         let all = ItemCutoffs {
-            fixed: [None; 8],
             thresholds: Some(vec![Some(40.), Some(25.), Some(31.)]),
+            ..ItemCutoffs::default()
         };
         for b in 0..8 {
             assert_eq!(all.floor(&weights)[b], Some(25. - weights[b]));
         }
         let empty = ItemCutoffs {
-            fixed: [None; 8],
             thresholds: Some(vec![]),
+            ..ItemCutoffs::default()
         };
         assert_eq!(empty.floor(&weights), [None; 8]);
         // Threshold = weighted level less the margin; none without energy.
@@ -1971,11 +2405,11 @@ mod work_plan_tests {
         let plan = Plan::prepare(request, &cancel).unwrap();
         let item = plan.items() - 1;
         let (stage, si, bi) = plan.locate(item);
-        assert!(stage > 0);
+        assert_eq!(plan.stages[stage], super::Stage::Order(2));
         let receivers = plan.blocks(si)[bi].range.len();
         let list = |thresholds: Vec<Option<f64>>| ItemCutoffs {
-            fixed: [None; 8],
             thresholds: Some(thresholds),
+            ..ItemCutoffs::default()
         };
         let rejected = |plan: &Plan, item: usize, cutoffs: &ItemCutoffs| {
             let error = plan.run_item(item, cutoffs, &cancel).err().unwrap();
@@ -1998,7 +2432,8 @@ mod work_plan_tests {
         let mut both = right.clone();
         both.fixed = [Some(10.); 8];
         rejected(&plan, item, &both);
-        // Direct items (stage 0) and plans without a strategy take no list.
+        // Direct items (the first two stages) and plans without a strategy
+        // take no thresholds.
         let direct_block = plan.blocks(0)[0].range.len();
         rejected(&plan, 0, &list(vec![Some(30.); direct_block]));
         rejected(&unpruned, 0, &list(vec![Some(30.); direct_block]));
@@ -2011,6 +2446,34 @@ mod work_plan_tests {
             plan.run_item(item, &ItemCutoffs::default(), &cancel)
                 .is_ok()
         );
+        // A direct item takes one action per receiver and nothing else: a
+        // lead item (0) evaluates or skips, an item of the remaining
+        // sources (the next stage) may also omit.
+        use super::{EVALUATE, OMIT, SKIP};
+        let actions = |actions: Vec<u8>| ItemCutoffs {
+            direct: Some(actions),
+            ..ItemCutoffs::default()
+        };
+        let rest = plan.per_stage();
+        assert_eq!(plan.stages[plan.locate(rest).0], super::Stage::Rest);
+        let mixed: Vec<u8> = (0..direct_block).map(|k| [SKIP, EVALUATE][k % 2]).collect();
+        assert!(plan.run_item(0, &actions(mixed.clone()), &cancel).is_ok());
+        assert!(
+            plan.run_item(rest, &actions(vec![OMIT; direct_block]), &cancel)
+                .is_ok()
+        );
+        // Without the list both direct stages would evaluate every receiver.
+        rejected(&plan, 0, &ItemCutoffs::default());
+        rejected(&plan, rest, &ItemCutoffs::default());
+        rejected(&plan, 0, &ItemCutoffs::fixed([Some(10.); 8]));
+        rejected(&plan, 0, &actions(vec![EVALUATE; direct_block + 1]));
+        rejected(&plan, 0, &actions(vec![OMIT; direct_block]));
+        rejected(&plan, rest, &actions(vec![3; direct_block]));
+        rejected(&plan, item, &actions(vec![EVALUATE; receivers]));
+        rejected(&unpruned, 0, &actions(vec![EVALUATE; direct_block]));
+        let mut both = actions(mixed);
+        both.thresholds = Some(vec![Some(30.); direct_block]);
+        rejected(&plan, 0, &both);
     }
 
     /// Receivers in a later block of a source are pruned against their own
@@ -2081,6 +2544,10 @@ mod work_plan_tests {
             let Some(omitted) = record.get("omitted_energy") else {
                 continue;
             };
+            // Reflections only: ranked direct paths have their own rule.
+            if record["reflection_faces"].as_array().unwrap().is_empty() {
+                continue;
+            }
             let id = record["receiver_id"].as_str().unwrap();
             let r: usize = id[1..].parse().unwrap();
             for b in 0..8 {
@@ -2107,6 +2574,156 @@ mod work_plan_tests {
             }
             // Its other receivers are pruned too, each within its own level.
             assert!(block.clone().any(|r| r % 3 != 0 && skipped[r] > 0));
+        }
+    }
+
+    /// The ranking bound is an upper bound: no source delivers more by its
+    /// direct family, in any band, at any receiver. Point, line and area
+    /// sources, screened and unscreened receivers, a generated grid.
+    #[test]
+    fn the_direct_bound_is_never_exceeded() {
+        use super::Plan;
+        let mut request = request();
+        request["settings"]["max_reflect_order"] = json!(0);
+        let exact = run_local(&request, 4);
+        request["settings"]["pruning_strategy"] = json!("dba");
+        let cancel = AtomicBool::new(false);
+        let plan = Plan::prepare(request, &cancel).unwrap();
+        let ranking = plan.ranking.as_ref().unwrap();
+        let scene = &plan.scene;
+        let (mut pairs, mut loud) = (0, 0);
+        for receiver in exact["receivers"].as_array().unwrap() {
+            let ri = scene
+                .receivers
+                .iter()
+                .position(|r| receiver["receiver_id"] == r.id.as_str())
+                .unwrap();
+            for source in receiver["sources"].as_array().unwrap() {
+                let si = scene
+                    .sources
+                    .iter()
+                    .position(|s| source["source_id"] == s.id.as_str())
+                    .unwrap();
+                let bound = ranking.bound(scene, si, ri);
+                for b in 0..8 {
+                    let Some(level) = source["octave_db"][b].as_f64() else {
+                        continue;
+                    };
+                    let energy = 10f64.powf(level / 10.);
+                    assert!(
+                        energy <= bound[b] * (1. + 1e-9),
+                        "source {si} receiver {ri} band {b}: {energy} above {}",
+                        bound[b]
+                    );
+                    // The bound is not vacuous: unscreened pairs come near it.
+                    if energy > 0.05 * bound[b] {
+                        loud += 1;
+                    }
+                }
+                pairs += 1;
+            }
+        }
+        assert_eq!(pairs, scene.sources.len() * scene.receivers.len());
+        assert!(loud > 0);
+    }
+
+    /// Three strong sources among the receivers and twenty weak ones far
+    /// away, one building, direct paths only.
+    fn ranked_request() -> Value {
+        let mut sources = vec![];
+        for i in 0..3 {
+            sources.push(json!({"id":format!("strong{i}"),"kind":"point","position":[10. + 40. * i as f64, 0., 2.],
+                "spectrum":[95,98,100,102,105,102,98,94]}));
+        }
+        for i in 0..20 {
+            let y = 400. * (0.3 * i as f64).sin();
+            sources.push(json!({"id":format!("weak{i}"),"kind":"point","position":[600. + 30. * i as f64, y, 2.],
+                "spectrum":[55,58,60,62,65,62,58,54]}));
+        }
+        json!({
+            "sources":sources,
+            "receivers":[{"id":"a","position":[20,15,1.5]},{"id":"b","position":[60,-20,1.5]},
+                         {"id":"c","position":[100,30,1.5]},{"id":"d","position":[700,50,1.5]}],
+            "buildings":[{"id":"hall","footprint":[[30,5,0],[50,5,0],[50,10,0],[30,10,0]],"height_m":8}],
+            "settings":{"max_reflect_order":0,"minimum_contribution_db":null,"pruning_strategy":"dba"}
+        })
+    }
+
+    /// A receiver ranks nothing out until all of its leaders are merged: an
+    /// item of the remaining sources that starts earlier evaluates the
+    /// receiver in full, so no item waits and nothing is omitted without the
+    /// leaders' energy behind it.
+    #[test]
+    fn receivers_are_ranked_only_once_their_leaders_are_merged() {
+        use super::{EVALUATE, ItemOutput, Merge, OMIT, Plan, SKIP};
+        let request = ranked_request();
+        let cancel = AtomicBool::new(false);
+        let plan = Plan::prepare(request.clone(), &cancel).unwrap();
+        let per_stage = plan.per_stage();
+        assert_eq!(plan.items(), 2 * per_stage);
+        let weak = per_stage + plan.offsets[plan.sources() - 1];
+        assert_eq!(plan.stages[plan.locate(weak).0], super::Stage::Rest);
+        let add = |merge: &Merge, item: usize| {
+            let cutoffs = merge.cutoffs(item);
+            let wire =
+                serde_json::to_vec(&plan.run_item(item, &cutoffs, &cancel).unwrap()).unwrap();
+            let output: ItemOutput = serde_json::from_slice(&wire).unwrap();
+            merge.add_output(item, output).unwrap();
+            cutoffs.direct.unwrap()
+        };
+        let weighted = |result: &Value| -> Vec<f64> {
+            result["receivers"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|r| r["a_weighted_db"].as_f64().unwrap())
+                .collect()
+        };
+        let mut uncut = request.clone();
+        uncut["settings"]["pruning_strategy"] = Value::Null;
+        let uncut = weighted(&run_local(&uncut, 4));
+        let local = run_local(&request, 1);
+        // In stage order: the weak source is ranked out where others lead.
+        let merge = Merge::new(&plan, &|_, _| {}, &|_, _| {});
+        let early = merge.cutoffs(weak).direct.unwrap();
+        assert!(early.iter().all(|a| *a == EVALUATE || *a == SKIP));
+        assert!(early.contains(&EVALUATE));
+        for item in 0..per_stage {
+            let actions = add(&merge, item);
+            assert!(actions.iter().all(|a| *a == EVALUATE || *a == SKIP));
+        }
+        let mut omitted = 0;
+        for item in per_stage..plan.items() {
+            let actions = add(&merge, item);
+            if item == weak {
+                assert!(actions.contains(&OMIT), "{actions:?}");
+            }
+            omitted += actions.iter().filter(|a| **a == OMIT).count();
+        }
+        let serial = merge.finish(&cancel).unwrap();
+        assert_eq!(serial["receivers"], local["receivers"]);
+        let direct = &serial["diagnostics"]["pruning"]["direct"];
+        assert_eq!(direct["omitted_pairs"], omitted);
+        // The first request, made before any leader was merged, ranked none.
+        assert!(direct["unranked_pairs"].as_u64().unwrap() > 0);
+        assert_eq!(
+            serial["diagnostics"]["pruning"]["stages"][0]["tasks_without_cutoff"],
+            1
+        );
+        // Remaining sources first: every receiver is evaluated in full, so
+        // nothing is omitted and the result is the unpruned one.
+        let merge = Merge::new(&plan, &|_, _| {}, &|_, _| {});
+        for item in (per_stage..plan.items()).chain(0..per_stage) {
+            let actions = add(&merge, item);
+            assert!(!actions.contains(&OMIT));
+        }
+        let eager = merge.finish(&cancel).unwrap();
+        assert_eq!(
+            eager["diagnostics"]["pruning"]["direct"]["omitted_pairs"],
+            0
+        );
+        for (level, exact) in weighted(&eager).iter().zip(&uncut) {
+            assert!((level - exact).abs() < 1e-9, "{level} {exact}");
         }
     }
 

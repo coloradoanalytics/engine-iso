@@ -455,6 +455,7 @@ pub struct Expansion {
 /// receivers (`checked`, `empty`, `reflector_candidates`, `prefix_pruned`) are
 /// filled in; callers that trace the same node for several blocks count them
 /// once. `empty` means no receiver of the whole set lies in the beam volume.
+/// With `connectable`, only the receivers it accepts are connected.
 #[allow(clippy::too_many_arguments)]
 pub fn expand(
     scene: &Scene,
@@ -464,6 +465,7 @@ pub fn expand(
     node: &Node,
     only_order: Option<usize>,
     cutoffs: &Cutoffs,
+    connectable: Option<&dyn Fn(usize) -> bool>,
     cancel: &AtomicBool,
 ) -> Result<Expansion, Diagnostic> {
     check_cancel(cancel)?;
@@ -488,6 +490,9 @@ pub fn expand(
     }
     for ri in receivers {
         check_cancel(cancel)?;
+        if connectable.is_some_and(|connectable| !connectable(ri)) {
+            continue;
+        }
         stats.receiver_candidates += 1;
         let receiver = &scene.receivers[ri];
         let mut failure = None;
@@ -600,7 +605,7 @@ pub fn search_with(
     let mut pending = vec![Node::root(source)];
     while let Some(node) = pending.pop() {
         let expansion = expand(
-            scene, source, index, &block, &node, only_order, cutoffs, cancel,
+            scene, source, index, &block, &node, only_order, cutoffs, None, cancel,
         )?;
         let stats = &mut result.stats;
         stats.checked += expansion.stats.checked;

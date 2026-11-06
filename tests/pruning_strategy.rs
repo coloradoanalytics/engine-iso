@@ -97,9 +97,17 @@ fn live_thresholds_follow_each_receivers_own_level() {
         assert!((pruning["margin_db"].as_f64().unwrap() - margin).abs() < 1e-12);
         let orders = pruning["stages"].as_array().unwrap();
         assert_eq!(orders.len(), 3);
-        // Direct paths are never pruned.
-        assert_eq!(orders[0]["tasks_without_cutoff"], 12);
+        // Direct paths have no weighted cutoff: they are ranked, and with
+        // one worker every receiver is ranked from all of its leaders.
+        assert_eq!(orders[0]["tasks_without_cutoff"], 0);
         assert!(orders[0]["weighted_cutoff_db"].is_null());
+        let pairs = &pruning["direct"];
+        assert_eq!(pairs["unranked_pairs"], 0);
+        let count = |key: &str| pairs[key].as_u64().unwrap();
+        assert_eq!(
+            count("leading_pairs") + count("evaluated_pairs") + count("omitted_pairs"),
+            12 * 3
+        );
         // Contributions only add energy, so every receiver's threshold lies
         // between its direct-path level and its final uncut level, each less
         // the margin. The reported range is the lowest and highest threshold
@@ -146,6 +154,10 @@ fn each_receiver_is_pruned_against_its_own_level() {
         let Some(omitted) = record.get("omitted_energy") else {
             continue;
         };
+        // Reflections only: ranked direct paths have their own rule.
+        if record["reflection_faces"].as_array().unwrap().is_empty() {
+            continue;
+        }
         let r = ids
             .iter()
             .position(|id| record["receiver_id"] == *id)
@@ -272,5 +284,109 @@ fn prefix_pruning_drops_only_families_below_their_cutoff() {
                 assert!(*e == 0. || 10. * e.log10() < cutoff, "{key}: {e}");
             }
         }
+    }
+}
+
+/// Three strong sources among the receivers and twenty weak ones far away,
+/// one building, direct paths only.
+fn ranked_scene() -> Value {
+    let mut sources = vec![];
+    for i in 0..3 {
+        sources.push(json!({"id":format!("strong{i}"),"kind":"point","position":[10. + 40. * i as f64, 0., 2.],
+            "spectrum":[95,98,100,102,105,102,98,94]}));
+    }
+    for i in 0..20 {
+        let y = 400. * (0.3 * i as f64).sin();
+        sources.push(
+            json!({"id":format!("weak{i}"),"kind":"point","position":[600. + 30. * i as f64, y, 2.],
+            "spectrum":[55,58,60,62,65,62,58,54]}),
+        );
+    }
+    json!({
+        "sources":sources,
+        "receivers":[{"id":"a","position":[20,15,1.5]},{"id":"b","position":[60,-20,1.5]},
+                     {"id":"c","position":[100,30,1.5]},{"id":"d","position":[700,50,1.5]}],
+        "buildings":[{"id":"hall","footprint":[[30,5,0],[50,5,0],[50,10,0],[30,10,0]],"height_m":8}],
+        "settings":{"max_reflect_order":0,"minimum_contribution_db":null}
+    })
+}
+
+/// Direct paths are ranked at each receiver. What is omitted is reported by
+/// its bound, the bounds sum to at most 10^(-c/10) of the weighted energy
+/// computed there, so the weighted loss stays within 10 lg(1 + 10^(-c/10)),
+/// and the result does not depend on the number of workers.
+#[test]
+fn ranked_direct_paths_omit_only_a_bounded_share_at_each_receiver() {
+    let uncut = calculate(&ranked_scene(), 4);
+    for (strategy, weights, constant) in [("dba", A, 20.), ("dbc", C, 25.)] {
+        let mut v = ranked_scene();
+        v["settings"]["pruning_strategy"] = json!(strategy);
+        let result = calculate(&v, 1);
+        let share = 10f64.powf(-constant / 10.);
+        let pairs = &result["diagnostics"]["pruning"]["direct"];
+        let count = |key: &str| pairs[key].as_u64().unwrap();
+        assert!(count("omitted_pairs") > 0, "{strategy}: {pairs}");
+        assert!(count("leading_pairs") >= 4, "{strategy}: {pairs}");
+        assert_eq!(count("unranked_pairs"), 0);
+        assert_eq!(
+            count("leading_pairs") + count("evaluated_pairs") + count("omitted_pairs"),
+            23 * 4
+        );
+        let levels = weighted_levels(&result, weights);
+        let exact = weighted_levels(&uncut, weights);
+        for (r, receiver) in result["receivers"].as_array().unwrap().iter().enumerate() {
+            let weighted = |bands: &Value, level: bool| -> f64 {
+                (0..8)
+                    .map(|b| {
+                        let e = if level {
+                            energy(&bands[b])
+                        } else {
+                            bands[b].as_f64().unwrap()
+                        };
+                        e * 10f64.powf(weights[b] / 10.)
+                    })
+                    .sum()
+            };
+            let computed = weighted(&receiver["octave_db"], true);
+            let omitted = weighted(&receiver["omitted_energy"], false);
+            assert!(
+                omitted <= share * computed * (1. + 1e-9),
+                "{strategy} receiver {r}: omitted {omitted}, computed {computed}"
+            );
+            // Pruning only removes energy, and no more than the bound.
+            let loss = exact[r] - levels[r];
+            assert!(
+                (-1e-9..=10. * (1. + share).log10() + 1e-9).contains(&loss),
+                "{strategy} receiver {r}: loss {loss}"
+            );
+            let mut omitted_sources = 0;
+            for source in receiver["sources"].as_array().unwrap() {
+                let bound: f64 = (0..8)
+                    .map(|b| source["omitted_energy"][b].as_f64().unwrap())
+                    .sum();
+                if bound > 0. {
+                    // Not evaluated: it has no level, only its bound.
+                    assert!((0..8).all(|b| source["octave_db"][b].is_null()));
+                    assert!(
+                        source["source_id"].as_str().unwrap().starts_with("weak"),
+                        "{strategy}: {}",
+                        source["source_id"]
+                    );
+                    omitted_sources += 1;
+                }
+            }
+            // The strong sources lead at the receivers among them.
+            if r < 3 {
+                assert!(omitted_sources > 0, "{strategy} receiver {r}");
+            }
+        }
+        // The same at any worker count: every receiver is ranked from all
+        // of its leaders before anything is omitted.
+        let again = calculate(&v, 4);
+        assert_eq!(result["receivers"], again["receivers"], "{strategy}");
+        assert_eq!(
+            result["diagnostics"]["pruning"], again["diagnostics"]["pruning"],
+            "{strategy}"
+        );
     }
 }
