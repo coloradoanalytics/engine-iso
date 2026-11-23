@@ -131,6 +131,8 @@ Every participant must run the same `build_revision`, which the service checks:
 the protocol number does not change with every item input, and an older build
 can accept a newer build's pruned items and return different results without
 an error.
+A merge session does not detect a repeated `item_output`: the item's energy would
+be counted twice, so the caller must send each item's output once.
 
 ## Kernels
 

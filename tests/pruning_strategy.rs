@@ -404,27 +404,32 @@ fn ranked_direct_paths_omit_only_a_bounded_share_at_each_receiver() {
 }
 
 /// A source that adds next to nothing to the weighted level but carries one
-/// octave band is not ranked out: every band keeps its own share.
+/// octave band, whichever it is, is not ranked out: every band keeps its own
+/// share.
 #[test]
 fn a_band_carried_by_a_weak_source_is_kept() {
-    let v = json!({
-        "sources":[{"id":"hum","kind":"point","position":[0,0,2],"spectrum":[60,70,90,100,105,60,0,0]},
-                   {"id":"hiss","kind":"point","position":[0,10,2],"spectrum":[0,0,0,0,0,0,60,0]}],
-        "receivers":[{"id":"r","position":[60,5,1.5]}],
-        "settings":{"max_reflect_order":0,"minimum_contribution_db":null}
-    });
-    let uncut = calculate(&v, 1);
-    for strategy in ["dba", "dbc"] {
-        let mut cut = v.clone();
-        cut["settings"]["pruning_strategy"] = json!(strategy);
-        let result = calculate(&cut, 1);
-        assert_eq!(
-            result["diagnostics"]["pruning"]["direct"]["leading_pairs"],
-            1
-        );
-        assert_eq!(
-            result["receivers"][0]["octave_db"], uncut["receivers"][0]["octave_db"],
-            "{strategy}"
-        );
+    for band in 0..8 {
+        let mut hum = [100.; 8];
+        let mut hiss = [0.; 8];
+        hum[band] = 0.;
+        hiss[band] = 60.;
+        let v = json!({
+            "sources":[{"id":"hum","kind":"point","position":[0,0,2],"spectrum":hum},
+                       {"id":"hiss","kind":"point","position":[0,10,2],"spectrum":hiss}],
+            "receivers":[{"id":"r","position":[60,5,1.5]}],
+            "settings":{"max_reflect_order":0,"minimum_contribution_db":null}
+        });
+        let uncut = calculate(&v, 1);
+        for strategy in ["dba", "dbc"] {
+            let mut cut = v.clone();
+            cut["settings"]["pruning_strategy"] = json!(strategy);
+            let result = calculate(&cut, 1);
+            let pairs = &result["diagnostics"]["pruning"]["direct"];
+            assert_eq!(pairs["leading_pairs"], 1, "{strategy} band {band}");
+            assert_eq!(
+                result["receivers"][0]["octave_db"], uncut["receivers"][0]["octave_db"],
+                "{strategy} band {band}"
+            );
+        }
     }
 }
