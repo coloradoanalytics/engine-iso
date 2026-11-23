@@ -170,10 +170,11 @@ struct SourceTotal {
 /// margin scales with the number of sources because skipped contributions
 /// below a receiver's threshold accumulate roughly in proportion to it. Each
 /// receiver is judged against its own level, so the constant sets the loss at
-/// every receiver, not only at the quietest: both values kept the weighted
-/// total within 0.05 dB in the recorded checks, which is no bound. dBC needs more: its
-/// total is set by the loud low bands, so the same margin leaves the higher
-/// bands' thresholds relatively higher than under dBA.
+/// every receiver, not only at the quietest. Both values kept the weighted
+/// total within 0.05 dB on two recorded scenes; dBA lost up to 0.0564 dB on a
+/// third, so neither is a bound. dBC needs more: its total is set by the loud
+/// low bands, so the same margin leaves the higher bands' thresholds relatively
+/// higher than under dBA.
 pub fn pruning_constant(strategy: &str) -> f64 {
     match strategy {
         "dbc" => 25.,

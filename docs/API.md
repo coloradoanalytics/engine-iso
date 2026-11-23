@@ -1007,8 +1007,10 @@ for order 0). For reflections the margin is empirical.
 In the recorded checks (a 12-source courtyard at third order and a 200-source
 synthetic site at first order) weighted totals stayed within 0.05 dB of
 unpruned results, while single octave bands that contribute little to the
-weighted level lost up to about 2 dB (dBA) and 4 dB (dBC). These are
-observations on two scenes, not bounds: no total error bound is certified.
+weighted level lost up to about 2 dB (dBA) and 4 dB (dBC). A third constructed
+scene (13 sources, second order, dBA) lost up to 0.0564 dB, so 0.05 dB is not a
+general limit. These are observations on three scenes, not bounds: no total
+error bound is certified.
 Path counts include beams re-expanded for each order.
 
 Either kind of cutoff prunes a band only when a conservative upper bound on its

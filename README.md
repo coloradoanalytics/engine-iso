@@ -127,6 +127,10 @@ engine-iso is a **divisible** engine: through the protocol's work-item
 operations, acalc-engine can run one calculation's items on several machines
 and merge them here. Unpruned farm results are bit-identical to a single
 engine's when every node runs the same `build_revision` and math library.
+Every participant must run the same `build_revision`, which the service checks:
+the protocol number does not change with every item input, and an older build
+can accept a newer build's pruned items and return different results without
+an error.
 
 ## Kernels
 
