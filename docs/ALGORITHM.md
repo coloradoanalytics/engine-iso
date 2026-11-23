@@ -677,17 +677,18 @@ at its unscreened reference.
 
 - **Leaders.** The sources whose U_s,r is within c dB of the largest at
   receiver r are evaluated first, without pruning.
-- **The others.** Let E_r be the weighted energy the leaders delivered at r.
-  Taken from the lowest bound upwards, the other sources are omitted while
-  their bounds sum to at most 10^(−c/10) * E_r; a source whose bound equals the
-  first that no longer fits is kept. The rest are evaluated without pruning.
+- **The others.** Let E_r,b be the energy the leaders delivered at r in band b.
+  Taken from the lowest U_s,r upwards, the other sources are omitted while, in
+  every band, their bounds U_s,r,b sum to at most 10^(−c/10) * E_r,b; a source
+  whose U_s,r equals that of the first that no longer fits is kept. The rest are evaluated without pruning.
   An omitted source's bound is reported as omitted energy.
 
-The weighted energy omitted among direct paths at a receiver is therefore at
-most 10^(−c/10) of the energy computed there: a weighted loss of at most
-10 log10(1 + 10^(−c/10)), 0.043 dB for dBA and 0.014 dB for dBC, under the
-assumptions of the bound. This limits the weighted level, not single octave
-bands, and it covers direct paths only. No leader can be omitted: the leaders'
+The energy omitted among direct paths at a receiver is therefore, in every band
+and in the weighted sum, at most 10^(−c/10) of the direct energy computed there:
+a loss of at most 10 log10(1 + 10^(−c/10)), 0.043 dB for dBA and 0.014 dB for
+dBC, under the assumptions of the bound. A band the leaders delivered nothing in
+omits no source with power in that band. This covers direct paths only;
+reflections have no such limit. No leader can be omitted: the leaders'
 energy is no more than their bounds, so everything omitted lies more than c dB
 below the largest bound. A receiver whose leaders delivered nothing omits
 nothing.

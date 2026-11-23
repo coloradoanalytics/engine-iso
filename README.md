@@ -199,8 +199,9 @@ unverified.
   contains no receiver (before exact geometry tests).
 - Pruning is off by default. `"pruning_strategy": "dba"` or `"dbc"` first
   ranks the direct paths at each receiver by an upper bound: the leading
-  sources are evaluated, and the lowest-bound others are omitted while their
-  bounds sum to at most 10^(−c/10) of what the leaders delivered there
+  sources are evaluated, and the lowest-bound others are omitted while, in
+  every band, their bounds sum to at most 10^(−c/10) of what the leaders
+  delivered there
   (c = 20 dB for dBA, 25 dB for dBC). It then runs each
   reflection order of each source as a task, without waiting between orders.
   Once all direct paths are done, each task takes per-band cutoffs when it

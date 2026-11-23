@@ -312,9 +312,9 @@ fn ranked_scene() -> Value {
 }
 
 /// Direct paths are ranked at each receiver. What is omitted is reported by
-/// its bound, the bounds sum to at most 10^(-c/10) of the weighted energy
-/// computed there, so the weighted loss stays within 10 lg(1 + 10^(-c/10)),
-/// and the result does not depend on the number of workers.
+/// its bound, the bounds sum in every band to at most 10^(-c/10) of the energy
+/// computed there, so the loss of each band and of the weighted level stays
+/// within 10 lg(1 + 10^(-c/10)), and the result does not depend on the number of workers.
 #[test]
 fn ranked_direct_paths_omit_only_a_bounded_share_at_each_receiver() {
     let uncut = calculate(&ranked_scene(), 4);
@@ -353,6 +353,18 @@ fn ranked_direct_paths_omit_only_a_bounded_share_at_each_receiver() {
                 omitted <= share * computed * (1. + 1e-9),
                 "{strategy} receiver {r}: omitted {omitted}, computed {computed}"
             );
+            for b in 0..8 {
+                let (kept, all) = (
+                    energy(&receiver["octave_db"][b]),
+                    energy(&uncut["receivers"][r]["octave_db"][b]),
+                );
+                let bound = receiver["omitted_energy"][b].as_f64().unwrap();
+                assert!(bound <= share * kept * (1. + 1e-9), "{strategy} {r} {b}");
+                assert!(
+                    all <= kept * (1. + share) * (1. + 1e-9),
+                    "{strategy} {r} {b}"
+                );
+            }
             // Pruning only removes energy, and no more than the bound.
             let loss = exact[r] - levels[r];
             assert!(
@@ -386,6 +398,32 @@ fn ranked_direct_paths_omit_only_a_bounded_share_at_each_receiver() {
         assert_eq!(result["receivers"], again["receivers"], "{strategy}");
         assert_eq!(
             result["diagnostics"]["pruning"], again["diagnostics"]["pruning"],
+            "{strategy}"
+        );
+    }
+}
+
+/// A source that adds next to nothing to the weighted level but carries one
+/// octave band is not ranked out: every band keeps its own share.
+#[test]
+fn a_band_carried_by_a_weak_source_is_kept() {
+    let v = json!({
+        "sources":[{"id":"hum","kind":"point","position":[0,0,2],"spectrum":[60,70,90,100,105,60,0,0]},
+                   {"id":"hiss","kind":"point","position":[0,10,2],"spectrum":[0,0,0,0,0,0,60,0]}],
+        "receivers":[{"id":"r","position":[60,5,1.5]}],
+        "settings":{"max_reflect_order":0,"minimum_contribution_db":null}
+    });
+    let uncut = calculate(&v, 1);
+    for strategy in ["dba", "dbc"] {
+        let mut cut = v.clone();
+        cut["settings"]["pruning_strategy"] = json!(strategy);
+        let result = calculate(&cut, 1);
+        assert_eq!(
+            result["diagnostics"]["pruning"]["direct"]["leading_pairs"],
+            1
+        );
+        assert_eq!(
+            result["receivers"][0]["octave_db"], uncut["receivers"][0]["octave_db"],
             "{strategy}"
         );
     }

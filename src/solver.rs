@@ -478,23 +478,28 @@ impl Ranking {
         bound > 0. && bound >= self.lead_floor[ri]
     }
     /// The lowest weighted bound still evaluated at receiver `ri` once its
-    /// leaders have delivered the weighted energy `lead`: the other sources
-    /// are taken from the lowest bound upwards, and ranked out while their
-    /// bounds sum to at most 10^(-c/10) of `lead`. A source is ranked out
-    /// when its bound is below the value returned; equal bounds are kept.
-    fn rest_floor(&self, scene: &Scene, ri: usize, lead: f64) -> f64 {
-        let budget = lead * self.fraction;
-        let mut bounds: Vec<f64> = (0..scene.sources.len())
-            .map(|si| self.weighted(scene, si, ri))
-            .filter(|u| *u > 0. && *u < self.lead_floor[ri])
+    /// leaders have delivered the energy `lead`: the other sources are taken
+    /// from the lowest weighted bound upwards, and ranked out while, in every
+    /// band, their bounds sum to at most 10^(-c/10) of `lead` in that band. The
+    /// weighted sum then keeps the same share. A source is ranked out when
+    /// its weighted bound is below the value returned; equal bounds are kept.
+    fn rest_floor(&self, scene: &Scene, ri: usize, lead: &Bands) -> f64 {
+        let mut rest: Vec<(f64, Bands)> = (0..scene.sources.len())
+            .map(|si| {
+                let bound = self.bound(scene, si, ri);
+                ((0..8).map(|b| bound[b] * self.weights[b]).sum(), bound)
+            })
+            .filter(|(u, _)| *u > 0. && *u < self.lead_floor[ri])
             .collect();
-        bounds.sort_unstable_by(f64::total_cmp);
-        let mut sum = 0.;
-        for bound in bounds {
-            if sum + bound > budget {
-                return bound;
+        rest.sort_unstable_by(|a, b| a.0.total_cmp(&b.0));
+        let mut sum = [0.; 8];
+        for (weighted, bound) in rest {
+            for b in 0..8 {
+                sum[b] += bound[b];
+                if sum[b] > lead[b] * self.fraction {
+                    return weighted;
+                }
             }
-            sum += bound;
         }
         f64::INFINITY
     }
@@ -503,20 +508,35 @@ impl Ranking {
 /// Merge-side state of the ranked direct stages.
 #[derive(Default)]
 struct Ranked {
-    /// Weighted energy each receiver has from its leaders.
-    lead: Vec<Exact>,
+    /// Energy each receiver has from its leaders, per band.
+    lead: Vec<[Exact; 8]>,
     /// Leaders of each receiver whose lead item has not been merged.
     pending: Vec<u32>,
     /// Once a receiver's leaders are merged: `Ranking::rest_floor` there.
     rest_floor: Vec<Option<f64>>,
     /// Lead items merged; each is counted once.
     merged: Vec<bool>,
+    /// Per direct item, from its latest input: an item whose input is taken
+    /// again (a retry) is counted once.
+    tallies: Vec<Tally>,
+}
+/// What a direct item's input decided.
+#[derive(Clone, Copy, Default)]
+struct Tally {
     /// Source-receiver pairs: leading, evaluated after ranking, ranked out,
     /// and evaluated because the receiver's leaders were not all merged.
     pairs: [usize; 4],
-    /// Sources whose first remaining-source item ranked no receiver, because
-    /// leaders were still to be merged.
-    unranked: usize,
+    /// A source's first remaining-source item that ranked no receiver,
+    /// because leaders were still to be merged.
+    unranked: bool,
+}
+impl Ranked {
+    fn pairs(&self) -> [usize; 4] {
+        std::array::from_fn(|k| self.tallies.iter().map(|t| t.pairs[k]).sum())
+    }
+    fn unranked(&self) -> usize {
+        self.tallies.iter().filter(|t| t.unranked).count()
+    }
 }
 
 /// Live state of a pruning strategy. Contributions only add energy, so each
@@ -1457,11 +1477,11 @@ impl<'a> Merge<'a> {
             }),
             ranked: Mutex::new(match &plan.ranking {
                 Some(ranking) => Ranked {
-                    lead: vec![Exact::default(); scene.receivers.len()],
+                    lead: vec![Default::default(); scene.receivers.len()],
                     pending: ranking.leaders.clone(),
                     rest_floor: vec![None; scene.receivers.len()],
                     merged: vec![false; plan.per_stage()],
-                    ..Ranked::default()
+                    tallies: vec![Tally::default(); plan.items()],
                 },
                 None => Ranked::default(),
             }),
@@ -1487,7 +1507,7 @@ impl<'a> Merge<'a> {
             Stage::All => return ItemCutoffs::fixed(scene.settings.cutoffs),
             Stage::Lead | Stage::Rest => {
                 return ItemCutoffs {
-                    direct: Some(self.direct(plan.stages[stage], si, bi == 0, range)),
+                    direct: Some(self.direct(item, plan.stages[stage], si, bi == 0, range)),
                     ..ItemCutoffs::default()
                 };
             }
@@ -1536,6 +1556,7 @@ impl<'a> Merge<'a> {
     /// not all been merged ranks nothing out yet.
     fn direct(
         &self,
+        item: usize,
         stage: Stage,
         si: usize,
         first: bool,
@@ -1558,19 +1579,19 @@ impl<'a> Merge<'a> {
                 })
                 .collect();
             let mut ranked = self.ranked.lock().unwrap_or_else(|e| e.into_inner());
-            ranked.pairs[0] += actions.iter().filter(|a| **a == EVALUATE).count();
+            ranked.tallies[item].pairs[0] = actions.iter().filter(|a| **a == EVALUATE).count();
             return actions;
         }
         // Receivers ready to rank, with their floor if already found, or
         // the leaders' energy to find it from.
-        let states: Vec<Option<Result<f64, f64>>> = {
+        let states: Vec<Option<Result<f64, Bands>>> = {
             let ranked = self.ranked.lock().unwrap_or_else(|e| e.into_inner());
             range
                 .clone()
                 .map(|ri| {
                     (ranked.pending[ri] == 0).then(|| match ranked.rest_floor[ri] {
                         Some(floor) => Ok(floor),
-                        None => Err(ranked.lead[ri].total()),
+                        None => Err(ranked.lead[ri].each_ref().map(Exact::total)),
                     })
                 })
                 .collect()
@@ -1581,38 +1602,42 @@ impl<'a> Merge<'a> {
             .clone()
             .zip(states)
             .map(|(ri, state)| {
-                state.map(|state| state.unwrap_or_else(|lead| ranking.rest_floor(scene, ri, lead)))
+                state.map(|state| state.unwrap_or_else(|lead| ranking.rest_floor(scene, ri, &lead)))
             })
             .collect();
         let mut ranked = self.ranked.lock().unwrap_or_else(|e| e.into_inner());
         let (mut ranks, mut waits) = (false, false);
+        let mut tally = Tally::default();
         let actions = range
             .zip(floors)
             .map(|(ri, floor)| {
+                // Kept even where this source leads: the next source's item
+                // must not find the floor again.
+                if floor.is_some() {
+                    ranked.rest_floor[ri] = floor;
+                }
                 let bound = ranking.weighted(scene, si, ri);
                 if bound > 0. && bound >= ranking.lead_floor[ri] {
                     return SKIP;
                 }
                 let Some(floor) = floor else {
-                    ranked.pairs[3] += 1;
+                    tally.pairs[3] += 1;
                     waits = true;
                     return EVALUATE;
                 };
-                ranked.rest_floor[ri] = Some(floor);
                 ranks = true;
                 // A source without power has nothing to omit: evaluate it.
                 if bound > 0. && bound < floor {
-                    ranked.pairs[2] += 1;
+                    tally.pairs[2] += 1;
                     OMIT
                 } else {
-                    ranked.pairs[1] += 1;
+                    tally.pairs[1] += 1;
                     EVALUATE
                 }
             })
             .collect();
-        if waits && !ranks && first {
-            ranked.unranked += 1;
-        }
+        tally.unranked = waits && !ranks && first;
+        ranked.tallies[item] = tally;
         actions
     }
     fn add(
@@ -1630,8 +1655,8 @@ impl<'a> Merge<'a> {
             if !std::mem::replace(&mut ranked.merged[lead], true) {
                 for (ri, c) in &contributions {
                     if let Some(sum) = ranked.lead.get_mut(*ri) {
-                        for b in 0..8 {
-                            sum.add(c.energy[b] * ranking.weights[b]);
+                        for (sum, energy) in sum.iter_mut().zip(c.energy) {
+                            sum.add(energy);
                         }
                     }
                 }
@@ -1712,7 +1737,7 @@ impl<'a> Merge<'a> {
             .enumerate()
             .map(|(order, (unpruned, lo, hi))| {
                 let unpruned = if order == 0 {
-                    ranked.unranked
+                    ranked.unranked()
                 } else {
                     *unpruned
                 };
@@ -1868,11 +1893,12 @@ impl<'a> Merge<'a> {
             });
         }
         if let Some(strategy) = &scene.settings.strategy {
+            let pairs = ranked.pairs();
             result["diagnostics"]["pruning"] = json!({"strategy":strategy,
                 "margin_db":pruning_margin(strategy, scene.sources.len()),"source_count":scene.sources.len(),
-                "rule":format!("direct paths are ranked at each receiver by an upper bound: sources within {c} dB of the largest bound are evaluated first, then the lowest-bound others are omitted while their bounds sum to at most 10^(-{c}/10) of the weighted energy those leaders delivered there; once all direct paths have completed, each reflection task takes, for each receiver, band cutoff = that receiver's weighted level from contributions completed when the task starts - margin - band weighting; a receiver with no energy yet is not pruned; reflection prefixes use the lowest threshold of the task's receiver block; margin = 10 log10(source count) + {c} dB", c = pruning_constant(strategy)),
-                "direct":{"leading_pairs":ranked.pairs[0],"evaluated_pairs":ranked.pairs[1],
-                    "omitted_pairs":ranked.pairs[2],"unranked_pairs":ranked.pairs[3]},
+                "rule":format!("direct paths are ranked at each receiver by an upper bound: sources within {c} dB of the largest bound are evaluated first, then the lowest-bound others are omitted while their bounds sum, in every band, to at most 10^(-{c}/10) of the energy those leaders delivered there in that band; once all direct paths have completed, each reflection task takes, for each receiver, band cutoff = that receiver's weighted level from contributions completed when the task starts - margin - band weighting; a receiver with no energy yet is not pruned; reflection prefixes use the lowest threshold of the task's receiver block; margin = 10 log10(source count) + {c} dB", c = pruning_constant(strategy)),
+                "direct":{"leading_pairs":pairs[0],"evaluated_pairs":pairs[1],
+                    "omitted_pairs":pairs[2],"unranked_pairs":pairs[3]},
                 "stages":stage_reports});
         }
         result["diagnostics"]["path_search"] = json!({
@@ -2628,6 +2654,86 @@ mod work_plan_tests {
         assert!(loud > 0);
     }
 
+    /// The bound keeps a source's directivity, and takes the distance to the
+    /// nearest part of an extended source, not to its far end.
+    #[test]
+    fn the_direct_bound_covers_directivity_and_the_near_end_of_a_source() {
+        use super::Plan;
+        let row = json!([[20, 20, 20, 20, 20, 20, 20, 20]]);
+        let mut request = json!({
+            "sources":[
+                {"id":"loud","kind":"point","position":[0,0,2],"spectrum":[80,80,80,80,80,80,80,80],
+                 "directivity":{"azimuth_deg":[0],"elevation_deg":[-90,90],"correction_db":[row, row]}},
+                {"id":"line","kind":"line","vertices":[[0,40,2],[200,40,2]],"spectrum":[80,80,80,80,80,80,80,80]}],
+            "receivers":[{"id":"a","position":[0,10,1.5]},{"id":"b","position":[0,42,2]}],
+            "settings":{"max_reflect_order":0,"minimum_contribution_db":null}
+        });
+        let exact = run_local(&request, 2);
+        request["settings"]["pruning_strategy"] = json!("dba");
+        let plan = Plan::prepare(request, &AtomicBool::new(false)).unwrap();
+        let ranking = plan.ranking.as_ref().unwrap();
+        for (ri, receiver) in exact["receivers"].as_array().unwrap().iter().enumerate() {
+            for source in receiver["sources"].as_array().unwrap() {
+                let si = plan
+                    .scene
+                    .sources
+                    .iter()
+                    .position(|s| source["source_id"] == s.id.as_str())
+                    .unwrap();
+                let bound = ranking.bound(&plan.scene, si, ri);
+                for b in 0..8 {
+                    let energy = 10f64.powf(source["octave_db"][b].as_f64().unwrap() / 10.);
+                    assert!(energy <= bound[b] * (1. + 1e-9), "{si} {ri} {b}");
+                }
+            }
+        }
+    }
+
+    /// An item's input taken twice is counted once, a floor is kept for the
+    /// next item even where the asking source leads, and a lead output
+    /// merged twice neither adds to the leaders' energy nor completes
+    /// another leader.
+    #[test]
+    fn repeated_inputs_and_lead_outputs_count_once() {
+        use super::{Merge, Plan};
+        let cancel = AtomicBool::new(false);
+        let plan = Plan::prepare(ranked_request(), &cancel).unwrap();
+        let merge = Merge::new(&plan, &|_, _| {}, &|_, _| {});
+        let state = || {
+            let ranked = merge.ranked.lock().unwrap();
+            let lead: Vec<Vec<f64>> = ranked
+                .lead
+                .iter()
+                .map(|bands| bands.iter().map(|e| e.total()).collect())
+                .collect();
+            (lead, ranked.pending.clone())
+        };
+        for item in 0..plan.per_stage() {
+            let cutoffs = merge.cutoffs(item);
+            assert_eq!(merge.cutoffs(item), cutoffs);
+            let output = || plan.run_item(item, &cutoffs, &cancel).unwrap();
+            merge.add_output(item, output()).unwrap();
+            if item == 0 {
+                let before = state();
+                merge.add_output(item, output()).unwrap();
+                assert_eq!(state(), before);
+            }
+        }
+        let leaders: u32 = plan.ranking.as_ref().unwrap().leaders.iter().sum();
+        assert_eq!(merge.ranked.lock().unwrap().pairs()[0], leaders as usize);
+        // Source 0 leads at some receiver; asking for its item fills the
+        // floor at every receiver of the block.
+        merge.cutoffs(plan.per_stage());
+        let ranked = merge.ranked.lock().unwrap();
+        let block = plan.blocks(0)[0].range.clone();
+        assert!(
+            block
+                .clone()
+                .any(|ri| plan.ranking.as_ref().unwrap().leads(&plan.scene, 0, ri))
+        );
+        assert!(block.into_iter().all(|ri| ranked.rest_floor[ri].is_some()));
+    }
+
     /// Three strong sources among the receivers and twenty weak ones far
     /// away, one building, direct paths only.
     fn ranked_request() -> Value {
@@ -2705,11 +2811,11 @@ mod work_plan_tests {
         assert_eq!(serial["receivers"], local["receivers"]);
         let direct = &serial["diagnostics"]["pruning"]["direct"];
         assert_eq!(direct["omitted_pairs"], omitted);
-        // The first request, made before any leader was merged, ranked none.
-        assert!(direct["unranked_pairs"].as_u64().unwrap() > 0);
+        // The item's first input, taken before any leader was merged, ranked
+        // none; only its latest input is counted.
         assert_eq!(
-            serial["diagnostics"]["pruning"]["stages"][0]["tasks_without_cutoff"],
-            1
+            serial["diagnostics"]["pruning"],
+            local["diagnostics"]["pruning"]
         );
         // Remaining sources first: every receiver is evaluated in full, so
         // nothing is omitted and the result is the unpruned one.
@@ -2722,6 +2828,12 @@ mod work_plan_tests {
         assert_eq!(
             eager["diagnostics"]["pruning"]["direct"]["omitted_pairs"],
             0
+        );
+        assert!(
+            eager["diagnostics"]["pruning"]["direct"]["unranked_pairs"]
+                .as_u64()
+                .unwrap()
+                > 0
         );
         for (level, exact) in weighted(&eager).iter().zip(&uncut) {
             assert!((level - exact).abs() < 1e-9, "{level} {exact}");
